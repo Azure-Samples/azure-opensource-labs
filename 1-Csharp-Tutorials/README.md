@@ -10,8 +10,12 @@ This repository contains samples and tutorials that run using the [dotnet try](h
 
 You can explore these tutorials in your environment using the `dotnet try` global tool:
 
-*Prerequisite: Install .NET Core SDK [3.0](https://dotnet.microsoft.com/download/dotnet-core/3.0)*
-1. Install the [dotnet-try](https://github.com/dotnet/try/blob/master/README.md#setup) global tool.
+*Prerequisite
+You will install the following: 
+- [.NET Core 3.0 SDK](https://dotnet.microsoft.com/download/dotnet-core/3.0) and [2.1](https://dotnet.microsoft.com/download/dotnet-core/2.1) currently `dotnet try` global tool targets 2.1.
+- [dotnet try global tool](https://www.nuget.org/packages/dotnet-try/)
+
+## Getting Started with the C# Lab
 1. Clone this repository.
 1. Set the current directory to one of the sample tutorials (or use the current folder to see all samples).
 1. Run `dotnet try`.
