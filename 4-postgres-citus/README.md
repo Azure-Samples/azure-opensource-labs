@@ -175,18 +175,12 @@ SELECT rollup_http_request();
 
 Now that our data is aggregated, let's take a look at our new analytics table to see what users were most active when and what they were doing then:
 
-<<<<<<< HEAD
 ```
 SELECT user_id,ingest_time,sum(total_events)
 FROM github_rollup_1min 
 GROUP by 1,2 
 ORDER by 3 desc 
 LIMIT 5;
-
-=======
-```sql
-SELECT * FROM github_rollup_1min ORDER BY total_events DESC LIMIT 10;
->>>>>>> d772e2f9b7fdd77e0bdea64308cc1ef3f20adc43
 ```
 
 As you can see, we've got some very useful information for user activity dashboards, and thanks to the rollup query precomputing some of the sums, we're able to get aggregate results very quickly. This will let us build extremely responsive applications that give detailed information over huge datasets. 
