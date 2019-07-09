@@ -1,6 +1,6 @@
-# Create an Azure Database for PostgreSQL - Hyperscale (Citus) (preview)
+# Real-Time Analytics on Azure Database for PostgreSQL - Hyperscale (Citus) (preview)
 
-Azure Database for PostgreSQL is a managed service that you use to run, manage, and scale highly available PostgreSQL databases in the cloud. This Quickstart shows you how to create an Azure Database for PostgreSQL - Hyperscale (Citus) (preview) server group using the Azure portal. You'll explore distributed data: sharding tables across nodes, ingesting sample data, and running queries that execute on multiple nodes.
+Azure Database for PostgreSQL is a managed service that you use to run, manage, and scale highly available PostgreSQL databases in the cloud. This Quickstart shows you how to create an Azure Database for PostgreSQL - Hyperscale (Citus) (preview) server group using the Azure portal. You'll explore distributed data: sharding tables across nodes, ingesting sample data, running queries that execute on multiple nodes, and explore using rollup queries to make real-time analytics even faster..
 
 ## Create and distribute tables
 
@@ -18,7 +18,7 @@ The data model we're going to work with is simple: user and event data from GitH
 
 TODO: Add auto-generated PSQL string here
 
-Once you've connected via psql, let's create our tables. In the psql console run:
+Once you've connected via psql using the above command, let's create our tables. In the psql console run:
 
 ```sql
 CREATE TABLE github_events
@@ -54,7 +54,7 @@ CREATE INDEX event_type_index ON github_events (event_type);
 CREATE INDEX payload_index ON github_events USING GIN (payload jsonb_path_ops);
 ```
 
-Next we’ll take those Postgres tables on the coordinator node and tell Hyperscale to shard them across the workers. To do so, we’ll run a query for each table specifying the key to shard it on. In the current example we’ll shard both the events and users table on `user_id`:
+Next we’ll take those Postgres tables on the coordinator node and tell Hyperscale to shard them across the workers. To do so, we’ll run a query for each table specifying the key to shard it on. In the current example we’ll shard both the events and users table on `user_id`, causing all database entries on each of these tables with the same `user_id` to be on the same place in your cluster:
 
 ```sql
 SELECT create_distributed_table('github_events', 'user_id');
@@ -179,4 +179,4 @@ Now that our data is aggregated, let's take a look at our new analytics table to
 select * from github_rollup_1min order by total_events desc limit 10;
 ```
 
-As you can see, we've got some very useful information for user activity dashboards.
+As you can see, we've got some very useful information for user activity dashboards, and thanks to the rollup query we're able to get aggregate results very quickly. This will let us build extremely responsive applications that give detailed information over huge datasets. 
