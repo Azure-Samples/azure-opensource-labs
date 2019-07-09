@@ -63,6 +63,8 @@ SELECT create_distributed_table('github_users', 'user_id');
 
 We're ready to load data. In psql, load the data from the files into the distributed tables:
 
+TODO: change directory first if needed
+
 ```sql
 \copy github_events from 'events.csv' WITH CSV
 \copy github_users from 'users.csv' WITH CSV
@@ -176,7 +178,12 @@ SELECT rollup_http_request();
 Now that our data is aggregated, let's take a look at our new analytics table to see what users were most active when and what they were doing then:
 
 ```
-select * from github_rollup_1min order by total_events desc limit 10;
+SELECT user_id,ingest_time,sum(total_events)
+FROM github_rollup_1min 
+GROUP by 1,2 
+ORDER by 3 desc 
+LIMIT 5;
+
 ```
 
-As you can see, we've got some very useful information for user activity dashboards, and thanks to the rollup query we're able to get aggregate results very quickly. This will let us build extremely responsive applications that give detailed information over huge datasets. 
+As you can see, we've got some very useful information for user activity dashboards, and thanks to the rollup query precomputing some of the sums, we're able to get aggregate results very quickly. This will let us build extremely responsive applications that give detailed information over huge datasets. 
