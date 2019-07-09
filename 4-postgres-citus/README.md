@@ -46,7 +46,7 @@ CREATE TABLE github_events
     repo jsonb,
     user_id bigint,
     org jsonb,
-    created_at timestamp
+    created_at timestamp with time zone
 );
 
 CREATE TABLE github_users
@@ -117,3 +117,81 @@ GROUP BY login
 ORDER BY count(*) DESC;
 ```
 
+Rolling up data
+
+The previous query works fine in the early stages, but its performance degrades as your data scales. Even with distributed processing, it's faster to pre-compute the data than to recalculate it repeatedly.
+
+We can ensure our dashboard stays fast by regularly rolling up the raw data into an aggregate table. You can experiment with the aggregation duration. We used a per-minute aggregation table, but you could break data into 5, 15, or 60 minutes instead.
+
+First, we're going to create and distribute a rollup table:
+
+```
+--Sum of events per repo per user per minute
+CREATE TABLE github_rollup_1min
+(
+    event_type text,
+    repo_id bigint,
+    user_id bigint,
+    total_events bigint,
+    ingest_time TIMESTAMPTZ
+);
+
+--Last invoked time
+CREATE TABLE latest_rollup (
+  minute timestamptz PRIMARY KEY,
+
+  CHECK (minute = date_trunc('minute', minute))
+);
+
+SELECT create_distributed_table('github_rollup_1min', 'user_id');
+
+```
+To run this roll-up more easily, we're going to put it into a plpgsql function. Run these commands in psql to create the rollup_http_request function.
+
+```
+-- initialize to a time long ago
+INSERT INTO latest_rollup VALUES ('10-10-1901');
+
+--Create rollup function
+
+
+CREATE OR REPLACE FUNCTION rollup_http_request() RETURNS void AS $$
+DECLARE
+  curr_rollup_time timestamptz := date_trunc('minute', now());
+  last_rollup_time timestamptz := minute from latest_rollup;
+BEGIN
+  INSERT INTO github_rollup_1min (
+    event_type,repo_id,user_id,total_events,ingest_time
+  ) SELECT
+    event_type,
+    repo_id,
+    user_id,
+    count(1) AS total_events,
+    date_trunc('minute', created_at) AS ingest_minute
+    FROM github_events 
+  -- roll up only data new since last_rollup_time
+  WHERE date_trunc('minute', created_at) <@
+          tstzrange(last_rollup_time, curr_rollup_time, '(]')
+  GROUP BY event_type,repo_id,user_id,ingest_minute
+  ORDER BY user_id,event_type;
+
+  -- update the value in latest_rollup so that next time we run the
+  -- rollup it will operate on data newer than curr_rollup_time
+  UPDATE latest_rollup SET minute = curr_rollup_time;
+END;
+$$ LANGUAGE plpgsql;
+
+```
+Now that we have the rollup query, let's run it:
+
+```
+SELECT rollup_http_request();
+```
+
+Now that our data is aggregated, let's take a look at our new analytics table to see what users were most active when and what they were doing then:
+
+```
+select * from github_rollup_1min order by total_events desc limit 10;
+```
+
+As you can see, we've got some very useful information for user activity dashboards.
