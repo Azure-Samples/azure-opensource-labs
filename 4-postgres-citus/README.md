@@ -175,7 +175,7 @@ SELECT rollup_http_request();
 
 Now that our data is aggregated, let's take a look at our new analytics table to see what users were most active when and what they were doing then:
 
-```
+```sql
 SELECT user_id,ingest_time,sum(total_events)
 FROM github_rollup_1min 
 GROUP by 1,2 
