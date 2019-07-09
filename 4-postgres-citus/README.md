@@ -1,21 +1,6 @@
----
-title: 'Azure Database for PostgreSQL – Hyperscale (Citus) (preview) quickstart'
-description: Quickstart to create and query distributed tables on Azure Database for PostgreSQL Hyperscale (Citus) (preview).
-author: jonels-msft
-ms.author: jonels
-ms.service: postgresql
-ms.subservice: hyperscale-citus
-ms.custom: mvc
-ms.topic: quickstart
-ms.date: 05/14/2019
-#Customer intent: As a developer, I want to provision a hyperscale server group so that I can run queries quickly on large datasets.
----
-
-# Quickstart: Create an Azure Database for PostgreSQL - Hyperscale (Citus) (preview) in the Azure portal
+# Create an Azure Database for PostgreSQL - Hyperscale (Citus) (preview)
 
 Azure Database for PostgreSQL is a managed service that you use to run, manage, and scale highly available PostgreSQL databases in the cloud. This Quickstart shows you how to create an Azure Database for PostgreSQL - Hyperscale (Citus) (preview) server group using the Azure portal. You'll explore distributed data: sharding tables across nodes, ingesting sample data, and running queries that execute on multiple nodes.
-
-[!INCLUDE [azure-postgresql-hyperscale-create-db](../../includes/azure-postgresql-hyperscale-create-db.md)]
 
 ## Create and distribute tables
 
