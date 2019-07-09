@@ -27,9 +27,11 @@ Within Hyperscale servers there are three types of tables:
 - Reference tables (multiple copies maintained)
 - Local tables (often used for internal admin tables)
 
-In this quickstart, we'll primarily focus on distributed tables and getting familiar with them.
+In this quickstart, we'll set up some distributed tables, learn how they work, and show how they make analytics faster.  
 
 The data model we're going to work with is simple: user and event data from GitHub. Events include fork creation, git commits related to an organization, and more.
+
+TODO: Add auto-generated PSQL string here
 
 Once you've connected via psql, let's create our tables. In the psql console run:
 
@@ -74,14 +76,7 @@ SELECT create_distributed_table('github_events', 'user_id');
 SELECT create_distributed_table('github_users', 'user_id');
 ```
 
-We're ready to load data. In psql still, shell out to download the files:
-
-```sql
-\! curl -O https://examples.citusdata.com/users.csv
-\! curl -O https://examples.citusdata.com/events.csv
-```
-
-Next, load the data from the files into the distributed tables:
+We're ready to load data. In psql, load the data from the files into the distributed tables:
 
 ```sql
 \copy github_events from 'events.csv' WITH CSV
@@ -122,14 +117,3 @@ GROUP BY login
 ORDER BY count(*) DESC;
 ```
 
-## Clean up resources
-
-In the preceding steps, you created Azure resources in a server group. If you don't expect to need these resources in the future, delete the server group. Press the **Delete** button in the **Overview** page for your server group. When prompted on a pop-up page, confirm the name of the server group and click the final **Delete** button.
-
-## Next steps
-
-In this quickstart, you learned how to provision a Hyperscale (Citus) server group. You connected to it with psql, created a schema, and distributed data.
-
-Next, follow a tutorial to build scalable multi-tenant applications.
-> [!div class="nextstepaction"]
-> [Design a Multi-Tenant Database](https://aka.ms/hyperscale-tutorial-multi-tenant)
