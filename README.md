@@ -20,3 +20,10 @@ This workshop walks you through the C# fundamentals as well as C# 7 and 8 featur
 Create an Azure Functions serverless API that returns a a list of pets to be adopted. In this lab, you will learn how to create a basic REST API using Node.js Azure Functions and add dependencies from npm.
 
 [Go to lab](3-vscode-serverless/README.md)
+
+
+## Use Hyperscale (Citus) to speed up analytics
+
+This workshop is meant to be an introduction to Azure Database for PostgreSQL Hyperscale (Citus). First, you will create a cluster to scale out PostgreSQL and turn it into a distributed database. Then, you will create a schema and tables, load test data, and create a rollup function to massively speed up your query workload. 
+
+[Go to lab](4-postgres-citus/README.md)
