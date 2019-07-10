@@ -20,3 +20,10 @@ This workshop walks you through the C# fundamentals as well as C# 7 and 8 featur
 Create an Azure Functions serverless API that returns a a list of pets to be adopted. In this lab, you will learn how to create a basic REST API using Node.js Azure Functions and add dependencies from npm.
 
 [Go to lab](3-vscode-serverless/README.md)
+
+
+## Try out the Intelligent Performance suite in Azure database services for MySQL and PostgreSQL
+Azure offers managed database services for MySQL and PostgreSQL. In this hands-on lab, explore how to understand and improve your query performance using the Intelligent Performance suite of features.
+
+[Go to MySQL lab](4a-mysql-intelligent-perf/README.md)
+[Go to Postgres lab](4b-postgres-intelligent-perf/README.md)

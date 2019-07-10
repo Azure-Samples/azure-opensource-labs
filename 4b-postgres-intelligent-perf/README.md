@@ -1,7 +1,7 @@
 # Azure Database for PostgreSQL 
 Azure Database for PostgreSQL is a fully managed database service that is based on the open source version of PostgreSQL. The service offers built-in high availability, flexible scaling of compute and storage resources, and other features that enhance ####the already existing awesome engine functionality####. 
 
-In this hands on lab, you will learn to use Intelligent Performance, a feature suite available in Azure Database for PostgreSQL that helps you understand and improve your workload's performance. The three features that make up the suite are Query Store, Query Performance Insight, and Performance Recommendations. 
+In this hands-on lab, you will learn to use Intelligent Performance, a feature suite available in Azure Database for PostgreSQL that helps you understand and improve your workload's performance. The three features that make up the suite are Query Store, Query Performance Insight, and Performance Recommendations. 
 
 
 ## Lab steps
@@ -34,9 +34,9 @@ Congratulations! You have successfully gained insights into this server's query 
 
 ## Next steps
 Learn more using the following resources: 
-- Azure Database for PostgreSQL: [aka.ms/postgresql](aka.ms/postgresql) 
-- Query Store: [aka.ms/postgresqlqs](aka.ms/postgresqlqs)
-- Query Performance Insight: [aka.ms/postgresqlqpi](aka.ms/postgresqlqpi)
-- Performance Recommendations: [aka.ms/postgresqlperfrec](aka.ms/postgresqlperfrec)
+- Azure Database for PostgreSQL: [aka.ms/postgresql](https://aka.ms/postgresql) 
+- Query Store: [aka.ms/postgresqlqs](https://aka.ms/postgresqlqs)
+- Query Performance Insight: [aka.ms/postgresqlqpi](https://aka.ms/postgresqlqpi)
+- Performance Recommendations: [aka.ms/postgresqlperfrec](https://aka.ms/postgresqlperfrec)
 
 	

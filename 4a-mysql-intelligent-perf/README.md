@@ -1,7 +1,7 @@
 # Azure Database for MySQL 
 Azure Database for MySQL is a fully managed database service that is based on the open source version of MySQL. The service offers built-in high availability, flexible scaling of compute and storage resources, and other features that enhance ####the already existing awesome engine functionality####. 
 
-In this hands on lab, you will learn to use Intelligent Performance, a feature suite available in Azure Database for MySQL that helps you understand and improve your workload's performance. The three features that make up the suite are Query Store, Query Performance Insight, and Performance Recommendations. 
+In this hands-on lab, you will learn to use Intelligent Performance, a feature suite available in Azure Database for MySQL that helps you understand and improve your workload's performance. The three features that make up the suite are Query Store, Query Performance Insight, and Performance Recommendations. 
 
 
 ## Lab steps
@@ -34,9 +34,9 @@ Congratulations! You have successfully gained insights into this server's query 
 
 ## Next steps
 Learn more using the following resources: 
-- Azure Database for MySQL: [aka.ms/mysql](aka.ms/mysql) 
-- Query Store: [aka.ms/mysqlqs](aka.ms/mysqlqs)
-- Query Performance Insight: [aka.ms/mysqlqpi](aka.ms/mysqlqpi)
-- Performance Recommendations: [aka.ms/mysqlperfrec](aka.ms/mysqlperfrec)
+- Azure Database for MySQL: [aka.ms/mysql](https://aka.ms/mysql) 
+- Query Store: [aka.ms/mysqlqs](https://aka.ms/mysqlqs)
+- Query Performance Insight: [aka.ms/mysqlqpi](https://aka.ms/mysqlqpi)
+- Performance Recommendations: [aka.ms/mysqlperfrec](https://aka.ms/mysqlperfrec)
 
 	
