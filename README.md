@@ -21,15 +21,13 @@ Create an Azure Functions serverless API that returns a a list of pets to be ado
 
 [Go to lab](3-vscode-serverless/README.md)
 
+## Try out the Intelligent Performance suite in Azure database services for MySQL and PostgreSQL
+Azure offers managed database services for MySQL and PostgreSQL. In this hands-on lab, explore how to understand and improve your query performance using the Intelligent Performance suite of features.
+
+[Go to MySQL lab](5a-mysql-intelligent-perf/README.md) | [Go to PostgreSQL lab](5b-postgres-intelligent-perf/README.md)
 
 ## Use Hyperscale (Citus) to speed up analytics
 
 This workshop is meant to be an introduction to Azure Database for PostgreSQL Hyperscale (Citus). First, you will create a cluster to scale out PostgreSQL and turn it into a distributed database. Then, you will create a schema and tables, load test data, and create a rollup function to massively speed up your query workload. 
 
 [Go to lab](4-postgres-citus/README.md)
-
-## Try out the Intelligent Performance suite in Azure database services for MySQL and PostgreSQL
-Azure offers managed database services for MySQL and PostgreSQL. In this hands-on lab, explore how to understand and improve your query performance using the Intelligent Performance suite of features.
-
-[Go to MySQL lab](5a-mysql-intelligent-perf/README.md)
-[Go to Postgres lab](5b-postgres-intelligent-perf/README.md)
