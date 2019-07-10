@@ -1,16 +1,16 @@
 # Real-Time Analytics on Azure Database for PostgreSQL - Hyperscale (Citus) (preview)
 
-Azure Database for PostgreSQL is a managed service that you use to run, manage, and scale highly available PostgreSQL databases in the cloud. This Quickstart shows you how to create an Azure Database for PostgreSQL - Hyperscale (Citus) (preview) server group using the Azure portal. You'll explore distributed data: sharding tables across nodes, ingesting sample data, running queries that execute on multiple nodes, and explore using rollup queries to make real-time analytics even faster..
+Azure Database for PostgreSQL is a managed service that you use to run, manage, and scale highly available PostgreSQL databases in the cloud. This Quickstart shows you how to create an Azure Database for PostgreSQL - Hyperscale (Citus) (preview) server group using the Azure portal. You'll explore distributed data: sharding tables across nodes, ingesting sample data, running queries that execute on multiple nodes, and explore using rollup queries to make real-time analytics even faster.
 
 ## Create and distribute tables
 
-Once connected to the hyperscale coordinator node using psql, you can complete some basic tasks.
+Once connected to the Hyperscale coordinator node using psql, you can complete some basic tasks.
 
 Within Hyperscale servers there are three types of tables:
 
 - Distributed or sharded tables (spread out to help scaling for performance and parallelization)
 - Reference tables (multiple copies maintained)
-- Local tables (often used for internal admin tables)
+- Local tables (tables you don't join to, typically administration/logging tables)
 
 In this quickstart, we'll set up some distributed tables, learn how they work, and show how they make analytics faster.  
 
@@ -54,7 +54,7 @@ CREATE INDEX event_type_index ON github_events (event_type);
 CREATE INDEX payload_index ON github_events USING GIN (payload jsonb_path_ops);
 ```
 
-Next we’ll take those Postgres tables on the coordinator node and tell Hyperscale to shard them across the workers. To do so, we’ll run a query for each table specifying the key to shard it on. In the current example we’ll shard both the events and users table on `user_id`, causing all database entries on each of these tables with the same `user_id` to be on the same place in your cluster:
+Next we’ll take those Postgres tables on the coordinator node and tell Hyperscale to shard them across the workers. To do so, we’ll run a query for each table specifying the key to shard it on. In the current example we’ll shard both the events and users table on `user_id`, causing all database entries on each of these tables with the same `user_id` to be on the same node in your cluster:
 
 ```sql
 SELECT create_distributed_table('github_events', 'user_id');
@@ -104,7 +104,7 @@ GROUP BY login
 ORDER BY count(*) DESC;
 ```
 
-Rolling up data
+## Rolling up data
 
 The previous query works fine in the early stages, but its performance degrades as your data scales. Even with distributed processing, it's faster to pre-compute the data than to recalculate it repeatedly.
 
@@ -113,7 +113,7 @@ We can ensure our dashboard stays fast by regularly rolling up the raw data into
 First, we're going to create and distribute a rollup table:
 
 ```sql
--- Sum of events per repo per user per minute
+-- sum of events per repo per user per minute
 CREATE TABLE github_rollup_1min
 (
     event_type text,
@@ -123,7 +123,7 @@ CREATE TABLE github_rollup_1min
     ingest_time TIMESTAMPTZ
 );
 
--- Last invoked time
+-- last invoked time
 CREATE TABLE latest_rollup (
   minute timestamptz PRIMARY KEY,
 
@@ -139,7 +139,7 @@ To run this roll-up more easily, we're going to put it into a plpgsql function. 
 -- initialize to a time long ago
 INSERT INTO latest_rollup VALUES ('10-10-1901');
 
--- Create rollup function
+-- create rollup function
 CREATE OR REPLACE FUNCTION rollup_http_request() RETURNS void AS $$
 DECLARE
   curr_rollup_time timestamptz := date_trunc('minute', now());
