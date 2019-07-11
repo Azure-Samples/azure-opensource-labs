@@ -85,7 +85,7 @@ In the Terminal using your OSCON profile, navigate to
 1. run `git clone https://github.com/johnpapa/node-hello`
 2. run `cd node-hello`
 3. run `npm install`
-2. run `npm .`
+2. run `npm start`
 3. Use a web browser to open `localhost:3000` to see the site is working.  This is the Linux version of NodeJS running locally on Windows via WSL. 
 
 #### STARTING DIRECTORY
