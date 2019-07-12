@@ -6,13 +6,13 @@ This project walks you through setting up and customizing a Windows PC for Open 
 
 If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the pre-requisites for this lab.
 
-## Configure the Terminal
+## Configure the Windows Terminal
 
 ### PROFILES
 
-Open Windows Terminal and press `Ctrl + ,` to edit the settings file (you can alternatively use the Terminal menu and select "settings")
+Open Windows Terminal (found in taskbar). Press `Ctrl+,` to edit the settings file (or use the Terminal menu and select "settings")
 
-In the list of profiles insert this profile: <br/> 
+Scroll down to `"profiles"`. Insert the profile below after the first `[`: <br/> 
 ```json
 {
     "guid" : "{c6eaf9f4-56a1-5fdc-b5cf-066e8a4b1e40}",
@@ -33,27 +33,42 @@ In the list of profiles insert this profile: <br/>
         
 },
 ```
+Save the changes. `Ctrl+s`
 
-Now open the Terminal Menu and you'll see a new entry 'My OSCON Profile".  Select this profile and a new tab opens with this profile.  Give it a try.  Next we'll customize this.
+On the Windows Terminal, select the down arrow next to the plus(+) sign. In the drop down, select `My OSCON Profile`.    
+
+<!--- ** JJ - Is customizing a requirement for the demo? If not, I would leave this out or make it "bonus". Otherwise it could distract from the rest of the demo. 
+
+Next we'll customize this.
 
 This profile will open an Ubuntu 18 bash shell. 
 
 Feel free to change any of the settings and the Terminal will automatically reload with your changes as you go.
 
 For `cursorShape` try `"vintage"`
+-->
 
 ### POWERLINE FONT
 Next we're going to install PowerLine fonts in Windows using PowerShell: 
 1. git clone https://github.com/powerline/fonts.git
 2. cd fonts
-3. ./install.ps1
+3. ./install.ps1 pro*
 
 Next change your terminal profile to use one of the Powerline fonts:
 
 `"fontFace" : "ProFont for Powerline",`
 
+Save the changes `Ctrl+s`
+
 ### POWERLINE SHELL
-With the fonts installed, you can install the PowerLine shell in Ubuntu by addign the following to your .bashrc.  Open ~\\.bashrc and add the following.
+With the fonts installed, you can install the PowerLine shell in Ubuntu.
+
+> Do we need to have the user install the powerline shell? Adding the text to the bash profile will cause an error w/o the shell installed. To install the shell, it requires installing python and python-setuptools.
+
+Open Windows File Explorer.
+In the Address bar enter `\\wsl$\Ubuntu-18.04\home\oscon`
+Edit (Double-click) .bashrc -> Opens in VS Code
+Add the following:
 
 ```bash
 function _update_ps1() {
@@ -64,14 +79,14 @@ if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then
     PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
 fi
 ```
+Save the changes. `Ctrl+s`
 
-NOTE: You can use Windows File Explorer to open this file by navigating to
-<br/>
-`\\wsl$\Ubuntu-18.04\home\USERNAME` and opening `.bashrc` in any Windows editor like Notepad.
 
 ## TMUX
+> Is this the Windows Terminal or Ubuntu?
+
 To have multiple panes within our shell use Tmux.  Here's how:
-1. Run `sudo apt install tmux -y`
+1. Run `sudo apt install tmux -y` (password: oscon)
 2. Open a new tmux session by typing `tmux` and pressing enter
 3. Add panes using the following:
     - Press **CTRL+B** and then **"** to split the screen vertically
@@ -82,6 +97,8 @@ To have multiple panes within our shell use Tmux.  Here's how:
     - Quit all windows to exit the tmux session.
 
 ## Run a Node Project in WSL
+> Needed to install Node and npm for this to work. Had to update the Ubuntu build before I could install node and npm. There's no projects folder under C:\\ either.
+
 In the Terminal using your OSCON profile, navigate to
  `c:\\projects\`
 1. run `git clone https://github.com/johnpapa/node-hello`
