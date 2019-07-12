@@ -35,18 +35,13 @@ Scroll down to `"profiles"`. Insert the profile below after the first `[`: <br/>
 ```
 Save the changes. `Ctrl+s`
 
-On the Windows Terminal, select the down arrow next to the plus(+) sign. In the drop down, select `My OSCON Profile`.    
+On the Windows Terminal, select the down arrow next to the plus(+) sign as shown in this image. In the drop down, select: `My OSCON Profile`. 
 
-<!--- ** JJ - Is customizing a requirement for the demo? If not, I would leave this out or make it "bonus". Otherwise it could distract from the rest of the demo. 
-
-Next we'll customize this.
+![drop down menu](./menudropdown.png)
 
 This profile will open an Ubuntu 18 bash shell. 
 
-Feel free to change any of the settings and the Terminal will automatically reload with your changes as you go.
-
-For `cursorShape` try `"vintage"`
--->
+Feel free to change any of the profile settings and the Terminal will automatically reload with your changes as you make them.
 
 ### POWERLINE FONT
 Next we're going to install PowerLine fonts in Windows using PowerShell: 
@@ -64,6 +59,7 @@ Save the changes `Ctrl+s`
 With the fonts installed, you can install the PowerLine shell in Ubuntu.
 
 > Do we need to have the user install the powerline shell? Adding the text to the bash profile will cause an error w/o the shell installed. To install the shell, it requires installing python and python-setuptools.
+> yosef: let's install python, python-setuptools, and the shell for them as part of the base lab image.
 
 Open Windows File Explorer.
 In the Address bar enter `\\wsl$\Ubuntu-18.04\home\oscon`
@@ -85,8 +81,8 @@ Save the changes. `Ctrl+s`
 ## TMUX
 > Is this the Windows Terminal or Ubuntu?
 
-To have multiple panes within our shell use Tmux.  Here's how:
-1. Run `sudo apt install tmux -y` (password: oscon)
+To have multiple panes within our Ubuntu 18 shell we can use Tmux.  Here's how:
+1. From the Ubuntu 18 shell run `sudo apt install tmux -y` (password: oscon)
 2. Open a new tmux session by typing `tmux` and pressing enter
 3. Add panes using the following:
     - Press **CTRL+B** and then **"** to split the screen vertically
@@ -99,23 +95,28 @@ To have multiple panes within our shell use Tmux.  Here's how:
 ## Run a Node Project in WSL
 > Needed to install Node and npm for this to work. Had to update the Ubuntu build before I could install node and npm. There's no projects folder under C:\\ either.
 
+>yosef: I agree shoudl include the project in the base image, and the clean up command can just remove the node-modules folder
+
 In the Terminal using your OSCON profile, navigate to
  `c:\\projects\`
-1. run `git clone https://github.com/johnpapa/node-hello`
-2. run `cd node-hello`
-3. run `npm install`
-2. run `npm start`
-3. Use a web browser to open `localhost:3000` to see the site is working.  This is the Linux version of NodeJS running locally on Windows via WSL. 
+1. run `cd node-shopping-cart`
+2. run `npm install`
+3. run `npm start`
+4. Use a web browser to open `localhost:3000` to see the site is working.  You are now running  the Linux version of NodeJS locally on Windows via WSL. 
 
 ### STARTING DIRECTORY
 You can add the following line to your Terminal profile, so now it will open to your project folder:
 
 `"startingDirectory" : "C:\projects\node-hello"`
 
-### Debug a Node Project with VS Code
-1. type `code .` to open this project in VS Code
+### Debug the Node Project with VS Code
+1. Open the Ubuntu 18 bash shell and type `code .` to open the project in VS Code
 2. This opens VS Code on Windows with a feature to debug the NodeJS project running in WSL
-3. In VS Code run the debugger
+3. In VS Code you can run the debugger and use breakpoints.  You're using a Windows code editor/debugger for a project running the Linux NodeJS.  Pretty cool!
+
+Thank you for trying out Windows Terminal and WSL.  To learn more please check out the following resources.
 
 ## Resources
 - https://aka.ms/learnwsl
+- https://github.com/microsoft/terminal
+
