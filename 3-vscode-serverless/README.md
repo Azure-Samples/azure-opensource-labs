@@ -2,6 +2,10 @@
 
 Create an Azure Functions serverless API that returns a list of pets to be adopted. In this lab, you will learn how to create a basic REST API using Node.js Azure Functions and add dependencies from npm.
 
+## Prerequisites
+
+If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the pre-requisites for this lab.
+
 ## Create a Function App
 
 Use the Azure Functions extension to create a new function app. Start by navigating to the Azure view in Visual Studio Code (the on the left-hand side), then click the Create New Project button (the in the explorer).
@@ -19,7 +23,7 @@ The Function App is created and the HTTP Function you just created is opened in 
 The Azure Functions extension created all required configuration for running your Function App locally. Start the Function App by hitting F5 or by choosing Debug, Start Debugging from the menu in Visual Studio Code.
 Visual Studio Code will automatically run npm install then start the Azure Functions host and make the Function available on port 7071. You’ll know the app started correctly when you see the following.
 
-Hold the Control key and click the URL or open the browser and navigate to `http://localhost:7071:7071/api/pets`. You should see a message that says “Please pass a name on the query string or in the request body,” add the `name` query parameter by updating the URL to include `?name=OSCON`. You will see "Hello OSCON!"
+Hold the Control key and click the URL or open the browser and navigate to `http://localhost:7071/api/pets`. You should see a message that says “Please pass a name on the query string or in the request body,” add the `name` query parameter by updating the URL to include `?name=OSCON`. You will see "Hello OSCON!"
 
 Stop the app and disconnect the debugger by clicking the button.
 
