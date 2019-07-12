@@ -4,7 +4,7 @@ This project walks you through setting up and customizing a Windows PC for Open 
 
 ## Prerequisites
 
-If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the pre-requisites for this lab.
+If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the prerequisites for this lab.
 
 ## Configure the Windows Terminal
 

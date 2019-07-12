@@ -5,7 +5,7 @@ In this hands-on lab, you will learn to use Intelligent Performance, a feature s
 
 ## Prerequisites
 
-If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the pre-requisites for this lab.
+If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the prerequisites for this lab.
 
 
 ## Lab steps

@@ -10,7 +10,7 @@ You can explore these tutorials in your environment using the `dotnet try` globa
 
 ## Prerequisites
 
-If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the pre-requisites for this lab.
+If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the prerequisites for this lab.
 
 ## Getting Started with the C# Lab
 1. Clone this repository.
