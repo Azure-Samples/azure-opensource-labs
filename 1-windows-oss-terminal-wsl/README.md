@@ -44,11 +44,6 @@ This profile will open an Ubuntu 18 bash shell.
 Feel free to change any of the profile settings and the Terminal will automatically reload with your changes as you make them.
 
 ### POWERLINE FONT
-Next we're going to install PowerLine fonts in Windows using PowerShell: 
-1. git clone https://github.com/powerline/fonts.git
-2. cd fonts
-3. ./install.ps1 pro*
-
 Next change your terminal profile to use one of the Powerline fonts:
 
 `"fontFace" : "ProFont for Powerline",`
@@ -56,10 +51,7 @@ Next change your terminal profile to use one of the Powerline fonts:
 Save the changes `Ctrl+s`
 
 ### POWERLINE SHELL
-With the fonts installed, you can install the PowerLine shell in Ubuntu.
-
-> Do we need to have the user install the powerline shell? Adding the text to the bash profile will cause an error w/o the shell installed. To install the shell, it requires installing python and python-setuptools.
-> yosef: let's install python, python-setuptools, and the shell for them as part of the base lab image.
+With the fonts installed, you can install the PowerLine shell in Ubuntu.  We've downloaded the powerline-shell for you so all you need to do is add an entry to the .bashrc.
 
 Open Windows File Explorer.
 In the Address bar enter `\\wsl$\Ubuntu-18.04\home\oscon`
