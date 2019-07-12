@@ -3,6 +3,9 @@ Azure Database for PostgreSQL is a fully managed database service that is based 
 
 In this hands-on lab, you will learn to use Intelligent Performance, a feature suite available in Azure Database for PostgreSQL that helps you understand and improve your workload's performance. The three features that make up the suite are Query Store, Query Performance Insight, and Performance Recommendations. 
 
+## Prerequisites
+
+If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the pre-requisites for this lab.
 
 ## Lab steps
 1. Open the [Azure portal](portal.azure.com) in your browser. 

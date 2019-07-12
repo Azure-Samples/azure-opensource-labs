@@ -2,6 +2,10 @@
 
 Create an Azure Functions serverless API that returns a list of pets to be adopted. In this lab, you will learn how to create a basic REST API using Node.js Azure Functions and add dependencies from npm.
 
+## Prerequisites
+
+If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the pre-requisites for this lab.
+
 ## Create a Function App
 
 Use the Azure Functions extension to create a new function app. Start by navigating to the Azure view in Visual Studio Code (the on the left-hand side), then click the Create New Project button (the in the explorer).
