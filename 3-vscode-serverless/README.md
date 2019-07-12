@@ -4,7 +4,7 @@ Create an Azure Functions serverless API that returns a list of pets to be adopt
 
 ## Prerequisites
 
-If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the pre-requisites for this lab.
+If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the prerequisites for this lab.
 
 ## Create a Function App
 
