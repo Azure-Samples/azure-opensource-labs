@@ -10,7 +10,7 @@ If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to in
 
 ### PROFILES
 
-Open Windows Terminal (found in taskbar). Press `Ctrl+,` to edit the settings file (or use the Terminal menu and select "settings")
+Open Windows Terminal (found in taskbar). Press **Ctrl+,** to edit the settings file (or use the Terminal menu and select "settings")
 
 Scroll down to `"profiles"`. Insert the profile below after the first `[`: <br/> 
 ```json
@@ -33,7 +33,7 @@ Scroll down to `"profiles"`. Insert the profile below after the first `[`: <br/>
         
 },
 ```
-Save the changes. `Ctrl+s`
+Save the changes. **Ctrl+S**
 
 On the Windows Terminal, select the down arrow next to the plus(+) sign as shown in this image. In the drop down, select: `My OSCON Profile`. 
 
@@ -48,7 +48,7 @@ Next change your terminal profile to use one of the Powerline fonts:
 
 `"fontFace" : "ProFont for Powerline",`
 
-Save the changes `Ctrl+s`
+Save the changes. **Ctrl+S**
 
 ### POWERLINE SHELL
 With the fonts installed, you can install the PowerLine shell in Ubuntu.  We've downloaded the powerline-shell for you so all you need to do is add an entry to the .bashrc.
@@ -67,15 +67,18 @@ if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then
     PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
 fi
 ```
-Save the changes. `Ctrl+s`
+Save the changes. **Ctrl+S**
 
 
 ## TMUX
-> Is this the Windows Terminal or Ubuntu?
 
 To have multiple panes within our Ubuntu 18 shell we can use Tmux.  Here's how:
-1. From the Ubuntu 18 shell run `sudo apt install tmux -y` (password: oscon)
-2. Open a new tmux session by typing `tmux` and pressing enter
+<!--- 
+From the Ubuntu 18 shell run `sudo apt install tmux -y` (password: oscon)
+Installing this before hand, so they won't need to install.
+-->
+1. Open the Ubuntu 18 shell.
+2. Start a new tmux session by typing `tmux` and pressing enter
 3. Add panes using the following:
     - Press **CTRL+B** and then **"** to split the screen vertically
     - Press **CTRL+B** and then **%** to split the screen horizontally
@@ -85,9 +88,6 @@ To have multiple panes within our Ubuntu 18 shell we can use Tmux.  Here's how:
     - Quit all windows to exit the tmux session.
 
 ## Run a Node Project in WSL
-> Needed to install Node and npm for this to work. Had to update the Ubuntu build before I could install node and npm. There's no projects folder under C:\\ either.
-
->yosef: I agree shoudl include the project in the base image, and the clean up command can just remove the node-modules folder
 
 In the Terminal using your OSCON profile, navigate to
  `c:\\projects\`
