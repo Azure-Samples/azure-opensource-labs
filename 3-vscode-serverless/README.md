@@ -1,4 +1,5 @@
 # Use Azure Functions to build a RESTful API
+![Azure Functions](images/AzureFunctionLogo.png)
 
 Create an Azure Functions serverless API that returns a list of pets to be adopted. In this lab, you will learn how to create a basic REST API using Node.js Azure Functions and add dependencies from npm.
 
