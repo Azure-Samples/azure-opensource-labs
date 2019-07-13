@@ -44,9 +44,11 @@ This profile will open an Ubuntu 18 bash shell.
 Feel free to change any of the profile settings and the Terminal will automatically reload with your changes as you make them.
 
 ### POWERLINE FONT
-Next change your terminal profile to use one of the Powerline fonts:
+Next change your terminal profile to use a Powerline font.  Pick one of the following:
 
-`"fontFace" : "ProFont for Powerline",`
+`"fontFace" : "Space Mono for Powerline",`<br/>
+`"fontFace" : "Noto Mono for Powerline",` <br/>
+`"fontFace" : "ProFont for Powerline",` <br/>
 
 Save the changes. **Ctrl+S**
 
@@ -68,7 +70,6 @@ if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then
 fi
 ```
 Save the changes. **Ctrl+S**
-
 
 ## TMUX
 
@@ -99,16 +100,15 @@ In the Terminal using your OSCON profile, navigate to
 ### STARTING DIRECTORY
 You can add the following line to your Terminal profile, so now it will open to your project folder:
 
-`"startingDirectory" : "C:\projects\node-hello"`
+`"startingDirectory" : "C:\projects\node-shopping-cart"`
 
 ### Debug the Node Project with VS Code
 1. Open the Ubuntu 18 bash shell and type `code .` to open the project in VS Code
 2. This opens VS Code on Windows with a feature to debug the NodeJS project running in WSL
 3. In VS Code you can run the debugger and use breakpoints.  You're using a Windows code editor/debugger for a project running the Linux NodeJS.  Pretty cool!
 
+### Thank you
 Thank you for trying out Windows Terminal and WSL.  To learn more please check out the following resources.
-
-## Resources
 - https://aka.ms/learnwsl
 - https://github.com/microsoft/terminal
 
