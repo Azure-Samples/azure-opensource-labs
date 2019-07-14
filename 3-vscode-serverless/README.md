@@ -106,6 +106,8 @@ This time, an JSON array of pets along with links to photos and more information
 
 At this point, you can hook a front-end up to you API and start helping lovely animals find happy homes!
 
+* **Stop Debug** - In the Menu bar, select **Stop Debugging** from the Debug menu. Or press **Shift+Fn+F5** 
+
 ## Next steps
 
 - [Sample app with an Angular front end connected to Azure Functions](https://github.com/fiveisprime/apm)
