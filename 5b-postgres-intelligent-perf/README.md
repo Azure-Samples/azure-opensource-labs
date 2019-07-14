@@ -8,7 +8,7 @@ In this hands-on lab, you will learn to use Intelligent Performance, a feature s
 If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the prerequisites for this lab.
 
 ## Lab steps
-1. Open the [Azure portal](portal.azure.com) in your browser. 
+1. Open the [Azure portal](https://portal.azure.com) in your browser. 
 
 2. Use the search bar at the top of the screen to locate `pgiperfdemo1`, which is an [Azure Database for PostgreSQL](https://docs.microsoft.com/en-ca/azure/postgresql/) server (if you are not at an event, your server name will be different).
 
