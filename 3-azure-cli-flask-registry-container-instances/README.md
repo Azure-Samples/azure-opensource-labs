@@ -7,41 +7,9 @@ In this lab you will learn to:
 
 ## 1. Explore Docker and Dockerfiles
 
-If you have Docker installed locally, you have three options to build and run the Flask application inside a container.
+If you have Docker installed locally, you have three options to build and run the Flask application inside a container. If you are interested in how to do this, see [DOCKER](DOCKER.md), but you **do not** need to perform these tasks in this lab.
 
-> __IMPORTANT__: This section is **for illustrative purposes only** and you **do not** need to run these commands. 
-
-Clone the Visual Studio Code Flask tutorial:
-
-```bash
-git clone https://github.com/Microsoft/python-sample-vscode-flask-tutorial
-cd python-sample-vscode-flask-tutorial/
-```
-
-Run the application from inside of a Docker container: 
-
-```bash
-docker run --rm -v ${PWD}:/pwd/ -w /pwd/ -p 8080:5000 -it python bash
-pip install -r requirements.txt
-export FLASK_APP=startup.py
-flask run --host=0.0.0.0
-# open http://localhost:8080
-```
-
-Build a *development* container from a `Dockerfile` ([dev.Dockerfile](dev.Dockerfile)).
-
-```bash
-docker build -f dev.Dockerfile -t test python-sample-vscode-flask-tutorial/
-docker run --rm -p 8080:5000 -it test
-# open http://localhost:8080
-```
-
-Build a *production* container from a `Dockerfile` ([prod.Dockerfile](prod.Dockerfile)).
-```bash
-docker build -f prod.Dockerfile -t prod python-sample-vscode-flask-tutorial/
-docker run --rm -p 8080:5000 -it prod
-# open http://localhost:8080
-```
+For now, let's take a brief look at `Dockerfile` for a **development** container, [dev.Dockerfile](dev.Dockerfile), and then a `Dockerfile` for a **production** container, [prod.Dockerfile](prod.Dockerfile). We will be using [prod.Dockerfile](prod.Dockerfile) below.
 
 ## 2. Build with Azure Container Registry (ACR)
 
