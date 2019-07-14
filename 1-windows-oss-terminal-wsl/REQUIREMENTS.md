@@ -2,17 +2,21 @@
 
 - Windows Insider build 18917 or higher
 - Windows Terminal https://github.com/microsoft/terminal
+- git https://git-scm.com/downloads
 - VS Code https://github.com/microsoft/vscode
 - WSL https://aka.ms/wsl2
 - Ubuntu 18.04 for WSL in the [Microsoft Store](https://www.microsoft.com/en-us/p/ubuntu-1804-lts/9n9tngvndl3q)
   - for the lab use username "oscon" and password "portland"
-- python and python-setuptools in Windows
-- install powerline shell and fonts using Powershell:<br/>
-git clone https://github.com/powerline/fonts.git
-<br/>cd fonts<br/>./install.ps1 pro*
+- NodeJS and NPM: sudo apt install npm -y
+- In Windows install fonts using Powershell:<br/>
+  - git clone https://github.com/powerline/fonts.git
+  - run install.ps1 pro*
+- In Ubuntu install the powerline shell:<br/>
+  - sudo apt install python3 pip 
+  - pip install powerline-shell
 
 ### Setup
-- clone https://github.com/mscraigloewen/nodejs-shopping-cart into c:\projects
+- git clone https://github.com/mscraigloewen/nodejs-shopping-cart into c:\projects
 
 ### Cleanup
 - delete c:\projects\nodejs-shopping-cart\node-modules
