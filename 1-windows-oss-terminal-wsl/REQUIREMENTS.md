@@ -16,6 +16,7 @@
 - In Ubuntu install the powerline shell:<br/>
   - sudo apt install python3 pip 
   - pip install powerline-shell
+- In Ubuntu shell install utilities `sudo apt install cmatrix caca-utils htop`
 
 ### Setup
 - From the Ubuntu shell create a projects directory in your HOME (~\projects) and in that directory run `git clone https://github.com/mscraigloewen/nodejs-shopping-cart` 
