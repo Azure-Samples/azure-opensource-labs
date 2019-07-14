@@ -91,19 +91,15 @@ Installing this before hand, so they won't need to install.
 ## Run a Node Project in WSL
 
 In the Terminal using your OSCON profile, navigate to
- `c:\\projects\`
+ `~\projects\`
 1. run `cd node-shopping-cart`
 2. run `npm install`
 3. run `npm start`
-4. Use a web browser to open `localhost:3000` to see the site is working.  You are now running  the Linux version of NodeJS locally on Windows via WSL. 
-
-### STARTING DIRECTORY
-You can add the following line to your Terminal profile, so now it will open to your project folder:
-
-`"startingDirectory" : "C:\projects\node-shopping-cart"`
+4. This preview version of WSL 2 requires obtaining the ip address of the WSL 2 distro in order to browse a web site hosted in WSL 2.  You can find your WSL2_IP_ADDRESS by running the following in the Ubuntu shell: `ifconfig | grep inet | awk 'FNR==1{print $2}'`
+5. Use a web browser to open `[WSL2_IP_ADDRESS]:3000` to see the site is working.  You are now running  the Linux version of NodeJS locally on Windows via WSL. 
 
 ### Debug the Node Project with VS Code
-1. Open the Ubuntu 18 bash shell and type `code .` to open the project in VS Code
+1. Open the Ubuntu 18 bash shell and in the nodejs-shopping-cart directory type `code .` to open the project in VS Code
 2. This opens VS Code on Windows with a feature to debug the NodeJS project running in WSL
 3. In VS Code you can run the debugger and use breakpoints.  You're using a Windows code editor/debugger for a project running the Linux NodeJS.  Pretty cool!
 
