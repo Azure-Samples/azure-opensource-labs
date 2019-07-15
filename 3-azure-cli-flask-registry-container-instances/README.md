@@ -5,6 +5,10 @@ In this lab you will learn to:
 - Build the container image in the cloud using Azure Container Registry (ACR).
 - Deploy the container image to Azure Container Instances (ACI).
 
+## Prerequisites
+
+If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the prerequisites for this lab.
+
 ## 1. Explore Docker and Dockerfiles
 
 If you have Docker installed locally, you have three options to build and run the Flask application inside a container. If you are interested in how to do this, see [DOCKER](DOCKER.md), but you **do not** need to perform these tasks in this lab.

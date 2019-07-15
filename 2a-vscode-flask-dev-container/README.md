@@ -3,10 +3,9 @@
 In this lab we'll use Visual Studio Code remote development features to create a new
 hello world Flask application in a dockerized development environment.
 
-## Pre-requisites
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
-1. Install [Visual Studio Code Insiders](https://code.visualstudio.com/insiders)
-1. Install the [VS Code Remote Extensions](https://aka.ms/vscode-remote) 
+## Prerequisites
+
+If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the prerequisites for this lab.
 
 ## Create dev container
 First we'll create a new dev container that we can start building our app in:

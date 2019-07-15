@@ -7,11 +7,7 @@ The container that you use in this lab will be used in other labs that teach you
 
 ## Prerequisites
 
-If you're doing this lab outside of the Microsoft booth at PyCon 2019, you'll need the following tools installed on your local machine:
-
-1. [Docker Desktop](https://www.docker.com/products/docker-desktop)
-1. [Visual Studio Code](https://code.visualstudio.com)
-1. The [VS Code Docker Extension](https://marketplace.visualstudio.com/items?itemName=PeterJausovec.vscode-docker)
+If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the prerequisites for this lab.
 
 ## Open workspace and build a development container
 
