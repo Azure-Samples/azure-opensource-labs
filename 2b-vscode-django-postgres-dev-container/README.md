@@ -9,15 +9,7 @@ In this lab you use Visual Studio Code remote development features to work on a 
 
 ## Prerequisites
 
-If you're doing this lab outside of the Microsoft booth at PyCon 2019, you'll need the following tools installed on your local machine:
-
-1. [Docker Desktop](https://www.docker.com/products/docker-desktop)
-1. [Visual Studio Code Insider Build](https://code.visualstudio.com/insiders)
-1. The [VS Code Remote Extensions](https://aka.ms/vscode-remote) 
-1. If you are running on windows, set your git line endings to use LF:
-    ```
-    git config --global core.autocrlf false
-    ```
+If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the prerequisites for this lab.
 
 ## Open the dev container workspace
 
