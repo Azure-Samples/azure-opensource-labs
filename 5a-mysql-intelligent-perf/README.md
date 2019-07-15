@@ -7,11 +7,10 @@ In this hands-on lab, you will learn to use Intelligent Performance, a feature s
 
 If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to install the prerequisites for this lab.
 
-
 ## Lab steps
-1. Open the [Azure portal](portal.azure.com) in your browser. 
+1. Open the [Azure portal](https://portal.azure.com) in your browser. 
 
-2. Use the search bar at the top of the screen to locate ####NAME OF SERVER####, which is an Azure Database for MySQL server. 
+2. Use the search bar at the top of the screen to locate `mysqliperf1`, which is an [Azure Database for MySQL](https://docs.microsoft.com/en-ca/azure/mysql/) server (if you are not at an event, your server name will be different).
 
 3. Select **Query Performance Insight** from the menu on the left.
 
