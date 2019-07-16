@@ -9,13 +9,14 @@
 - Ubuntu 18.04 for WSL in the [Microsoft Store](https://www.microsoft.com/en-us/p/ubuntu-1804-lts/9n9tngvndl3q)
   - for the lab set the username to "oscon" and password "portland"
   - migrate this distro to WSL 2 from a cmd window by runnig  `wsl --set-version Ubuntu-18.04 2` 
-- NodeJS and NPM: sudo apt install npm -y
+- VS Code Remove Extension for WSL https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl
+- NodeJS and NPM: `sudo apt install npm -y`
 - In Windows install fonts using Powershell:<br/>
-  - git clone https://github.com/powerline/fonts.git
-  - run install.ps1 pro*
+  - `git clone https://github.com/powerline/fonts.git`
+  - run `install.ps1 pro*`
 - In Ubuntu install the powerline shell:<br/>
-  - sudo apt install python3 pip 
-  - pip install powerline-shell
+  - `sudo apt install python3 pip` 
+  - `pip install powerline-shell`
 - In Ubuntu shell install utilities `sudo apt install cmatrix caca-utils htop`
 
 ### Setup
