@@ -99,12 +99,14 @@ In the Terminal using your OSCON profile, navigate to
 5. Use a web browser to open `[WSL2_IP_ADDRESS]:3000` to see the site is working.  You are now running  the Linux version of NodeJS locally on Windows via WSL. 
 
 ### Debug the Node Project with VS Code
-1. Open the Ubuntu 18 bash shell and in the nodejs-shopping-cart directory type `code .` to open the project in VS Code
-2. This opens VS Code on Windows with a feature to debug the NodeJS project running in WSL
-3. In VS Code you can run the debugger and use breakpoints.  You're using a Windows code editor/debugger for a project running the Linux NodeJS.  Pretty cool!
+1. While still in the OSCON profile in Terminal, close the previous running instance of NodeJS if you haven't already. We're now going to start the same project using VS Code.
+2. Navigate to the '`\projects\nodejs-shopping-cart` directory and type `code .` to open the project in VS Code
+3. This opens VS Code on Windows with a feature to debug the NodeJS project running in WSL
+4. In VS Code you can run the debugger and use breakpoints.  You're using a Windows code editor/debugger for a project running the Linux NodeJS.  Pretty cool!
 
 ### Thank you
 Thank you for trying out Windows Terminal and WSL.  To learn more please check out the following resources.
 - https://aka.ms/learnwsl
 - https://github.com/microsoft/terminal
+- https://code.visualstudio.com/docs/remote/wsl
 
