@@ -103,6 +103,44 @@ In the Terminal using your OSCON profile, navigate to
 2. This opens VS Code on Windows with a feature to debug the NodeJS project running in WSL
 3. In VS Code you can run the debugger and use breakpoints.  You're using a Windows code editor/debugger for a project running the Linux NodeJS.  Pretty cool!
 
+## Customize Windows Terminal
+
+Let's make the OSCON profile look more like Ubuntu. Using your OSCON profile, update the properties below in the JSON. As you update your profile, the Terminal will automatically reflect your changes.
+1. Set `"useAcrylic" : false,`
+2. Set `"fontFace" : "Ubuntu Mono",`
+3. Set `"fontSize" : 14,`
+4. Set `"colorScheme" : "One Half Dark",`
+5. Set `"cursorShape" : "filledBox",`
+6. Add `"backgroundImage" : "ms-appdata:///roaming/ubuntu.jpg",`
+7. Add `"backgroundImageOpacity" : 0.8,`
+8. Add `"tabTitle" : "Ubuntu 18.04"`
+
+After adding these changes, your profile should look like this:
+```json
+{
+    "guid" : "{c6eaf9f4-56a1-5fdc-b5cf-066e8a4b1e40}",
+    "acrylicOpacity" : 0.5,
+    "closeOnExit" : true,
+    "colorScheme" : "One Half Dark",
+    "commandline" : "wsl.exe -d Ubuntu-18.04",
+    "cursorColor" : "#FFFFFF",
+    "cursorShape" : "filledBox",
+    "fontFace" : "Ubuntu Mono",
+    "fontSize" : 14,
+    "historySize" : 9001,
+    "icon" : "ms-appx:///ProfileIcons/{9acb9455-ca41-5af7-950f-6bca1bc9722f}.png",
+    "name" : "My OSCON Profile",
+    "padding" : "4, 2, 4, 2",
+    "snapOnInput" : true,
+    "useAcrylic" : false,
+    "backgroundImage" : "ms-appdata:///roaming/ubuntu.jpg",
+    "backgroundImageOpacity" : 0.8,
+    "tabTitle" : "Ubuntu 18.04"
+},
+```
+
+Documentation for the settings in the profiles.json file can be found here: https://github.com/microsoft/terminal/blob/master/doc/cascadia/SettingsSchema.md
+
 ### Thank you
 Thank you for trying out Windows Terminal and WSL.  To learn more please check out the following resources.
 - https://aka.ms/learnwsl
