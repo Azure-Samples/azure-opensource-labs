@@ -10,7 +10,7 @@ If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to in
 ## Lab steps
 1. Open the [Azure portal](https://portal.azure.com) in your browser. 
 
-2. Use the search bar at the top of the screen to locate `mysqliperf1`, which is an [Azure Database for MySQL](https://docs.microsoft.com/en-ca/azure/mysql/) server (if you are not at an event, your server name will be different).
+2. Use the search bar at the top of the screen to locate one of the following: `mysqliperf1` to `mysqliperf6`, which are [Azure Database for MySQL](https://docs.microsoft.com/azure/mysql/) servers (if you are not at an event, your server name will be different).
 
 3. Select **Query Performance Insight** from the menu on the left.
 
