@@ -14,7 +14,7 @@ If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to in
 
 ## Getting Started with the C# Lab
 1. Clone this repository.
-1. Set the current directory to one of the sample tutorials (or use the current folder to see all samples).
+1. cd this into Beginners folder.
 1. Run `dotnet try`.
 
 ![dotnet try](https://user-images.githubusercontent.com/2546640/57164943-ab35f080-6dc3-11e9-8230-ee521e00e428.gif)
