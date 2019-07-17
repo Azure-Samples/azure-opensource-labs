@@ -1,4 +1,5 @@
 # Use Azure Functions to build a RESTful API
+
 ![Azure Functions](images/AzureFunctionLogo.png)
 
 Create an Azure Functions serverless API that returns a list of pets to be adopted. In this lab, you will learn how to create a basic REST API using Node.js Azure Functions and add dependencies from npm.
@@ -9,19 +10,19 @@ If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to in
 
 ## Create a Function App
 
-Use the Azure Functions extension to create a new function app. 
+Use the Azure Functions extension to create a new function app.
 
-* Open Visual Studio Code.
+- Open Visual Studio Code Insiders
+- In the Activity bar (on left side), select the Azure icon
+- Click the Create New Project button (the in the explorer)
 
-* In the Activity bar (on left side), select the Azure icon. 
-> need screenshot
-* Click the Create New Project button (the in the explorer).
-![Azure Function Ext](images/create_function.png)
+![Azure Function Extension](images/create_function.png)
 
-* Select *projects* folder.
-> need Screenshot
+- Select _projects/pets_ folder from the
 
-Now the *Create new project* wizard appears.
+![Folder](images/folder.png)
+
+Now the _Create new project_ wizard appears, enter the following
 
 - Select **JavaScript** for the language of the Function App
 
@@ -32,49 +33,54 @@ Now the *Create new project* wizard appears.
 ![Select HTTP trigger](images/select_HTTP_trigger.png)
 
 - Replace the default function name **HttpTrigger** with **pets**
-> need Screenshot
 
-- Select **Anonymous** for the *Authorization level*
+![Change Name](images/rename_function.png)
+
+- Select **Anonymous** for the _Authorization level_
+
 ![Choose Ananymous](images/choose_Anonymous.png)
 
-* Select **Open in current window**
-
+- Select **Open in current window**
 
 The HTTP Trigger function just created is opened in the editor window.
-> Need Screenshot
+
+![Created Project](images/created_project.png)
 
 ## Run the Function locally
 
 Using a template to create the function, creates a working Http Trigger function we can test locally.<br>
 Let's try it now:
 
-* **Start Debugging** - In the Menu bar, select **Start Debugging** from the *Debug* menu. Or press **Fn+F5** 
+- In the Menu bar, select **Start Debugging** from the _Debug_ menu or press **Fn+F5**
 
-A Terminal opens with the debug output. <br>
-Debug automatically excutes *run npm install*, to install any depencies, and starts the Azure Functions host. 
+A Terminal opens with the debug output.
+
+> Debug automatically excutes _run npm install_, to install any depencies, and starts the Azure Functions host.
 
 Once the host is started, the URL appears.
 
-* **Test URL** - Hold **Crtl** while click the URL or type `http://localhost:7071/api/pets` in a browser. 
-You should see a message that says “Please pass a name on the query string or in the request body”. 
+![Running Function](images/running_function.png)
 
-* Add a query parameter, `name`, to the URL: `?name=OSCON`. 
-`http://localhost:7071/api/pets?name=OSCON`
-Press **Enter** and now the page should say: "Hello OSCON"
-> need screenshot
+Hold **Crtl** while click the URL or type `http://localhost:7071/api/pets` in a browser.
 
-* **Stop Debug** - In the Menu bar, select **Stop Debugging** from the Debug menu. Or press **Shift+Fn+F5** 
+> You'll see a message that says "Please pass a name on the query string or in the request body"
+
+- Add a query parameter, `name`, to the URL, `?name=OSCON`, press **Enter** and now the page shows: "Hello OSCON"
+  > `http://localhost:7071/api/pets?name=OSCON`
+
+![Hello OSCON](images/hello_oscon.png)
+
+In the Menu bar, select **Stop Debugging** from the Debug menu or press **Shift+Fn+F5**
 
 ## Finding pets for adoption
 
-Now we'll update the function to pull a list of pets that are available for adoption. 
-> Should expand to explain where the list is coming from.
+Now we'll update the function to pull a list of pets that are available for adoption using a module from npm that uses a Pet Finder API with a specific configuration.
 
-* Open a **Terminal Window** from the *Terminal* menu or **Ctrl+Shift+`** 
+- Open a **Terminal Window** from the _Terminal_ menu or **Ctrl+Shift+`**
 
-* In the Terminal, install the `pet` module from npm by running `npm install @frontendmasters/pet --save`. 
+- In the Terminal, install the `pet` module from npm by running `npm install @frontendmasters/pet --save`.
 
-* **Update function code** - Replace the default code in the index.js with:
+- Replace the default code in the `index.js` with:
 
 ```js
 const pet = require("@frontendmasters/pet");
@@ -93,20 +99,16 @@ module.exports = async function(context, req) {
   };
 };
 ```
-Now we're ready to test the new code:
 
-* **Start Debugging** - In the Menu bar, select **Start Debugging** from the *Debug* menu. Or press **Fn+F5** 
+Now test your new code:
 
-> Note: if the module fails to make the request to get available animals, the endpoint needs to handle that error and send an appropriate status code and response.
-
-> JJ - Are we saying the user needs to handle the error response? It fails the first time, so the user needs to run Debug again to start up?
-
-* Start Debug again and load the URL `http://localhost:7071/api/pets`. <br>
-This time, an JSON array of pets along with links to photos and more information for each.
+- In the Menu bar, select **Start Debugging** from the _Debug_ menu or press **Fn+F5**
+- Start Debug again and load the URL `http://localhost:7071/api/pets`
+  > This time, you'll see a JSON array of pets along with links to photos and more information for each
 
 At this point, you can hook a front-end up to you API and start helping lovely animals find happy homes!
 
-* **Stop Debug** - In the Menu bar, select **Stop Debugging** from the Debug menu. Or press **Shift+Fn+F5** 
+In the Menu bar, select **Stop Debugging** from the Debug menu or press **Shift+Fn+F5**
 
 ## Next steps
 
