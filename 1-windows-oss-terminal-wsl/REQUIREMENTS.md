@@ -15,7 +15,7 @@
   - `git clone https://github.com/powerline/fonts.git`
   - run `install.ps1 pro*`
 - In Ubuntu install the powerline shell:<br/>
-  - `sudo apt install python3 pip` 
+  - `sudo apt install python3 python-pip` 
   - `pip install powerline-shell`
 - In Ubuntu shell install utilities `sudo apt install cmatrix caca-utils htop`
 
