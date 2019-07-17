@@ -20,6 +20,7 @@ If you are **not** at an event, please see [REQUIREMENTS](REQUIREMENTS.md) to in
     cd python-sample-tweeterapp
     code-insiders .
     ```
+1. Open `manage.py`, or another `.py` file inside the project.
 
 1. Click the `Reopen in Container` prompt, or press `F1` and select the `Reopen folder in dev container` command.
 
