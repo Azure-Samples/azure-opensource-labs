@@ -14,6 +14,7 @@ First we'll create a new dev container that we can start building our app in:
     cd 2a-vscode-flask-dev-container
     code-insiders .
     ```
+1. Open `app.py`
 1. Press `F1` and select `Remote-Containers: Create container configuration file...`
 1. Select `Python 3` from the list
 1. Select the `Reopen in Container` button in the notification that appears. If you miss the notification, 
