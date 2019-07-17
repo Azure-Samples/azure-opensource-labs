@@ -31,12 +31,17 @@ CONNECTION_STRING=$(az keyvault secret show --vault kv190700 --name citus-${i} |
 # "host={server_name}.postgres.database.azure.com port=5432 dbname=citus user=citus password={your_password} sslmode=require"
 
 # connect to server (if not at an event, replace $CONNECTION_STRING with your connection string)
+psql "$CONNECTION_STRING" -c "DROP OWNED BY citus;"
+
 psql "$CONNECTION_STRING"
 ```
 
 Once you've connected via psql using the above command, let's create our tables. In the psql console run:
 
 ```sql
+-- re-initializing database
+DROP OWNED BY citus;
+
 CREATE TABLE github_events
 (
     event_id bigint,
@@ -76,7 +81,7 @@ Next we’ll take those Postgres tables on the coordinator node and tell Hypersc
 SELECT create_distributed_table('github_events', 'user_id');
 SELECT create_distributed_table('github_users', 'user_id');
 ```
-q
+
 We're ready to load data. In psql still, shell out to download the files:
 
 ```sql
