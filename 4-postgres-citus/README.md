@@ -31,8 +31,6 @@ CONNECTION_STRING=$(az keyvault secret show --vault kv190700 --name citus-${i} |
 # "host={server_name}.postgres.database.azure.com port=5432 dbname=citus user=citus password={your_password} sslmode=require"
 
 # connect to server (if not at an event, replace $CONNECTION_STRING with your connection string)
-psql "$CONNECTION_STRING" -c "DROP OWNED BY citus;"
-
 psql "$CONNECTION_STRING"
 ```
 
