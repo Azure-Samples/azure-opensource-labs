@@ -26,7 +26,7 @@ Connect to the Hyperscale coordinator using psql:
 # if you are at an event, run the following lines to get your connection string automatically
 i=$(az account show | jq -r '.user.name |= split("@")[0] | .user.name |= split("-")[1] | .user.name')
 if [ "$i" = "null" ]; then i='1'; else echo $i; fi
-CONNECTION_STRING=$(az keyvault secret show --vault keyvault190700 --name citus-${i} | jq -r .value)
+CONNECTION_STRING=$(az keyvault secret show --vault kv190700 --name citus-${i} | jq -r .value)
 # CONNECTION_STRING will be in the format:
 # "host={server_name}.postgres.database.azure.com port=5432 dbname=citus user=citus password={your_password} sslmode=require"
 
