@@ -76,10 +76,15 @@ Next we’ll take those Postgres tables on the coordinator node and tell Hypersc
 SELECT create_distributed_table('github_events', 'user_id');
 SELECT create_distributed_table('github_users', 'user_id');
 ```
+q
+We're ready to load data. In psql still, shell out to download the files:
 
-We're ready to load data. In psql, load the data from the files into the distributed tables:
+```sql
+\! curl -O https://examples.citusdata.com/users.csv
+\! curl -O https://examples.citusdata.com/events.csv
+```
 
-TODO: change directory first if needed
+Next, load the data from the files into the distributed tables:
 
 ```sql
 \copy github_events from 'events.csv' WITH CSV
