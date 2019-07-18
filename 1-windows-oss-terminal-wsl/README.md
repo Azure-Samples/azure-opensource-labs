@@ -69,7 +69,7 @@ if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then
     PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
 fi
 ```
-Save the changes. **Ctrl+S**
+Save the changes using **Ctrl+S**, close the WSL tab and reopen it to see the changes.
 
 ## TMUX
 
@@ -100,7 +100,7 @@ In the Terminal using your OSCON profile, navigate to
 
 ### Debug the Node Project with VS Code
 1. While still in the OSCON profile in Terminal, close the previous running instance of NodeJS if you haven't already. We're now going to start the same project using VS Code.
-2. Navigate to the '`\projects\nodejs-shopping-cart` directory and type `code .` to open the project in VS Code
+2. Navigate to the '`\projects\nodejs-shopping-cart` directory and type `code-insiders .` to open the project in VS Code
 3. This opens VS Code on Windows with a feature to debug the NodeJS project running in WSL
 4. In VS Code you can run the debugger and use breakpoints.  You're using a Windows code editor/debugger for a project running the Linux NodeJS.  Pretty cool!
 
