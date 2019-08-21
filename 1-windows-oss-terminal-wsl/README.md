@@ -95,8 +95,7 @@ In the Terminal using your OSCON profile, navigate to
 1. run `cd node-shopping-cart`
 2. run `npm install`
 3. run `npm start`
-4. This preview version of WSL 2 requires obtaining the ip address of the WSL 2 distro in order to browse a web site hosted in WSL 2.  You can find your WSL2_IP_ADDRESS by running the following in the Ubuntu shell: `ifconfig | grep inet | awk 'FNR==1{print $2}'`
-5. Use a web browser to open `[WSL2_IP_ADDRESS]:3000` to see the site is working.  You are now running  the Linux version of NodeJS locally on Windows via WSL. 
+4. Use a web browser to open <http://localhost:3000> to see the site is working.  You are now running  the Linux version of NodeJS locally on Windows via WSL. 
 
 ### Debug the Node Project with VS Code
 1. While still in the OSCON profile in Terminal, close the previous running instance of NodeJS if you haven't already. We're now going to start the same project using VS Code.
