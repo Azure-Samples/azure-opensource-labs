@@ -1,0 +1,3 @@
+[submodule "6-linux-apache-php-with-odbc-drivers-docker"]
+	path = 6-linux-apache-php-with-odbc-drivers-docker
+	url = https://github.com/raffi-ismail/lampodbc.git
