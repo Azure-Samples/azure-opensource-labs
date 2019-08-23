@@ -64,3 +64,8 @@ Azure offers managed database services for MySQL and PostgreSQL. In this hands-o
 Run Custom Web Apps on Azure running Linux, Apache and PHP. Conenct to Microsoft SQL Server or Azure SQL DB services with ODBC and SQLSRV. 
 
 [Go to Linux Custom Web App lab](6-linux-apache-php-with-odbc-drivers-docker/README.md)
+
+## Deploy a Microsoft SQL Server 2019 sandbox environment in a Linux Container
+Containerise and sandbox SQL Server 2019 environment via Linux docker container
+
+[Go to SQL Server 2019 on Linux lab](7-linux-mssqlsrv2019-sandbox-docker/README.md)
