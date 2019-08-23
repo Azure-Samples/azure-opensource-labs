@@ -24,4 +24,4 @@ sleep 30 && /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $SA_PASSWORD -i $T
 MSSQL_PID=$MSSQL_PID /opt/mssql/bin/sqlservr --accept-eula
 #/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $SA_PASSWORD
 
-if [-z ${PORT}]; then PORT = DEFAULT_DOCKER_EXPOST_PORT
+if [-z ${PORT}]; then PORT = DEFAULT_DOCKER_EXPOSE_PORT
