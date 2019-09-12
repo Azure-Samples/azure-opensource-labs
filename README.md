@@ -1,3 +1,13 @@
+---
+page_type: sample
+languages:
+- csharp
+products:
+- azure
+description: "A collection of labs demonstrating how to build Open Source applications with Azure, Visual Studio Code and the Windows Subsytem for Linux (WSL)."
+urlFragment: azure-opensource-labs
+---
+
 # Azure Open Source Labs
 
 A collection of labs demonstrating how to build Open Source applications with Azure, Visual Studio Code and the Windows Subsytem for Linux (WSL).
