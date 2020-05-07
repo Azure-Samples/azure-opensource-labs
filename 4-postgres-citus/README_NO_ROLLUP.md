@@ -1,6 +1,6 @@
-# Real-Time Analytics on Azure Database for PostgreSQL - Hyperscale (Citus) (preview)
+# Real-Time Analytics on Azure Database for PostgreSQL - Hyperscale (Citus)
 
-Azure Database for PostgreSQL is a managed service that you use to run, manage, and scale highly available PostgreSQL databases in the cloud. This Quickstart shows you how to create an Azure Database for PostgreSQL - Hyperscale (Citus) (preview) server group using the Azure portal. You'll explore distributed data: sharding tables across nodes, ingesting sample data, and run queries that are automatically parallelized across multiple nodes. 
+Azure Database for PostgreSQL is a managed service that you use to run, manage, and scale highly available PostgreSQL databases in the cloud. This Quickstart shows you how to create an Azure Database for PostgreSQL - Hyperscale (Citus) server group using the Azure portal. You'll explore distributed data: sharding tables across nodes, ingesting sample data, and run queries that are automatically parallelized across multiple nodes. 
 
 ## Prerequisites
 
