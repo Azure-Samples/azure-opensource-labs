@@ -18,6 +18,11 @@ Our Open Source Labs were originally developed for [OSCON 2019](https://en.wikip
 
 You can also join us on the [Microsoft Open Source Discord (aka.ms/open-source-discord)](https://aka.ms/open-source-discord) to connect with us and discuss any of the labs or related content in this repository.
 
+## Latest
+
+You can find the latest in-flight labs on the [latest-2022](https://github.com/Azure-Samples/azure-opensource-labs/tree/latest-2022) branch. Please note you may experience breaking changes, but we would love to hear any feedback!
+
+
 ## OSCON / 2019
 
 You can find original 2019 labs delivered in person at OSCON 2019 in the [2019](2019/#azure-open-source-labs-oscon-2019) sub-folder, where we will continue to tweak and update them, and the original version on the [oscon-2019](https://github.com/Azure-Samples/azure-opensource-labs/tree/oscon-2019) branch. These include:
