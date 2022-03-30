@@ -20,8 +20,11 @@ You can also join us on the [Microsoft Open Source Discord (aka.ms/open-source-d
 
 ## Latest Labs
 
-You can find the latest in-flight labs on the [latest-2022](https://github.com/Azure-Samples/azure-opensource-labs/tree/latest-2022) branch. Please note you may experience breaking changes, but we would love to hear any feedback!
+- [Cloud Native](cloud-native/)
+- [Go (golang)](golang/)
+- [Python](/python)
 
+You can find the latest in-flight labs on the [latest-2022](https://github.com/Azure-Samples/azure-opensource-labs/tree/latest-2022) branch. Please note you may experience breaking changes, but we would love to hear any feedback!
 
 ## OSCON / 2019
 
