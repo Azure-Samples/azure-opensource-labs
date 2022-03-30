@@ -1,71 +1,38 @@
 ---
 page_type: sample
 languages:
-- csharp
+- python
+- go
+- shell
 products:
 - azure
-description: "A collection of labs demonstrating how to build Open Source applications with Azure, Visual Studio Code and the Windows Subsytem for Linux (WSL)."
+description: "A collection of labs to help build Open Source & Cloud Native applications with Azure, Microsoft, GitHub, and open source developer tools, platforms, and projects."
 urlFragment: azure-opensource-labs
 ---
 
 # Azure Open Source Labs
 
-A collection of labs demonstrating how to build Open Source applications with Azure, Visual Studio Code and the Windows Subsytem for Linux (WSL).
+A collection of labs to help build Open Source & Cloud Native applications with Azure, Microsoft, GitHub, and open source developer tools, platforms, and projects.
 
-## Containerize a Django application using Visual Studio Code
+Our Open Source Labs were originally developed for [OSCON 2019](https://en.wikipedia.org/wiki/O%27Reilly_Open_Source_Convention). These are similar to labs such GopherCon (Azure Go Labs), PyCon (Azure Python Labs), KubeCon (Azure Container Labs), and other in-person and virtual events, many of which will continue to be updated in this repository.
 
-Build a docker container to run a Django app using the Docker extension in Visual Studio Code to generate Dockerfiles and run the containers.
+You can also join us on the [Microsoft Open Source Discord (aka.ms/open-source-discord)](https://aka.ms/open-source-discord) to connect with us and discuss any of the labs or related content in this repository.
 
-[Go to lab](1-vscode-django-docker/README.md)
+## Latest Labs
 
-## Windows for Open Source Developers
-
-This project walks you through setting up and customizing a Windows PC for Open Source development. We'll introduce you to the Windows Terminal and Windows Subsytem for Linux (WSL). At the end of this lab you'll use VS Code to debug a NodeJS project running in WSL.
-
-[Go to lab](1-windows-oss-terminal-wsl/README.md)
-
-## Try .NET
-
-This workshop walks you through the C# fundamentals as well as C# 7 and 8 features without the use of an editor or IDE. By the end of the workshop, the user will walk away with an understanding of C#. If you are content creator hopefully, you will be inspired by [Try .NET](https://devblogs.microsoft.com/dotnet/creating-interactive-net-documentation/) blends on Markdown and interactive code snippets to build your next workshop or tutorial.
-...
-
-[Go to lab](https://docs.microsoft.com/en-us/dotnet/csharp/tutorials/intro-to-csharp/hello-world) ([Local](2-try-dotnet-csharp/README.md))
+You can find the latest in-flight labs on the [latest-2022](https://github.com/Azure-Samples/azure-opensource-labs/tree/latest-2022) branch. Please note you may experience breaking changes, but we would love to hear any feedback!
 
 
-## Developing a new Flask application in a Dev Container
+## OSCON / 2019
 
-Build a new dev container using Visual Studio Code remote from scratch and create a simple Flask app inside of the new environment.
+You can find original 2019 labs delivered in person at OSCON 2019 in the [2019](2019/#azure-open-source-labs-oscon-2019) sub-folder, where we will continue to tweak and update them, and the original version on the [oscon-2019](https://github.com/Azure-Samples/azure-opensource-labs/tree/oscon-2019) branch. These include:
 
-[Go to lab](2a-vscode-flask-dev-container/README.md)
-
-## Developing a Django+PostgreSQL application in a Dev Container
-
-Open an existing dev container using Visual Studio Code remote extensions, build a React front-end, initialize a PostgreSQL database, and run a Django app. 
-
-[Go to lab](2b-vscode-django-postgres-dev-container/README.md)
-
-## Use Azure Functions to build a RESTful API
-
-Create an Azure Functions serverless API that returns a a list of pets to be adopted. In this lab, you will learn how to create a basic REST API using Node.js Azure Functions and add dependencies from npm.
-
-[Go to lab](3-vscode-serverless/README.md)
-
-## Containerize and Deploy a Python Flask application with Azure Container Registry and Azure Container Instances
-
-In this lab you will learn to:
-1. Build a Python Flask application using Docker and a Dockerfile.
-2. Build the container image in the cloud using Azure Container Registry (ACR).
-3. Deploy the container image to Azure Container Instances (ACI).
-
-[Go to lab](3-azure-cli-flask-registry-container-instances/README.md) | Duration: 5-10 minutes
-
-## Use Hyperscale (Citus) to speed up analytics
-
-This workshop is meant to be an introduction to Azure Database for PostgreSQL Hyperscale (Citus). First, you will create a cluster to scale out PostgreSQL and turn it into a distributed database. Then, you will create a schema and tables, load test data, and create a rollup function to massively speed up your query workload. 
-
-[Go to lab](4-postgres-citus/README.md)
-
-## Try out the Intelligent Performance suite in Azure database services for MySQL and PostgreSQL
-Azure offers managed database services for MySQL and PostgreSQL. In this hands-on lab, explore how to understand and improve your query performance using the Intelligent Performance suite of features.
-
-[Go to MySQL lab](5a-mysql-intelligent-perf/README.md) | [Go to PostgreSQL lab](5b-postgres-intelligent-perf/README.md)
+- Containerize a Django application using Visual Studio Code
+- Windows for Open Source Developers
+- Try .NET
+- Developing a new Flask application in a Dev Container
+- Developing a Django+PostgreSQL application in a Dev Container
+- Use Azure Functions to build a RESTful API
+- Containerize and Deploy a Python Flask application with Azure Container Registry and Azure Container Instances
+- Use Hyperscale (Citus) to speed up analytics
+- Try out the Intelligent Performance suite in Azure database services for MySQL and PostgreSQL
