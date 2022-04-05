@@ -2,10 +2,11 @@
 
 ## Azure Container Apps
 
+- [Lab: Cloud Native Python with Azure Container Apps, Azure Container Registry, and FastAPI on PyPy](containerapps-python-fastapi/)
+  - [Walkthrough (vimeo.com)](https://vimeo.com/695948817/572d6bbbcd)
 - [Quickstart: Deploy your first container app (docs.microsoft.com)](https://docs.microsoft.com/azure/container-apps/get-started)
 - [Quickstart: Deploy an existing container image with the Azure CLI (docs.microsoft.com)](https://docs.microsoft.com/azure/container-apps/get-started-existing-container-image)
 - [Tutorial: Deploy a background processing application with Azure Container Apps Preview (docs.microsoft.com)](https://docs.microsoft.com/en-ca/azure/container-apps/background-processing?tabs=bash)
-
 
 ## Azure Kubernetes Service
 
