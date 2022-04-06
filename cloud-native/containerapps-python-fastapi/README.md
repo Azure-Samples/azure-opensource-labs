@@ -1,5 +1,7 @@
 # Cloud Native Python with Azure Container Apps, Container Registry, and FastAPI on PyPy
 
+[Walkthrough (vimeo.com)](https://vimeo.com/695948817/572d6bbbcd)
+
 ## 1. clone sample
 
 ```bash
