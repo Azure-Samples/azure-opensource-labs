@@ -2,7 +2,7 @@
 
 ## 1. build and containerize asw101/go-hello
 
-[Walkthrough (vimeo.com)](https://vimeo.com/696758621/eb0fc146b4)
+[Walkthrough 1/2 (vimeo.com)](https://vimeo.com/696758621/eb0fc146b4)
 
 1. Visit <https://github.com/asw101/go-hello>
 1. Click "Use this template".
@@ -16,6 +16,8 @@
 1. Update the `GITHUB_USER_OR_ORG` environment variable below with your GitHub username or organization name.
 
 ## 2. set environment variables
+
+[Walkthrough 2/2 (vimeo.com)](https://vimeo.com/697821473/3f706c1aca)
 
 ```bash
 RESOURCE_GROUP="my-container-apps"
