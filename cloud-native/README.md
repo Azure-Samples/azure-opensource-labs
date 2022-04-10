@@ -3,7 +3,6 @@
 ## Azure Container Apps
 
 - [Lab: Cloud Native Python with Azure Container Apps, Azure Container Registry, and FastAPI on PyPy](containerapps-python-fastapi/)
-  - [Walkthrough (vimeo.com)](https://vimeo.com/695948817/572d6bbbcd)
 - [Lab: Serverless Containers with Go, Azure Container Apps, and GitHub Container Registry](containerapps-github-go/)
 - [Quickstart: Deploy your first container app (docs.microsoft.com)](https://docs.microsoft.com/azure/container-apps/get-started)
 - [Quickstart: Deploy an existing container image with the Azure CLI (docs.microsoft.com)](https://docs.microsoft.com/azure/container-apps/get-started-existing-container-image)
