@@ -3,6 +3,11 @@ param env_name string = 'my-environment'
 param app_name string = 'my-container-app'
 param app_image string = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
 
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: '${resourceGroup().name}-identity'
+  location: location
+}
+
 var logAnalyticsWorkspaceName = '${env_name}-logs'
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-03-01-preview' = {
@@ -19,7 +24,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-03
   })
 }
 
-resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
+resource environment 'Microsoft.App/managedEnvironments@2022-03-01' = {
   name: env_name
   location: location
   properties: {
@@ -33,9 +38,15 @@ resource environment 'Microsoft.App/managedEnvironments@2022-01-01-preview' = {
   }
 }
 
-resource app 'Microsoft.App/containerApps@2022-01-01-preview' = {
+resource app 'Microsoft.App/containerApps@2022-03-01' = {
   name: 'my-container-app'
   location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
   properties: {
     managedEnvironmentId: environment.id
     configuration: {
