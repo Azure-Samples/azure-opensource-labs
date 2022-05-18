@@ -1,9 +1,9 @@
 # README
 
 ```bash
-RESOURCE_GROUP="my-containerapps"
+RESOURCE_GROUP="my-container-apps"
 LOCATION="canadacentral"
-CONTAINERAPPS_ENVIRONMENT="containerapps-env"
+CONTAINERAPPS_ENVIRONMENT="my-environment"
 STORAGE_ACCOUNT_CONTAINER="mycontainer"
 
 az group create \
