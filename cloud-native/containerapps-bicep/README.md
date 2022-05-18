@@ -13,5 +13,10 @@ az deployment group create \
   --template-file ./hello-world.bicep \
   --parameters \
       location="$LOCATION"
-      env_name="$CONTAINERAPPS_ENVIRONMENT"
+
+az deployment group create \
+  --resource-group "$RESOURCE_GROUP" \
+  --template-file ./postgres.bicep \
+  --parameters \
+      location="$LOCATION"
 ```
