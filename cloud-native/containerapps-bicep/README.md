@@ -10,6 +10,15 @@ az group create \
   --name $RESOURCE_GROUP \
   --location "$LOCATION"
 
+STORAGE_ACCOUNT="storage220500"
+
+az storage account create \
+  --name $STORAGE_ACCOUNT \
+  --resource-group $RESOURCE_GROUP \
+  --location "$LOCATION" \
+  --sku Standard_RAGRS \
+  --kind StorageV2
+
 az deployment group create \
   --resource-group "$RESOURCE_GROUP" \
   --template-file ./hello-world.bicep \
