@@ -1,7 +1,8 @@
-param location string = 'canadacentral'
 param env_name string = 'my-environment'
 param app_name string = 'my-container-app'
 param app_image string = 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+
+param location string = resourceGroup().location
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: '${resourceGroup().name}-identity'
