@@ -8,15 +8,30 @@ az group create \
   --name $RESOURCE_GROUP \
   --location "$LOCATION"
 
+# containerapp
 az deployment group create \
   --resource-group "$RESOURCE_GROUP" \
-  --template-file ./hello-world.bicep \
+  --template-file ./containerapp.bicep \
   --parameters \
       location="$LOCATION"
 
+# storage
 az deployment group create \
   --resource-group "$RESOURCE_GROUP" \
-  --template-file ./postgres.bicep \
-  --parameters \
-      location="$LOCATION"
+  --template-file ./storage.bicep
+
+# postgres + keyvault
+az deployment group create \
+  --resource-group "$RESOURCE_GROUP" \
+  --template-file ./postgres-keyvault.bicep
+
+# key vault
+az deployment group create \
+  --resource-group "$RESOURCE_GROUP" \
+  --template-file ./keyvault.bicep
+
+# postgres
+az deployment group create \
+  --resource-group "$RESOURCE_GROUP" \
+  --template-file ./postgres.bicep
 ```
