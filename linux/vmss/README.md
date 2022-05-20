@@ -25,13 +25,12 @@ az deployment group create --resource-group $RESOURCE_GROUP --template-file azur
 
 ## Portal 
 
-[Deploy to Azure](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Flinux-vmss%2Flinux%2Fvmss%2Fcloud-init%2Fazuredeploy.json
-)
+[Deploy to Azure](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Flinux-vmss%2Flinux%2Fvmss%2Fazuredeploy.json)
 
 ```bash
-TEMPLATE_URL='https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/linux-vmss/linux/vmss/cloud-init/azuredeploy.json'
+TEMPLATE_URL='https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/linux-vmss/linux/vmss/azuredeploy.json'
 OUTPUT_URL='https://portal.azure.com/#create/Microsoft.Template/uri/'$(printf "$TEMPLATE_URL" | jq -s -R -r @uri )
 echo $OUTPUT_URL
 
-# https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Flinux-vmss%2Flinux%2Fvmss%2Fcloud-init%2Fazuredeploy.json
+# https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Flinux-vmss%2Flinux%2Fvmss%2Fazuredeploy.json
 ```
