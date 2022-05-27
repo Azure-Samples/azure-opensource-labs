@@ -16,4 +16,17 @@ az postgres flexible-server firewall-rule create \
     --rule-name 'AllowLocalIP' \
     --start-ip-address $CLIENT_IP \
     --end-ip-address $CLIENT_IP
+
+KEYVAULT_NAME=$(az keyvault list \
+    --resource-group $RESOURCE_GROUP \
+    --out tsv \
+    --query '[0].name')
+
+export PGPASSWORD=$(az keyvault secret show \
+    --vault-name $KEYVAULT_NAME \
+    --name "${POSTGRES_NAME}-password" \
+    --out tsv \
+    --query value)
+
+psql "postgres://username:${PGPASSWORD}@${POSTGRES_NAME}.postgres.database.azure.com/postgres?sslmode=require"
 ```
