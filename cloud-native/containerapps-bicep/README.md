@@ -34,4 +34,10 @@ az deployment group create \
 az deployment group create \
   --resource-group "$RESOURCE_GROUP" \
   --template-file ./postgres.bicep
+
+# empty
+az deployment group create \
+  --mode Complete \
+  --resource-group "$RESOURCE_GROUP" \
+  --template-file ./empty.bicep
 ```
