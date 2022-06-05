@@ -1,5 +1,9 @@
 # POSTGRES
 
+The following commands will add a firewall rule called `AllowLocalIP` for your current IP address to your Postgres server. 
+
+It will then extract the password for your server which was stored in the Key Vault at the time of deployment and enable you to login with the username, `username`, and password.
+
 ```bash
 RESOURCE_GROUP='my-container-apps'
 
