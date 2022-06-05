@@ -1,0 +1,45 @@
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: azure-blob-auth
+  namespace: go-blob
+spec:
+  secretTargetRef:
+    - parameter: connection
+      name: az-storage-account
+      key: AZURE_STORAGE_CONNECTION_STRING
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: go-blob-scaledobject
+  namespace: go-blob
+spec:
+  scaleTargetRef:
+    name: go-blob
+  pollingInterval:  10
+  cooldownPeriod:   10
+  idleReplicaCount: 0
+  minReplicaCount:  0
+  maxReplicaCount:  5
+  advanced:
+    restoreToOriginalReplicaCount: true
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 20
+          policies:
+          - type: Percent
+            value: 100
+            periodSeconds: 10
+  triggers:
+  - type: azure-blob
+    metadata:
+      blobContainerName: mycontainer
+      # Optional
+      blobCount: "1" # default 5
+      blobPrefix: ""
+      blobDelimiter: "/"
+      cloud: AzurePublicCloud
+    authenticationRef:
+        name: azure-blob-auth

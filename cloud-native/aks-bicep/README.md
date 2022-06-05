@@ -28,18 +28,61 @@ az aks install-cli
 Deploy the Bicep template for your Azure Kubernetes Service (AKS) cluster.
 
 ```bash
-cd cloud-native/keda-aks/01-aks
+cd cloud-native/aks-bicep/01-aks
 bash deploy-main.sh
+```
+
+Set environment variables.
+
+```bash
+RESOURCE_GROUP='220600-keda'
+AKS_NAME='aks1'
 ```
 
 Invoke kubectl command on AKS cluster.
 
 ```bash
-RESOURCE_GROUP='220600-keda'
-AKS_NAME='aks1'
+cd ../02-keda/deploy
 
 az aks command invoke \
     --resource-group $RESOURCE_GROUP \
     --name $AKS_NAME \
-    --command 'kubectl run nginx --image=nginx'
+    --file . \
+    --command 'kubectl apply -k .'
+```
+
+Authenticate local kubectl.
+
+```bash
+az aks get-credentials \
+    --resource-group $RESOURCE_GROUP \
+    --name $AKS_NAME \
+    --overwrite-existing 
+```
+
+Create secrets for Azure Blob Storage.
+
+```bash
+export AZURE_STORAGE_ACCOUNT_NAME="$(az storage account list -g $RESOURCE_GROUP --out tsv --query '[0].name')"
+
+AZURE_STORAGE_PRIMARY_ACCOUNT_KEY=$(az storage account keys list \
+    --account-name "$AZURE_STORAGE_ACCOUNT_NAME" \
+    --out tsv \
+    --query '[0].value')
+
+AZURE_STORAGE_CONNECTION_STRING=$(az storage account show-connection-string \
+    -g $RESOURCE_GROUP \
+    --name "$AZURE_STORAGE_ACCOUNT_NAME" \
+    --out tsv \
+    --query 'connectionString')
+
+kubectl delete -k .
+
+kubectl apply -k .
+
+kubectl create secret generic az-storage-account \
+    --namespace go-blob \
+    --from-literal=AZURE_STORAGE_ACCOUNT_NAME="${AZURE_STORAGE_ACCOUNT_NAME}" \
+    --from-literal=AZURE_STORAGE_PRIMARY_ACCOUNT_KEY="${AZURE_STORAGE_PRIMARY_ACCOUNT_KEY}" \
+    --from-literal=AZURE_STORAGE_CONNECTION_STRING="${AZURE_STORAGE_CONNECTION_STRING}"
 ```

@@ -1,0 +1,10 @@
+resources:
+- namespace.yaml
+- deployment.yaml
+- serviceaccount.yaml
+- keda.yaml
+
+commonLabels:
+  app.kubernetes.io/name: go-blob
+
+namespace: go-blob
