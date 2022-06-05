@@ -24,18 +24,16 @@ You can also join us on the [Microsoft Open Source Discord (aka.ms/open-source-d
 - [Go (golang)](golang/)
 - [Python](/python)
 
-You can find the latest in-flight labs on the [latest-2022](https://github.com/Azure-Samples/azure-opensource-labs/tree/latest-2022) branch. Please note you may experience breaking changes, but we would love to hear any feedback!
+## In-flight Labs & Branches
 
-## OSCON / 2019
+- [containerapps-bicep](https://github.com/Azure-Samples/azure-opensource-labs/tree/containerapps-bicep/cloud-native/containerapps-bicep)
+- [aks-bicep](https://github.com/Azure-Samples/azure-opensource-labs/tree/aks-bicep/cloud-native/aks-bicep)
+- [linux-vmss](https://github.com/Azure-Samples/azure-opensource-labs/tree/linux-vmss/linux/vmss)
 
-You can find original 2019 labs delivered in person at OSCON 2019 in the [2019](2019/#azure-open-source-labs-oscon-2019) sub-folder, where we will continue to tweak and update them, and the original version on the [oscon-2019](https://github.com/Azure-Samples/azure-opensource-labs/tree/oscon-2019) branch. These include:
+Please note you may experience breaking changes, but we would love to hear any feedback!
 
-- Containerize a Django application using Visual Studio Code
-- Windows for Open Source Developers
-- Try .NET
-- Developing a new Flask application in a Dev Container
-- Developing a Django+PostgreSQL application in a Dev Container
-- Use Azure Functions to build a RESTful API
-- Containerize and Deploy a Python Flask application with Azure Container Registry and Azure Container Instances
-- Use Hyperscale (Citus) to speed up analytics
-- Try out the Intelligent Performance suite in Azure database services for MySQL and PostgreSQL
+## OSCON 2019
+
+You can find original 2019 labs delivered in person at [OSCON 2019](https://en.wikipedia.org/wiki/O%27Reilly_Open_Source_Convention), in the [2019](2019/#azure-open-source-labs-oscon-2019) sub-folder and/or the [oscon-2019](https://github.com/Azure-Samples/azure-opensource-labs/tree/oscon-2019) branch (original snapshot).
+
+These labs included VS Code, Django, Windows Subsystem for Linux, .NET, Flask, Dev Containers, PostgreSQL, Functions, Container Registry, Container Instances, Hyperscale Citus, MySQL. We will continue to update and expand on these labs.
