@@ -1,4 +1,4 @@
-# Explore KEDA (Kubernetes Event-driven Autoscaling) on Azure Kubernetes Service (AKS)
+# Explore Open Source workloads with Azure Kubernetes Service (AKS) and Bicep
 
 In this lab you will deploy an Azure Kubernetes Service (AKS) cluster and other Azure services (Container Registry, Managed Identity, Storage Account, Service Bus, Key Vault), the open source KEDA (Kubernetes Event-driven Autoscaling) project with [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) and [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview).
 
