@@ -23,7 +23,7 @@
     },
     "scriptUri": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/aks-bicep/cloud-native/aks-bicep/01-aks/deploy-script-keda.sh"
+      "defaultValue": "https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/main/cloud-native/aks-bicep-keda/01-aks/deploy-script-keda.sh"
     }
   },
   "resources": [

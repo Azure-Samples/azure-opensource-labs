@@ -7,5 +7,5 @@ az deployment sub create \
     --template-file ./main.bicep \
     --parameters \
         deployScript='true' \
-        scriptUri='https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/aks-bicep/cloud-native/aks-bicep/01-aks/deploy-script-keda.sh' \
+        scriptUri='https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/main/cloud-native/aks-bicep-keda/01-aks/deploy-script-keda.sh' \
         resourceGroup=$RESOURCE_GROUP

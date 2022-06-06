@@ -1,4 +1,4 @@
-# Explore KEDA (Kubernetes Event-driven Autoscaling) on Azure Kubernetes Service (AKS)
+# Explore KEDA (Kubernetes Event-driven Autoscaling) and the KEDA HTTP Add-on with Azure Kubernetes Service (AKS) and Bicep
 
 In this lab you will deploy an Azure Kubernetes Service (AKS) cluster and other Azure services (Container Registry, Managed Identity, Storage Account, Service Bus, Key Vault), the open source KEDA (Kubernetes Event-driven Autoscaling) project with [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) and [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview).
 
@@ -9,7 +9,7 @@ In this lab you will deploy an Azure Kubernetes Service (AKS) cluster and other 
 - Bash shell (e.g. macOS, Linux, [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/about), [Multipass](https://multipass.run/), [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart), [GitHub Codespaces](https://github.com/features/codespaces), etc)
 - A [GitHub Account](https://github.com)
 
-## Instructions
+## 1. Setup
 
 Use the [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) and [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) templates to deploy the infrastructure for your application.
 
@@ -28,9 +28,11 @@ az aks install-cli
 Deploy the Bicep template for your Azure Kubernetes Service (AKS) cluster.
 
 ```bash
-cd cloud-native/aks-bicep/01-aks
+cd cloud-native/aks-bicep-keda/01-aks
 bash deploy-main.sh
 ```
+
+## 2. KEDA
 
 Set environment variables.
 
@@ -86,3 +88,7 @@ kubectl create secret generic az-storage-account \
     --from-literal=AZURE_STORAGE_PRIMARY_ACCOUNT_KEY="${AZURE_STORAGE_PRIMARY_ACCOUNT_KEY}" \
     --from-literal=AZURE_STORAGE_CONNECTION_STRING="${AZURE_STORAGE_CONNECTION_STRING}"
 ```
+
+## 3. KEDA HTTP Add-on
+
+Follow the steps in [03-keda-http](./03-keda-http/) to install the [HTTP Add-on](https://github.com/kedacore/http-add-on) and deploy the [asw101/go-hello](https://github.com/asw101/go-hello) application to it.

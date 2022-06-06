@@ -6,4 +6,4 @@ az deployment group create \
     --mode incremental \
     --template-file ./deploy-script.bicep \
     --parameters \
-        scriptUri='https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/aks-bicep/cloud-native/aks-bicep/01-aks/deploy-script-aks.sh'
+        scriptUri='https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/main/cloud-native/aks-bicep-keda/01-aks/deploy-script-aks.sh'

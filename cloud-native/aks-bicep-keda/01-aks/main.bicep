@@ -3,7 +3,7 @@ targetScope = 'subscription'
 param resourceGroup string = '220600-keda'
 param location string = deployment().location
 param deployScript bool = false
-param scriptUri string = 'https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/aks-bicep/cloud-native/aks-bicep/01-aks/deploy-script-keda.sh'
+param scriptUri string = 'https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/main/cloud-native/aks-bicep-keda/01-aks/deploy-script-keda.sh'
 
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroup
