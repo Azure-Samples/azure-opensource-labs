@@ -10,7 +10,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   name: 'storage${rand}'
   location: location
-  kind: 'StorageV2'
+  kind: 'BlockBlobStorage'
   sku: {
     name: 'Premium_LRS'
   }
