@@ -23,14 +23,14 @@ You can also join us on the [Microsoft Open Source Discord (aka.ms/open-source-d
 - [Cloud Native](cloud-native/)
 - [Go (golang)](golang/)
 - [Python](/python)
+- [Linux](/linux/vmss/)
 
-## In-flight Labs & Branches
+## Beta Branches
+
+The following branches are being actively updated. You may experience breaking changes, but we would love to hear any feedback!
 
 - [containerapps-bicep](https://github.com/Azure-Samples/azure-opensource-labs/tree/containerapps-bicep/cloud-native/containerapps-bicep)
 - [aks-bicep](https://github.com/Azure-Samples/azure-opensource-labs/tree/aks-bicep/cloud-native/aks-bicep)
-- [linux-vmss](https://github.com/Azure-Samples/azure-opensource-labs/tree/linux-vmss/linux/vmss)
-
-Please note you may experience breaking changes, but we would love to hear any feedback!
 
 ## OSCON 2019
 
