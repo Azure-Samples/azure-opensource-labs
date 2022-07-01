@@ -62,7 +62,7 @@ resource app 'Microsoft.App/containerApps@2022-03-01' = {
           image: app_image
           name: app_name
           resources: {
-            cpu: '0.5'
+            cpu: json('0.5')
             memory: '1.0Gi'
           }
         }
