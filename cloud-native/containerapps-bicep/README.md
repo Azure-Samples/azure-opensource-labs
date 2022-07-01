@@ -13,9 +13,17 @@ You will also import and have the opportunity to explore data from the [Cassini]
 - Bash shell (e.g. macOS, Linux, [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/windows/wsl/about), [Multipass](https://multipass.run/), [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/quickstart), [GitHub Codespaces](https://github.com/features/codespaces), etc)
 - A [GitHub Account](https://github.com)
 
-## Instructions
+## Deploy via Azure Portal
+
+The link below will deploy Azure Container Apps, Azure Database for Postgres and Key Vault via a single ARM template, generated from [main.bicep](main.bicep). This template will also create a Resource Group for you.
+
+[Deploy to Azure](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Fmain%2Fcloud-native%2Fcontainerapps-bicep%2Fmain.json)
+
+## Deploy via Azure CLI
 
 Use the [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) and [Bicep](https://docs.microsoft.com/azure/azure-resource-manager/bicep/overview) templates to deploy the infrastructure for your application.
+
+This allows you to deploy the Bicep templates of your choice step-by-step.
 
 Login to the Azure CLI.
 
@@ -41,6 +49,8 @@ cd cloud-native/containerapps-bicep
 ```
 
 Deploy the bicep templates of your choice with the following `az deployment` commands.
+
+## Deploy to Resource Group
 
 ```bash
 # containerapp
@@ -77,7 +87,26 @@ az deployment group create \
   --template-file ./empty.bicep
 ```
 
+## Deploy to Subscription
+
+The template used in the Deploy via Azure Portal section above can also be deployed via the CLI. Note this is a subscription-scoped deployment and it will create the Resource Group for you.
+
+```bash
+# subscription (containerapp + postgres-keyvault)
+LOCATION='canadacentral'
+az deployment sub create \
+    --name='220600-containerapps' \
+    --location $LOCATION \
+    --template-file ./main.bicep \
+    --parameters \
+      resourceGroup='220600-containerapps'
+```
+
+## Explore Postgres
+
 See [POSTGRES.md](POSTGRES.md) for instructions on how to login to your Postgres server from your local machine.
+
+## Clean up resources
 
 Once you have finished exploring, you should delete the resource group to avoid any further charges.
 
