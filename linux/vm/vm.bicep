@@ -59,7 +59,7 @@ param adminPasswordOrKey string = ''
 @allowed([
   'none'
   'docker'
-  'vpn'
+  'tailscale'
   'url'
   'advanced'
 ])
