@@ -50,7 +50,7 @@ OUTPUT=$(az deployment group create \
 echo $OUTPUT | jq -r '.properties.outputs.sshCommand.value'
 ```
 
-# Delete Resources
+## Delete Resources
 
 ```bash
 # empty resource group
