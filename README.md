@@ -23,7 +23,7 @@ You can also join us on the [Microsoft Open Source Discord (aka.ms/open-source-d
 - [Cloud Native](cloud-native/)
 - [Go (golang)](golang/)
 - [Python](python/)
-- [Linux](linux/vmss/)
+- [Linux](linux/)
 
 ## Beta Branches
 
