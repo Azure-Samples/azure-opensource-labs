@@ -1,4 +1,4 @@
-# Linux on Azure with ARM and Virtual Machine Scale Sets (VMSS)
+# Linux on Azure with Bicep/ARM and Virtual Machine Scale Sets (VMSS)
 
 ## Resource Group 
 
@@ -10,7 +10,7 @@ az group create \
     --location $LOCATION
 ```
 
-## VMSS 
+## Virtual Machine Scale Set (VMSS)
 
 ```bash
 RESOURCE_GROUP='220500-azure-linux'
@@ -26,7 +26,7 @@ az deployment group create \
     --template-file vmss.bicep \
     --parameters adminPasswordOrKey="$PASSWORD_OR_KEY" \
         vmName=vm2 \
-        customDataUrl='https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/linux-vmss/linux/vmss/cloud-init/cloud-init.sh'
+        customDataUrl='https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/main/linux/vmss/cloud-init/cloud-init.sh'
 
 # deploy with ALLOW_IP
 IP_ALLOW=$(dig @1.1.1.1 ch txt whoami.cloudflare +short | tr -d '"')
