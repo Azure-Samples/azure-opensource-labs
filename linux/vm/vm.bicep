@@ -170,7 +170,7 @@ write_files:
 runcmd:
 - cd /home/azureuser/
 - bash tailscale.sh "$(jq -r '.tskey' env.json)"
-- docker run --name postgres --restart always -e POSTGRES_HOST_AUTH_METHOD=trust -v /home/azureuser/postgresql/data:/var/lib/postgresql/data -p 5432:5432 -d postgres
+- docker run --name postgres --restart always -e POSTGRES_HOST_AUTH_METHOD=trust -v /home/azureuser/postgresql/data:/var/lib/postgresql/data -p 5432:5432 -d postgres:14
 - echo $(date) > hello.txt
 '''
 

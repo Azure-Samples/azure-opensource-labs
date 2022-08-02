@@ -38,6 +38,28 @@ You must generate a Tailscale [Auth key](https://tailscale.com/kb/1085/auth-keys
 
 Tailscale is deployed with [Tailscale SSH](https://tailscale.com/kb/1193/tailscale-ssh/) enabled using the `--ssh` flag. This enables you to SSH into the VM seamlessly, without ever opening up SSH to the public internet or handling SSH keys, via `ssh azureuser@vm1` (if you have [MagicDNS](https://tailscale.com/kb/1081/magicdns/) enabled), or by its [stable IP address](https://tailscale.com/kb/1033/ip-and-dns-addresses/) on the tailnet using `ssh azureuser@<ip address>` (if MagicDNS is not enabled). You can learn more about [Tailscale on Azure VMs](https://tailscale.com/kb/1142/cloud-azure-linux/) in the Tailscale docs.
 
+### tailscale-postgres
+
+tailscale-postgres deploys docker, tailscale, and postgres using its [official docker image](https://hub.docker.com/_/postgres/), as a final step, using the following command:
+
+```bash
+docker run \
+    --name postgres \
+    --restart always \
+    -e POSTGRES_HOST_AUTH_METHOD=trust \
+    -v /home/azureuser/postgresql/data:/var/lib/postgresql/data \
+    -p 5432:5432 \
+    -d postgres:14
+```
+
+This command mounts the postgres data directory to `/home/azureuser/postgresql/data` for persistence. The `POSTGRES_HOST_AUTH_METHOD=trust` will let you login to the server using the `postgres` user and no password (for test/dev and non-prod deployments **only**). Do not open port `5432` to the public internet under any circumstances.
+
+Postgres will be available on port `5432` to any machine on your Tailscale tailnet, via the following command:
+
+```bash
+psql --host=vm1 --username=postgres
+```
+
 ### url
 
 This is an example of running a simple bash script by its URL using `#include`. It is currently hard-coded to [cloud-init/cloud-init.sh](cloud-init/cloud-init.sh), but could easily be parameterized. See variable `cloudInitUrl` in [vm.bicep](vm.bicep).
