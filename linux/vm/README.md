@@ -10,7 +10,7 @@ The above "Deploy to Azure" can be the fastest way to get up and running with no
 
 You can see how this link is generated in [PORTAL.md](PORTAL.md). It uses the [vm.json](vm.json) ARM (Azure Resource Manager) template, generated from the [vm.bicep](vm.bicep) Bicep template using the `az bicep build -f vm.bicep` command.
 
-To deploy via the command line, customize the Bicep template to your requirements, install the [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) and follow the steps below.
+To deploy via the command line, which deploys the Bicep template directly, enables you to easily customize the it to your requirements, install the [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) and follow the steps below. These examples require a bash shell (e.g. macOS, Linux, [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/windows/wsl/about), [Multipass](https://multipass.run/), [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/quickstart), [GitHub Codespaces](https://github.com/features/codespaces), etc).
 
 ## Cloud-init
 
