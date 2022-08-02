@@ -61,7 +61,6 @@ param adminPasswordOrKey string = ''
   'docker'
   'tailscale'
   'url'
-  'advanced'
 ])
 param cloudInit string = 'none'
 
@@ -97,7 +96,7 @@ system_info:
     groups: [docker]
 '''
 
-var cloudInitVpn = '''
+var cloudInitTailscale = '''
 #cloud-config
 # vim: syntax=yaml
 
@@ -134,7 +133,7 @@ runcmd:
 - echo $(date) > hello.txt
 '''
 
-var cloudInitVpnFormat = format(cloudInitVpn, base64(string(env)))
+var cloudInitVpnFormat = format(cloudInitTailscale, base64(string(env)))
 
 var cloudInitUrl = '''
 #include
