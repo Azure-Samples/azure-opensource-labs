@@ -3,7 +3,6 @@ page_type: sample
 languages:
 - python
 - go
-- shell
 products:
 - azure
 description: "A collection of labs to help build Open Source & Cloud Native applications with Azure, Microsoft, GitHub, and open source developer tools, platforms, and projects."
