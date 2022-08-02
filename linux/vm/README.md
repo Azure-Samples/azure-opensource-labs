@@ -36,6 +36,8 @@ This package uses the `write_files` and `run_cmd` modules to write the `env` par
 
 You must generate a Tailscale [Auth key](https://tailscale.com/kb/1085/auth-keys/) via <https://login.tailscale.com/admin/settings/keys> prior to running this script. We recommend using a **one-off** key for this purpose, especially if you are not using [device authorization](https://tailscale.com/kb/1099/device-authorization/).
 
+Tailscale is deployed with [Tailscale SSH](https://tailscale.com/kb/1193/tailscale-ssh/) enabled using the `--ssh` flag. This enables you to SSH into the VM seamlessly, without ever opening up SSH to the public internet or handling SSH keys, via `ssh azureuser@vm1` (if you have [MagicDNS](https://tailscale.com/kb/1081/magicdns/) enabled), or by its [stable IP address](https://tailscale.com/kb/1033/ip-and-dns-addresses/) on the tailnet using `ssh azureuser@<ip address>` (if MagicDNS is not enabled). You can learn more about [Tailscale on Azure VMs](https://tailscale.com/kb/1142/cloud-azure-linux/) in the Tailscale docs.
+
 ### url
 
 This is an example of running a simple bash script by its URL using `#include`. It is currently hard-coded to [cloud-init/cloud-init.sh](cloud-init/cloud-init.sh), but could easily be parameterized. See variable `cloudInitUrl` in [vm.bicep](vm.bicep).
