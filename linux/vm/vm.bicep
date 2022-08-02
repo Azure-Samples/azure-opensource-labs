@@ -60,6 +60,7 @@ param adminPasswordOrKey string = ''
   'none'
   'docker'
   'tailscale'
+  'tailscale-postgres'
   'url'
 ])
 param cloudInit string = 'none'
@@ -133,7 +134,47 @@ runcmd:
 - echo $(date) > hello.txt
 '''
 
-var cloudInitVpnFormat = format(cloudInitTailscale, base64(string(env)))
+var cloudInitTailscaleFormat = format(cloudInitTailscale, base64(string(env)))
+
+var cloudInitTailscalePostgres = '''
+#cloud-config
+# vim: syntax=yaml
+
+packages:
+- docker.io
+- jq
+
+# create the docker group
+groups:
+- docker
+
+# Add default auto created user to docker group
+system_info:
+  default_user:
+    groups: [docker]
+
+write_files:
+- path: /home/azureuser/env.json
+  content: {0}
+  encoding: b64
+- path: /home/azureuser/tailscale.sh
+  content: |
+    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
+    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list
+    
+    sudo apt-get update
+    sudo apt-get install -y tailscale
+    
+    sudo tailscale up --advertise-routes=10.1.0.0/24,168.63.129.16/32 --accept-dns=false --ssh --authkey "$1"
+
+runcmd:
+- cd /home/azureuser/
+- bash tailscale.sh "$(jq -r '.tskey' env.json)"
+- docker run --name postgres --restart always -e POSTGRES_HOST_AUTH_METHOD=trust -v /home/azureuser/postgresql/data:/var/lib/postgresql/data -p 5432:5432 -d postgres
+- echo $(date) > hello.txt
+'''
+
+var cloudInitTailscalePostgresFormat = format(cloudInitTailscalePostgres, base64(string(env)))
 
 var cloudInitUrl = '''
 #include
@@ -143,7 +184,8 @@ https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/main/linux
 var kvCloudInit = {
   none: json('null')
   docker: base64(cloudInitDocker)
-  tailscale: base64(cloudInitVpnFormat)
+  tailscale: base64(cloudInitTailscaleFormat)
+  'tailscale-postgres': base64(cloudInitTailscalePostgresFormat)
   url: base64(cloudInitUrl)
 }
 
