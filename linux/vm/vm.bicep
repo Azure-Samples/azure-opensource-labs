@@ -52,6 +52,7 @@ param allowIpPort22 string = '127.0.0.1'
 @description('Username for the Virtual Machine.')
 param adminUsername string = 'azureuser'
 
+@secure()
 @description('SSH Key for the Virtual Machine.')
 param adminPasswordOrKey string = ''
 
@@ -60,6 +61,7 @@ param adminPasswordOrKey string = ''
   'none'
   'docker'
   'tailscale'
+  'tailscale-private'
   'tailscale-postgres'
   'url'
 ])
@@ -185,6 +187,7 @@ var kvCloudInit = {
   none: json('null')
   docker: base64(cloudInitDocker)
   tailscale: base64(cloudInitTailscaleFormat)
+  'tailscale-private': base64(cloudInitTailscaleFormat)
   'tailscale-postgres': base64(cloudInitTailscalePostgresFormat)
   url: base64(cloudInitUrl)
 }
@@ -204,6 +207,78 @@ var kvImageReference = {
   }
 }
 
+// Base network security group rules
+var nsgSecurityRulesBase = [
+  {
+    name: 'Port_22'
+    properties: {
+      priority: 100
+      protocol: 'Tcp'
+      access: 'Allow'
+      direction: 'Inbound'
+      sourceAddressPrefix: allowIpPort22
+      sourcePortRange: '*'
+      destinationAddressPrefix: '*'
+      destinationPortRange: '22'
+    }
+  }
+  {
+    name: 'Port_80'
+    properties: {
+      protocol: '*'
+      sourcePortRange: '*'
+      destinationPortRange: '80'
+      sourceAddressPrefix: 'Internet'
+      destinationAddressPrefix: '*'
+      access: 'Allow'
+      priority: 110
+      direction: 'Inbound'
+    }
+  }
+  {
+    name: 'Port_443'
+    properties: {
+      protocol: '*'
+      sourcePortRange: '*'
+      destinationPortRange: '443'
+      sourceAddressPrefix: 'Internet'
+      destinationAddressPrefix: '*'
+      access: 'Allow'
+      priority: 120
+      direction: 'Inbound'
+    }
+  }
+  {
+    name: 'Port_8080'
+    properties: {
+      protocol: '*'
+      sourcePortRange: '*'
+      destinationPortRange: '8080'
+      sourceAddressPrefix: 'Internet'
+      destinationAddressPrefix: '*'
+      access: 'Allow'
+      priority: 130
+      direction: 'Inbound'
+    }
+  }
+  {
+    name: 'Port_41641'
+    properties: {
+      protocol: 'Udp'
+      sourcePortRange: '*'
+      destinationPortRange: '41641'
+      sourceAddressPrefix: 'Internet'
+      destinationAddressPrefix: '*'
+      access: 'Allow'
+      priority: 140
+      direction: 'Inbound'
+    }
+  }
+]
+
+// If the cloudInit option is set to 'tailscale-private', then only use the 'Port_41641' rule which is the last rule in the base array
+var nsgSecurityRules = (cloudInit == 'tailscale-private' ? [ last(nsgSecurityRulesBase) ] : nsgSecurityRulesBase)
+
 resource identityName 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: '${resourceGroup().name}-identity'
   location: location
@@ -221,9 +296,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-05-01' = {
             id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${virtualNetworkName_var}/subnets/${subnetName}'
           }
           privateIPAllocationMethod: 'Dynamic'
-          publicIPAddress: {
-            id: publicIP.id
-          }
+          publicIPAddress: (cloudInit != 'tailscale-private' ? { id: publicIP.id } : null)
         }
       }
     ]
@@ -237,77 +310,11 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2021-05-01' = {
   name: '${resourceGroup().name}-nsg'
   location: location
   properties: {
-    securityRules: [
-      {
-        name: 'Port_22'
-        properties: {
-          priority: 100
-          protocol: 'Tcp'
-          access: 'Allow'
-          direction: 'Inbound'
-          sourceAddressPrefix: allowIpPort22
-          sourcePortRange: '*'
-          destinationAddressPrefix: '*'
-          destinationPortRange: '22'
-        }
-      }
-      {
-        name: 'Port_80'
-        properties: {
-          protocol: '*'
-          sourcePortRange: '*'
-          destinationPortRange: '80'
-          sourceAddressPrefix: 'Internet'
-          destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 110
-          direction: 'Inbound'
-        }
-      }
-      {
-        name: 'Port_443'
-        properties: {
-          protocol: '*'
-          sourcePortRange: '*'
-          destinationPortRange: '443'
-          sourceAddressPrefix: 'Internet'
-          destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 120
-          direction: 'Inbound'
-        }
-      }
-      {
-        name: 'Port_8080'
-        properties: {
-          protocol: '*'
-          sourcePortRange: '*'
-          destinationPortRange: '8080'
-          sourceAddressPrefix: 'Internet'
-          destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 130
-          direction: 'Inbound'
-        }
-      }
-      {
-        name: 'Port_41641'
-        properties: {
-          protocol: 'Udp'
-          sourcePortRange: '*'
-          destinationPortRange: '41641'
-          sourceAddressPrefix: 'Internet'
-          destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 140
-          direction: 'Inbound'
-        }
-      }
-    ]
+    securityRules: nsgSecurityRules
   }
 }
 
-resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = if(virtualNetworkName == '') {
+resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = if (virtualNetworkName == '') {
   name: virtualNetworkName_var
   location: location
   properties: {
@@ -337,7 +344,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = if(virtualNetwork
   }
 }
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2021-05-01' = {
+resource publicIP 'Microsoft.Network/publicIPAddresses@2021-05-01' = if (cloudInit != 'tailscale-private') {
   name: publicIPAddressName
   location: location
   sku: {
@@ -402,5 +409,5 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
 }
 
 output adminUsername string = adminUsername
-output hostname string = publicIP.properties.dnsSettings.fqdn
-output sshCommand string = 'ssh ${adminUsername}@${publicIP.properties.dnsSettings.fqdn}'
+output hostname string = (cloudInit != 'tailscale-private' ? publicIP.properties.dnsSettings.fqdn : vmName)
+output sshCommand string = 'ssh ${adminUsername}@${(cloudInit != 'tailscale-private' ? publicIP.properties.dnsSettings.fqdn : vmName)}'

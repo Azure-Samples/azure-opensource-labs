@@ -6,11 +6,11 @@ Use the following link to deploy the template in this repo using the Azure Porta
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Fmain%2Flinux%2Fvm%2Fvm.json)
 
-The above "Deploy to Azure" can be the fastest way to get up and running with no local dependencies. 
+The "Deploy to Azure" button above can be the fastest way to get up and running with no local dependencies.
 
 You can see how this link is generated in [PORTAL.md](PORTAL.md). It uses the [vm.json](vm.json) ARM (Azure Resource Manager) template, generated from the [vm.bicep](vm.bicep) Bicep template using the `az bicep build -f vm.bicep` command.
 
-To deploy via the command line, which deploys the Bicep template directly, enables you to easily customize it to your requirements, install the [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) and follow the steps below. These examples require a bash shell (e.g. macOS, Linux, [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/windows/wsl/about), [Multipass](https://multipass.run/), [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/quickstart), [GitHub Codespaces](https://github.com/features/codespaces), etc).
+Deploying via the command line, which deploys the Bicep template directly, enables you to easily customize it to your requirements, install the [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) and follow the steps below. These examples require a bash shell (e.g. macOS, Linux, [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/windows/wsl/about), [Multipass](https://multipass.run/), [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/quickstart), [GitHub Codespaces](https://github.com/features/codespaces), etc).
 
 ## Cloud-init
 
@@ -20,17 +20,17 @@ There are multiple pre-defined cloud-init templates included in `vm.bicep` which
 
 The current pre-defined cloud-init options are:
 
-### none
+### `none`
 
-Do not run any cloud-init script (default). 
+Do not run any cloud-init script (default).
 
-### docker
+### `docker`
 
 Installs [docker](https://docs.docker.com/engine/install/ubuntu/) for containers and [jq](https://stedolan.github.io/jq/) for working with JSON such as our `env` parameter. This is defined in the `packages` module of our cloud-init. We use `groups` and `system_info` to add the default user to the docker group. See variable `cloudInitDocker` in [vm.bicep](vm.bicep).
 
 This template is used as the foundation for other templates such as `tailscale` and is an excellent starting point for your own cloud-init scripts.
 
-### tailscale
+### `tailscale`
 
 [Walkthrough (vimeo.com)](https://vimeo.com/735970928/abef23554e)
 
@@ -40,7 +40,11 @@ You must generate a Tailscale [Auth key](https://tailscale.com/kb/1085/auth-keys
 
 Tailscale is deployed with [Tailscale SSH](https://tailscale.com/kb/1193/tailscale-ssh/) enabled using the `--ssh` flag. This enables you to SSH into the VM seamlessly, without ever opening up SSH to the public internet or handling SSH keys, via `ssh azureuser@vm1` (if you have [MagicDNS](https://tailscale.com/kb/1081/magicdns/) enabled), or by its [stable IP address](https://tailscale.com/kb/1033/ip-and-dns-addresses/) on the tailnet using `ssh azureuser@<ip address>` (if MagicDNS is not enabled). You can learn more about [Tailscale on Azure VMs](https://tailscale.com/kb/1142/cloud-azure-linux/) in the Tailscale docs.
 
-### tailscale-postgres
+### `tailscale-private`
+
+This template deployment is nearly identical to the tailscale deployment above. The only thing different here is that there is NO exposure of the Linux VM to the public internet. It is advisable that you configure MagicDNS so that you can ssh in to the server using just the VM name.
+
+### `tailscale-postgres`
 
 tailscale-postgres deploys docker, tailscale, and postgres using its [official docker image](https://hub.docker.com/_/postgres/), as a final step, using the following command:
 
@@ -66,7 +70,7 @@ psql --host=vm1 --username=postgres
 
 This is an example of running a simple bash script by its URL using `#include`. It is currently hard-coded to [cloud-init/cloud-init.sh](cloud-init/cloud-init.sh), but could easily be parameterized. See variable `cloudInitUrl` in [vm.bicep](vm.bicep).
 
-## Resource Group 
+## Create Resource Group
 
 ```bash
 RESOURCE_GROUP='220700-azure-linux'
@@ -77,9 +81,9 @@ az group create \
     --location $LOCATION
 ```
 
-## Virtual Machine (VM)
+## Create Virtual Machine (VM)
 
-### basic
+### Option 1: Basic
 
 Deploy the template with default values.
 
@@ -93,7 +97,7 @@ az deployment group create \
 
 This template includes defaults for all values including `allowIpPort22`, set to `127.0.0.1`, and a temporary default public SSH key for `adminPasswordOrKey`, which should be set to your own value in production. This allows the template to be deployed in a single click or CLI command.
 
-### advanced
+### Option 2: Advanced
 
 Set an SSH key using `adminPasswordOrKey` and open Port 22 (SSH) to your current IP using `allowIpPort22`.
 
@@ -114,25 +118,52 @@ echo $OUTPUT | jq -r '.properties.outputs.sshCommand.value'
 
 [Azure Bastion](https://docs.microsoft.com/en-us/azure/bastion/tutorial-create-host-portal#createhost) is an alternative to allowing access to Port 22 (SSH) on a single IP address. You can find the command to connect using the [native client](https://docs.microsoft.com/azure/bastion/connect-native-client-windows) via the `az network bastion ssh` command in [BASTION.md](BASTION.md).
 
-### advanced
+### Option 3: Advanced with tailscale
 
 Create a VM with a custom name (e.g. `vm1` vs `vm2`) using `vmName`, which enables it to be deployed in the same Resource Group as a previous VM, select `tailscale` as the `cloudInit` option and pass in the `tskey` using `env`.
 
 ```bash
-# first create a file _/env.json with vs code:
-# code -r _/env.json
-# with the following content:
-# {"tskey":"..."}
+# first create a file env.json using heredoc syntax
+# make sure to replace <YOUR_TAILSCALE_AUTH_KEY> with your actual auth key
+cat << EOF > env.json
+{"tskey":"<YOUR_TAILSCALE_AUTH_KEY>"}
+EOF
 
 RESOURCE_GROUP='220700-azure-linux'
-VM_NAME='vm2'
-ENV=$(cat _/env.json)
+VM_NAME='tailscale-vm1'
+
+ENV=$(cat env.json)
 OUTPUT=$(az deployment group create \
     --resource-group $RESOURCE_GROUP \
     --template-file vm.bicep \
     --parameters \
         vmName="$VM_NAME" \
         cloudInit='tailscale' \
+        env="$ENV")
+
+echo $OUTPUT | jq -r '.properties.outputs.sshCommand.value'
+```
+
+### Option 4: Advanced with tailscale (no exposure to the internet)
+
+Create a VM with a custom name (e.g. `vm1` vs `vm2`) using `vmName`, which enables it to be deployed in the same Resource Group as a previous VM, select `tailscale-private` as the `cloudInit` option and pass in the `tskey` using `env`.
+
+```bash
+# first create a file env.json using heredoc syntax
+# make sure to replace <YOUR_TAILSCALE_AUTH_KEY> with your actual auth key
+cat << EOF > env.json
+{"tskey":"<YOUR_TAILSCALE_AUTH_KEY>"}
+EOF
+
+RESOURCE_GROUP='220700-azure-linux'
+VM_NAME='tailscale-vm2'
+ENV=$(cat env.json)
+OUTPUT=$(az deployment group create \
+    --resource-group $RESOURCE_GROUP \
+    --template-file vm.bicep \
+    --parameters \
+        vmName="$VM_NAME" \
+        cloudInit='tailscale-private' \
         env="$ENV")
 
 echo $OUTPUT | jq -r '.properties.outputs.sshCommand.value'
@@ -155,6 +186,6 @@ Alternatively, you may wish to simply re-deploy a specific VM in the Resource Gr
 ```bash
 # delete single vm and disk for re-deployment
 VM_NAME='vm2'
-az vm delete --yes --resource-group $RESOURCE_GROUP --name $VM_NAME 
+az vm delete --yes --resource-group $RESOURCE_GROUP --name $VM_NAME
 az disk delete --yes --resource-group $RESOURCE_GROUP --name "${VM_NAME}-osdisk1"
 ```

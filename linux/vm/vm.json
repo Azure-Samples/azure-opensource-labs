@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.8.9.13224",
-      "templateHash": "12930700093835208737"
+      "version": "0.9.1.41621",
+      "templateHash": "11592153457678886295"
     }
   },
   "parameters": {
@@ -100,7 +100,7 @@
       }
     },
     "adminPasswordOrKey": {
-      "type": "string",
+      "type": "secureString",
       "defaultValue": "",
       "metadata": {
         "description": "SSH Key for the Virtual Machine."
@@ -113,6 +113,7 @@
         "none",
         "docker",
         "tailscale",
+        "tailscale-private",
         "tailscale-postgres",
         "url"
       ],
@@ -148,6 +149,7 @@
       "none": "[json('null')]",
       "docker": "[base64(variables('cloudInitDocker'))]",
       "tailscale": "[base64(variables('cloudInitTailscaleFormat'))]",
+      "tailscale-private": "[base64(variables('cloudInitTailscaleFormat'))]",
       "tailscale-postgres": "[base64(variables('cloudInitTailscalePostgresFormat'))]",
       "url": "[base64(variables('cloudInitUrl'))]"
     },
@@ -164,7 +166,75 @@
         "sku": "18.04-LTS",
         "version": "latest"
       }
-    }
+    },
+    "nsgSecurityRulesBase": [
+      {
+        "name": "Port_22",
+        "properties": {
+          "priority": 100,
+          "protocol": "Tcp",
+          "access": "Allow",
+          "direction": "Inbound",
+          "sourceAddressPrefix": "[parameters('allowIpPort22')]",
+          "sourcePortRange": "*",
+          "destinationAddressPrefix": "*",
+          "destinationPortRange": "22"
+        }
+      },
+      {
+        "name": "Port_80",
+        "properties": {
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "80",
+          "sourceAddressPrefix": "Internet",
+          "destinationAddressPrefix": "*",
+          "access": "Allow",
+          "priority": 110,
+          "direction": "Inbound"
+        }
+      },
+      {
+        "name": "Port_443",
+        "properties": {
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "443",
+          "sourceAddressPrefix": "Internet",
+          "destinationAddressPrefix": "*",
+          "access": "Allow",
+          "priority": 120,
+          "direction": "Inbound"
+        }
+      },
+      {
+        "name": "Port_8080",
+        "properties": {
+          "protocol": "*",
+          "sourcePortRange": "*",
+          "destinationPortRange": "8080",
+          "sourceAddressPrefix": "Internet",
+          "destinationAddressPrefix": "*",
+          "access": "Allow",
+          "priority": 130,
+          "direction": "Inbound"
+        }
+      },
+      {
+        "name": "Port_41641",
+        "properties": {
+          "protocol": "Udp",
+          "sourcePortRange": "*",
+          "destinationPortRange": "41641",
+          "sourceAddressPrefix": "Internet",
+          "destinationAddressPrefix": "*",
+          "access": "Allow",
+          "priority": 140,
+          "direction": "Inbound"
+        }
+      }
+    ],
+    "nsgSecurityRules": "[if(equals(parameters('cloudInit'), 'tailscale-private'), createArray(last(variables('nsgSecurityRulesBase'))), variables('nsgSecurityRulesBase'))]"
   },
   "resources": [
     {
@@ -187,9 +257,7 @@
                 "id": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}/subnets/{3}', subscription().subscriptionId, resourceGroup().name, variables('virtualNetworkName_var'), variables('subnetName'))]"
               },
               "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
-              }
+              "publicIPAddress": "[if(not(equals(parameters('cloudInit'), 'tailscale-private')), createObject('id', resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))), null())]"
             }
           }
         ],
@@ -208,73 +276,7 @@
       "name": "[format('{0}-nsg', resourceGroup().name)]",
       "location": "[parameters('location')]",
       "properties": {
-        "securityRules": [
-          {
-            "name": "Port_22",
-            "properties": {
-              "priority": 100,
-              "protocol": "Tcp",
-              "access": "Allow",
-              "direction": "Inbound",
-              "sourceAddressPrefix": "[parameters('allowIpPort22')]",
-              "sourcePortRange": "*",
-              "destinationAddressPrefix": "*",
-              "destinationPortRange": "22"
-            }
-          },
-          {
-            "name": "Port_80",
-            "properties": {
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "80",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 110,
-              "direction": "Inbound"
-            }
-          },
-          {
-            "name": "Port_443",
-            "properties": {
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "443",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 120,
-              "direction": "Inbound"
-            }
-          },
-          {
-            "name": "Port_8080",
-            "properties": {
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "8080",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 130,
-              "direction": "Inbound"
-            }
-          },
-          {
-            "name": "Port_41641",
-            "properties": {
-              "protocol": "Udp",
-              "sourcePortRange": "*",
-              "destinationPortRange": "41641",
-              "sourceAddressPrefix": "Internet",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 140,
-              "direction": "Inbound"
-            }
-          }
-        ]
+        "securityRules": "[variables('nsgSecurityRules')]"
       }
     },
     {
@@ -310,6 +312,7 @@
       }
     },
     {
+      "condition": "[not(equals(parameters('cloudInit'), 'tailscale-private'))]",
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2021-05-01",
       "name": "[variables('publicIPAddressName')]",
@@ -387,11 +390,11 @@
     },
     "hostname": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).dnsSettings.fqdn]"
+      "value": "[if(not(equals(parameters('cloudInit'), 'tailscale-private')), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn, parameters('vmName'))]"
     },
     "sshCommand": {
       "type": "string",
-      "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).dnsSettings.fqdn)]"
+      "value": "[format('ssh {0}@{1}', parameters('adminUsername'), if(not(equals(parameters('cloudInit'), 'tailscale-private')), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn, parameters('vmName')))]"
     }
   }
 }
