@@ -42,7 +42,7 @@ Tailscale is deployed with [Tailscale SSH](https://tailscale.com/kb/1193/tailsca
 
 ### `tailscale-private`
 
-This template deployment is nearly identical to the tailscale deployment above. The only thing different here is that there is NO exposure of the Linux VM to the public internet. It is advisable that you configure MagicDNS so that you can ssh in to the server using just the VM name.
+This template deployment is nearly identical to the tailscale deployment above. The only thing different here is that there is NO exposure of the Linux VM to the public internet (except for port 41641 over UDP for tailscale). It is advisable that you configure MagicDNS so that you can ssh in to the server using just the VM name.
 
 ### `tailscale-postgres`
 
