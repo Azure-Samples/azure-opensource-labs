@@ -2,14 +2,8 @@
 Azure Kubernetes Service provides a powerful way to manage Kubernetes applications which are Portable, extensibile, and when combined with Azure infrastructure highly scalable. Part 2 of this tutorial covers steps in scaling an AKS application by adding Application Gateway Ingress.
 
 ## Prerequisites
- - Completion of part 1 of this [tutorial](../Part1VotingApp/README.md)
- - Access to Azure CLI with an active subscription. To install Azure CLI see https://docs.microsoft.com/en-us/cli/azure/install-azure-cli.
- - If you have multiple Azure subscriptions, select the appropriate subscription ID in which the resources should be billed using the az account command.
- - This tutorial requires version 2.0.64 or later of the Azure CLI. If using Azure Cloud Shell, the latest version is already installed.
- - If you're using a local installation, sign in to the Azure CLI by using the az login command. To finish the authentication process, follow the steps displayed in your terminal. For other sign-in options, see Sign in with the Azure CLI..
- - Helm installed and configured. To install Helm see  https://helm.sh/docs/intro/install/.
-- Consider using the Bash enviornment in Azure Cloud Shell
-- Envsubst installed. This can be installed in Cloud Shell by running pip install envsubst
+In the previous tutorials a sample application was created and an Application Gateway Ingress controller was added. If you haven't done these steps, and would like to follow along, complete [Parts 1 Deploy a Voting App](../Part1VotingApp/README.md)
+
 
 ## Setup
 
