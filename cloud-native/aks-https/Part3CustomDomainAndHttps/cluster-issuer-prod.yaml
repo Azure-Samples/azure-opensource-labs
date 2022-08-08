@@ -17,18 +17,16 @@ spec:
     server: https://acme-v02.api.letsencrypt.org/directory
     # Secret resource used to store the account's private key.
     privateKeySecretRef:
-     name: example-issuer-account-key
+      name: example-issuer-account-key
     # Enable the HTTP-01 challenge provider
     # you prove ownership of a domain by ensuring that a particular
     # file is present at the domain
     solvers:
-    - http01:
-        ingress:
-          class: azure/application-gateway
+      - http01:
+          ingress:
+            class: azure/application-gateway
 #EOF
 
 # References:
 # https://docs.microsoft.com/en-us/azure/application-gateway/ingress-controller-letsencrypt-certificate-application-gateway
 # https://cert-manager.io/docs/configuration/acme/
-# kubectl delete -f clusterIssuer.yaml
-# kubectl apply -f clusterIssuer-prod.yaml
