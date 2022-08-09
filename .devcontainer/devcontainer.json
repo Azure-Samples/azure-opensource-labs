@@ -30,6 +30,7 @@
 	"features": {
 		"azure-cli": "latest",
 		"bicep": "latest",
+		"dotnet": "latest",
 		"golang": "latest"
 	}
 }
