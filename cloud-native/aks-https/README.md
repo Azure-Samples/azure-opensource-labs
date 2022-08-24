@@ -30,18 +30,15 @@ After signing in, CLI commands are run against your default subscription. If you
 
 ## Create a Resource Group
 
-An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are prompted to specify a location. This location is:
+An Azure resource group is a logical group in which Azure resources are deployed and managed. When you create a resource group, you are prompted to specify a location. This location is the storage location of your resource group metadata and where your resources will run in Azure if you don't specify another region during resource creation.
 
-- The storage location of your resource group metadata.
-- Where your resources will run in Azure if you don't specify another region during resource creation.
-
-Validate Resource Group does not already exist. If it does, select a new resource group name by running the following:
+Validate resource group does not already exist. If it does, select a new resource group name by running the following:
 
 ```bash
-if [ "$(az group exists --name $RESOURCE_GROUP_NAME)" = 'true' ]; then export RAND=$RANDOM; export RESOURCE_GROUP_NAME="$RESOURCE_GROUP_NAME$RAND"; echo "Your new Resource Group Name is $RESOURCE_GROUP_NAME"; fi
+if [ "$(az group exists --name $RESOURCE_GROUP)" = 'true' ]; then export RAND=$RANDOM; export RESOURCE_GROUP="$RESOURCE_GROUP$RAND"; echo "Your new Resource Group Name is $RESOURCE_GROUP"; fi
 ```
 
-Create a resource group using the az group create command:
+Create a resource group.
 
 ```bash
 az group create \
@@ -49,7 +46,7 @@ az group create \
     --location $LOCATION
 ```
 
-The following is output for successful resource group creation
+The following is output for successful resource group creation.
 
 Results:
 
@@ -67,7 +64,7 @@ Results:
 }
 ```
 
-## Create AKS Cluster
+## Create an AKS Cluster
 
 Create an AKS cluster using the az aks create command with the --enable-addons monitoring parameter to enable Container insights. The following example creates a cluster named myAKSCluster with one node:
 
@@ -84,19 +81,13 @@ az aks create \
 
 To manage a Kubernetes cluster, use the Kubernetes command-line client, kubectl. kubectl is already installed if you use Azure Cloud Shell.
 
-1. Install az aks CLI locally using the az aks install-cli command
+Install kubectl CLI locally using the az aks install-cli command.
 
 ```bash
 if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
 ```
 
-2. Configure kubectl to connect to your Kubernetes cluster using the az aks get-credentials command. The following command:
-
-- Downloads credentials and configures the Kubernetes CLI to use them.
-- Uses ~/.kube/config, the default location for the Kubernetes configuration file. Specify a different location for your Kubernetes configuration file using --file argument. 
-
-> **Warning**
-> This will overwrite any existing credentials with the same entry
+Configure kubectl to connect to your Kubernetes cluster using the `az aks get-credentials` command. 
 
 ```bash
 az aks get-credentials \
@@ -105,7 +96,12 @@ az aks get-credentials \
     --overwrite-existing
 ```
 
-3. Verify the connection to your cluster using the kubectl get command. This command returns a list of the cluster nodes.
+This command downloads credentials and configures the Kubernetes CLI to use them. It uses ~/.kube/config, the default location for the Kubernetes configuration file. You can specify a different location for your Kubernetes configuration file using --file argument. 
+
+> **Warning**
+> This will overwrite any existing credentials with the same entry
+
+Verify the connection to your cluster using the kubectl get command. This command returns a list of the cluster nodes.
 
 ```bash
 kubectl get nodes
@@ -134,11 +130,11 @@ Two [Kubernetes Services](https://docs.microsoft.com/en-us/azure/aks/concepts-ne
 - An internal service for the Redis instance.
 - An external service to access the Azure Vote application from the internet.
 
-1. Create a file named azure-vote.yaml and copy in the following manifest.
+Create a file named `azure-vote.yaml` and copy in the following manifest.
 
-	- If you use the Azure Cloud Shell, this file can be created using code, vi, or nano as if working on a virtual or physical system.
+If you use the Azure Cloud Shell, this file can be created using `code`, `vi`, or `nano` as if working on a virtual or physical system.
 
-	```yaml
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -226,7 +222,7 @@ spec:
     app: azure-vote-front
 ```
 
-2. Deploy the application using the [kubectl apply](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#apply) command and specify the name of your YAML manifest:
+Deploy the application using the [kubectl apply](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#apply) command and specify the name of your YAML manifest:
 
 ```bash
 kubectl apply -f azure-vote-start.yml
@@ -245,19 +241,19 @@ kubectl get service
 Store the public IP Address as an environment variable for later use.
 
 > **Note**
-> This command loops for 2 minutes and queries the output of kubectl get service for the IP Address. Sometimes it can take a few seconds to propagate correctly 
+> This command loops for 2 minutes and queries the output of kubectl get service for the IP Address. Sometimes it can take a few seconds to propagate correctly.
 
 ```bash
 runtime="2 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do export IP_ADDRESS=$(kubectl get service azure-vote-front --output jsonpath='{.status.loadBalancer.ingress[0].ip}'); if ! [ -z $IP_ADDRESS ]; then break; else sleep 10; fi; done
 ```
 
-Run the following command to obtain the IP Address
+Run the following command to obtain the URL.
 
 ```bash
-echo $IP_ADDRESS
+echo "http://${IP_ADDRESS}"
 ```
 
-To see the Azure Vote app in action, open a web browser to the external IP address of the application.
+Open the URL in a web browser and can see the Azure Vote app in action.
 
 ## Next steps
 
