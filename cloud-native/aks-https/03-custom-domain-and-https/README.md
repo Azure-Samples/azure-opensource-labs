@@ -3,7 +3,7 @@
 Azure Kubernetes Service provides a powerful way to manage Kubernetes applications which are Portable, extensibile, and when combined with Azure infrastructure highly scalable. Part 3 of this tutorial covers steps in adding a custom domain with https to an AKS Application.
 
 ## Prerequisites
-In the previous tutorials a sample application was created and an Application Gateway Ingress controller was added. If you haven't done these steps, and would like to follow along, complete [Parts 1 & 2](../Part2ScaleYourApplication/README.md)
+In the previous tutorials a sample application was created and an Application Gateway Ingress controller was added. If you haven't done these steps, and would like to follow along, complete [Part 1](../README.md) and [Part 2](../02-scale-your-application/README.md)
 ## Setup
 
 ### Define Custom Command Line Variables 
