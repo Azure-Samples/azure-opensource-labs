@@ -1,4 +1,5 @@
-# Tutorial: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI Part 1
+# Deploy a Scalable and Secure Azure Kubernetes Service cluster using the Azure CLI
+
 Azure Kubernetes Service provides a powerful way to manage Kubernetes applications which are Portable, extensibile, and when combined with Azure infrastructure highly scalable. Part 1 of this tutorial covers steps in creating a basic web voting application. Parts 2 and 3 will show how to scale the application and add a custom domain which is secured via https.
 
 ## Prerequisites

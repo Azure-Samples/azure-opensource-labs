@@ -1,4 +1,5 @@
-# Tutorial: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI Part 3
+# Deploy a Scalable and Secure Azure Kubernetes Service cluster using the Azure CLI (Part 3)
+
 Azure Kubernetes Service provides a powerful way to manage Kubernetes applications which are Portable, extensibile, and when combined with Azure infrastructure highly scalable. Part 3 of this tutorial covers steps in adding a custom domain with https to an AKS Application.
 
 ## Prerequisites
