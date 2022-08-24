@@ -30,7 +30,7 @@ AGIC helps eliminate the need to have another load balancer/public IP in front o
 ```
 az network public-ip create \
     --name $PUBLIC_IP_NAME \
-    --resource-group $RESOURCE_GROUP_NAME \
+    --resource-group $RESOURCE_GROUP \
     --allocation-method Static \
     --sku Standard
 ```
@@ -39,7 +39,7 @@ az network public-ip create \
 ```
 az network vnet create \
     --name $VNET_NAME \
-    --resource-group $RESOURCE_GROUP_NAME \
+    --resource-group $RESOURCE_GROUP \
     --address-prefix 11.0.0.0/8 \
     --subnet-name $SUBNET_NAME \
     --subnet-prefix 11.1.0.0/16 
@@ -47,13 +47,13 @@ az network vnet create \
 
 3. Create Application Gateway by running the following:
 
-> [!NOTE] 
+> **Note** 
 > This will take around 5 minutes 
 ```
 az network application-gateway create \
     --name $APPLICATION_GATEWAY_NAME \
     --location $RESOURCE_LOCATION \
-    --resource-group $RESOURCE_GROUP_NAME \
+    --resource-group $RESOURCE_GROUP \
     --sku Standard_v2 \
     --public-ip-address $PUBLIC_IP_NAME \
     --vnet-name $VNET_NAME \
@@ -66,19 +66,19 @@ az network application-gateway create \
 ```
 APPLICATION_GATEWAY_ID=$(az network application-gateway show \
     --name $APPLICATION_GATEWAY_NAME \
-    --resource-group $RESOURCE_GROUP_NAME \
+    --resource-group $RESOURCE_GROUP \
     --output tsv \
     --query "id")
 ```
 
 2. Enable Application Gateway Ingress Add-on by running the following:
 
-> [!NOTE]
+> **Note**
 > This will take a few minutes
 ```
 az aks enable-addons \
-    --name $AKS_CLUSTER_NAME \
-    --resource-group $RESOURCE_GROUP_NAME \
+    --name $AKS_NAME \
+    --resource-group $RESOURCE_GROUP \
     --addon ingress-appgw \
     --appgw-id $APPLICATION_GATEWAY_ID
 ```
@@ -86,8 +86,8 @@ az aks enable-addons \
 3. Store the node resource as an environment variable group by running the following:
 ```
 NODE_RESOURCE_GROUP=$(az aks show \
-    --name myAKSCluster \
-    --resource-group $RESOURCE_GROUP_NAME \
+    --name $AKS_NAME \
+    --resource-group $RESOURCE_GROUP \
     --output tsv \
     --query "nodeResourceGroup")
 ```
@@ -114,7 +114,7 @@ Since we deployed the AKS cluster in its own virtual network and the Application
 ```
 az network vnet peering create \
     --name $APPGW_TO_AKS_PEERING_NAME \
-    --resource-group $RESOURCE_GROUP_NAME \
+    --resource-group $RESOURCE_GROUP \
     --vnet-name $VNET_NAME \
     --remote-vnet $AKS_VNET_ID \
     --allow-vnet-access 
@@ -124,7 +124,7 @@ az network vnet peering create \
 ```
 APPLICATION_GATEWAY_VNET_ID=$(az network vnet show \
     --name $VNET_NAME \
-    --resource-group $RESOURCE_GROUP_NAME \
+    --resource-group $RESOURCE_GROUP \
     --output tsv \
     --query "id")
 ```
@@ -139,7 +139,7 @@ az network vnet peering create \
 ```
 4. Store New IP address as environment variable by running the following command:
 ```
-runtime="2 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do export IP_ADDRESS=$(az network public-ip show --resource-group $RESOURCE_GROUP_NAME --name $PUBLIC_IP_NAME --query ipAddress --output tsv); if ! [ -z $IP_ADDRESS ]; then break; else sleep 10; fi; done
+runtime="2 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do export IP_ADDRESS=$(az network public-ip show --resource-group $RESOURCE_GROUP --name $PUBLIC_IP_NAME --query ipAddress --output tsv); if ! [ -z $IP_ADDRESS ]; then break; else sleep 10; fi; done
 ```
 
 ## Apply updated application YAML complete with AGIC
