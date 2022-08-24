@@ -21,25 +21,25 @@ You can also join us on the [Microsoft Open Source Discord (aka.ms/open-source-d
 
 ### Cloud Native
 
-[Go to Cloud Native labs](cloud-native/)
+[Go to Cloud Native labs](cloud-native/#readme)
 
 Containers, Kubernetes, Azure Kubernetes Service, Azure Container Apps, Open Source, KEDA (Kubernetes Event-driven Autoscaling), Dapr (Distributed Application Runtime), and more.
 
 ### Linux
 
-[Go to Linux labs](linux/)
+[Go to Linux labs](linux/#readme)
 
 Linux, Virtual Machines, Virtual Machine Scale Sets, and more.
 
 ### Go (golang)
 
-[Go to Go (golang) labs](golang/)
+[Go to Go (golang) labs](golang/#readme)
 
 Go, Cloud Native Go, GitHub Actions, Container Apps, GopherCon, and more.
 
 ### Python
 
-[Go to Python labs](python/)
+[Go to Python labs](python/#readme)
 
 Python, Container Apps, PyCon, and more.
 
