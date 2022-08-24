@@ -4,13 +4,11 @@ Azure Kubernetes Service provides a powerful way to manage Kubernetes applicatio
 
 ## Prerequisites
 
-- Access to Azure CLI with an active subscription. To install Azure CLI see https://docs.microsoft.com/en-us/cli/azure/install-azure-cli.
-- If you have multiple Azure subscriptions, select the appropriate subscription ID in which the resources should be billed using the az account command.
-- This tutorial requires version 2.0.64 or later of the Azure CLI. If using Azure Cloud Shell, the latest version is already installed.
-- If you're using a local installation, sign in to the Azure CLI by using the az login command. To finish the authentication process, follow the steps displayed in your terminal. For other sign-in options, see Sign in with the Azure CLI..
-- Helm installed and configured. To install Helm see  https://helm.sh/docs/intro/install/.
-- Consider using the Bash environment in Azure Cloud Shell. If using cloud shell Envsubst will need to be installed by running pip install envsubst
-
+- An **Azure Subscription** (e.g. [Free](https://aka.ms/azure-free-account) or [Student](https://aka.ms/azure-student-account) account)
+- The [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), version 2.0.64 or later.
+- Bash shell (e.g. macOS, Linux, [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/about), [Multipass](https://multipass.run/), [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart), [GitHub Codespaces](https://github.com/features/codespaces), etc)
+- [Helm](https://helm.sh/docs/intro/install/)
+- envsubst (`pip install envsubst`)
 
 ## Setup
 
