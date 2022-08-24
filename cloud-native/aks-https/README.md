@@ -240,9 +240,6 @@ kubectl get service
 
 Store the public IP Address as an environment variable for later use.
 
-> **Note**
-> This command loops for 2 minutes and queries the output of kubectl get service for the IP Address. Sometimes it can take a few seconds to propagate correctly.
-
 ```bash
 IP_ADDRESS=$(kubectl get service azure-vote-front --output jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
