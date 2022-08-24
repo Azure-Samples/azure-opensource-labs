@@ -19,19 +19,39 @@ You can also join us on the [Microsoft Open Source Discord (aka.ms/open-source-d
 
 ## Latest Labs
 
-- [Cloud Native](cloud-native/)
-- [Go (golang)](golang/)
-- [Python](python/)
-- [Linux](linux/)
+### Cloud Native
 
-## Beta Branches
+[Go to Cloud Native labs](cloud-native/)
+
+Containers, Kubernetes, Azure Kubernetes Service, Azure Container Apps, Open Source, KEDA (Kubernetes Event-driven Autoscaling), Dapr (Distributed Application Runtime), and more.
+
+### Linux
+
+[Go to Linux labs](linux/)
+
+Linux, Virtual Machines, Virtual Machine Scale Sets, and more.
+
+### Go (golang)
+
+[Go to Go (golang) labs](golang/)
+
+Go, Cloud Native Go, GitHub Actions, Container Apps, GopherCon, and more.
+
+### Python
+
+[Go to Python labs](python/)
+
+Python, Container Apps, PyCon, and more.
+
+## More
+### Beta Branches
 
 The following branches are being actively updated. You may experience breaking changes, but we would love to hear any feedback!
 
 - [containerapps-bicep](https://github.com/Azure-Samples/azure-opensource-labs/tree/containerapps-bicep/cloud-native/containerapps-bicep)
 - [aks-bicep](https://github.com/Azure-Samples/azure-opensource-labs/tree/aks-bicep/cloud-native/aks-bicep)
 
-## OSCON 2019
+### OSCON 2019
 
 You can find original 2019 labs delivered in person at [OSCON 2019](https://en.wikipedia.org/wiki/O%27Reilly_Open_Source_Convention), in the [2019](2019/#azure-open-source-labs-oscon-2019) sub-folder and/or the [oscon-2019](https://github.com/Azure-Samples/azure-opensource-labs/tree/oscon-2019) branch (original snapshot).
 
