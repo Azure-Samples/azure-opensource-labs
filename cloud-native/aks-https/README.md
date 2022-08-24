@@ -257,4 +257,4 @@ Open the URL in a web browser and can see the Azure Vote app in action.
 
 ## Next steps
 
-Learn how to scale an AKS Application with part 2 of the tutorial, see [Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI (Part 2)](./02-scale-your-application).
+Learn how to scale an AKS Application with part 2 of the tutorial, see [Deploy a Scalable and Secure Azure Kubernetes Service cluster using the Azure CLI (Part 2)](./02-scale-your-application).

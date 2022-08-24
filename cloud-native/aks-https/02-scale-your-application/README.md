@@ -280,4 +280,4 @@ To see the Azure Vote app in action, open a web browser to the external IP addre
 
 ## Next steps
 
-Learn how to scale an AKS Application with part 2 of the tutorial, see [Tutorial: Deploy a Scalable & Secure Azure Kubernetes Service cluster using the Azure CLI Part 3](../03-custom-domain-and-https).
+Learn how to scale an AKS Application with part 2 of the tutorial, see [Deploy a Scalable and Secure Azure Kubernetes Service cluster using the Azure CLI (Part 3)](../03-custom-domain-and-https).
