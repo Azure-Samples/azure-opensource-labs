@@ -12,15 +12,21 @@ Azure Kubernetes Service provides a powerful way to manage Kubernetes applicatio
 
 ## Setup
 
-### Define Default Command Line Variables
-
-This tutorial will use command line variables. Copy and run the following the following to set default command line variables 
+This tutorial will use bash variables. Set the following variables. 
 
 ```bash
-RESOURCE_GROUP_NAME="myResourceGroup"
-RESOURCE_LOCATION="eastus"
-AKS_CLUSTER_NAME "myAKSCluster"
+RESOURCE_GROUP="my-aks"
+LOCATION="eastus"
+AKS_NAME="aks1"
 ```
+
+Run the `login` command.
+
+```bash
+az login
+```
+
+After signing in, CLI commands are run against your default subscription. If you have multiple subscriptions, you can [change your default subscription](https://docs.microsoft.com/en-us/cli/azure/manage-azure-subscriptions-azure-cli).
 
 ## Create a Resource Group
 
