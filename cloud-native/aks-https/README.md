@@ -128,7 +128,7 @@ Two [Kubernetes Services](https://docs.microsoft.com/en-us/azure/aks/concepts-ne
 - An internal service for the Redis instance.
 - An external service to access the Azure Vote application from the internet.
 
-Create a file named `azure-vote.yaml` and copy in the following manifest.
+Create a file named `azure-vote-start.yaml` and copy in the following manifest.
 
 If you use the Azure Cloud Shell, this file can be created using `code`, `vi`, or `nano` as if working on a virtual or physical system.
 
