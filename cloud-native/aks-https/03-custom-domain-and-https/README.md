@@ -15,19 +15,19 @@ We will now choose and define the custom domain which your application will use.
 > [!Note] Do not add any capitalization or .com. The custom domain must be unique and fit the pattern: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$
 
 ```
-export CUSTOM_DOMAIN_NAME="myuniquecustomdomain"
+CUSTOM_DOMAIN_NAME="myuniquecustomdomain"
 ```
 
 You can validate the custom domain works by running the following 
 ```
-if [[ ! $CUSTOM_DOMAIN_NAME =~ ^[a-z][a-z0-9-]{1,61}[a-z0-9] ]]; then echo "Invalid Domain, run'export CUSTOM_DOMAIN_NAME="customdomainname"' again and choose a new domain"; else echo "Custom Domain Set!"; fi; 
+if [[ ! $CUSTOM_DOMAIN_NAME =~ ^[a-z][a-z0-9-]{1,61}[a-z0-9] ]]; then echo "Invalid Domain, run'CUSTOM_DOMAIN_NAME="customdomainname"' again and choose a new domain"; else echo "Custom Domain Set!"; fi; 
 ```
 
 In order to obtain an SSL certificate from Lets Encrypt we need to provide a valid email address.
 
 Set a valid email address for SSL validation by running the following:
 ```
-export SSL_EMAIL_ADDRESS="myemailadress@gmail.com"
+SSL_EMAIL_ADDRESS="myemailadress@gmail.com"
 ```
 
 ## Add custom domain to AGIC
@@ -36,19 +36,26 @@ Now that Application Gateway Ingress has been added, the next step is to add a c
 1. Store Unique ID of the Public IP Address as an environment variable by running the following:
 
 ```bash
-export PUBLIC_IP_ID=$(az network public-ip list --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP_ADDRESS')].[id]" --output tsv)
+PUBLIC_IP_ID=$(az network public-ip list \
+    --query "[?ipAddress!=null]|[?contains(ipAddress, '$IP_ADDRESS')].[id]" \
+    --output tsv)
 ```
 
 2. Update public IP to respond to custom domain requests by running the following:
 
 ```bash
-az network public-ip update --ids $PUBLIC_IP_ID --dns-name $CUSTOM_DOMAIN_NAME
+az network public-ip update \
+    --ids $PUBLIC_IP_ID \
+    --dns-name $CUSTOM_DOMAIN_NAME
 ```
 
 3. Run the following command to see the fully qualified domain name (FQDN) of your application. 
 
 ```bash
-az network public-ip show --ids $PUBLIC_IP_ID --query "[dnsSettings.fqdn]" --output tsv
+az network public-ip show \
+    --ids $PUBLIC_IP_ID \
+    --query "[dnsSettings.fqdn]" \
+    --output tsv
 ```
 
     Validate the domain works by opening a web browser to the FQDN of the application.
@@ -56,7 +63,10 @@ az network public-ip show --ids $PUBLIC_IP_ID --query "[dnsSettings.fqdn]" --out
 4. Store the custom domain as en environment variable. This will be used later when setting up https termination.
 
 ```bash
-export FQDN=$(az network public-ip show --ids $PUBLIC_IP_ID --query "[dnsSettings.fqdn]" --output tsv)
+FQDN=$(az network public-ip show \
+    --ids $PUBLIC_IP_ID \
+    --query "[dnsSettings.fqdn]" \
+    --output tsv)
 ```
 
 ## Add HTTPS termination to custom domain 
