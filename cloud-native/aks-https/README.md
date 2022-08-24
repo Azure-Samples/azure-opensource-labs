@@ -8,7 +8,7 @@ Azure Kubernetes Service provides a powerful way to manage Kubernetes applicatio
 - The [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), version 2.0.64 or later.
 - Bash shell (e.g. macOS, Linux, [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/about), [Multipass](https://multipass.run/), [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart), [GitHub Codespaces](https://github.com/features/codespaces), etc)
 - [Helm](https://helm.sh/docs/intro/install/)
-- envsubst (`pip install envsubst`)
+- envsubst (`pip3 install envsubst`)
 
 ## Setup
 
