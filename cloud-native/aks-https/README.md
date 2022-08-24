@@ -8,12 +8,12 @@ Azure Kubernetes Service provides a powerful way to manage Kubernetes applicatio
  - This tutorial requires version 2.0.64 or later of the Azure CLI. If using Azure Cloud Shell, the latest version is already installed.
  - If you're using a local installation, sign in to the Azure CLI by using the az login command. To finish the authentication process, follow the steps displayed in your terminal. For other sign-in options, see Sign in with the Azure CLI..
  - Helm installed and configured. To install Helm see  https://helm.sh/docs/intro/install/.
-- Consider using the Bash enviornment in Azure Cloud Shell. If using cloud shell Envsubst will need to be installed by running pip install envsubst
+- Consider using the Bash environment in Azure Cloud Shell. If using cloud shell Envsubst will need to be installed by running pip install envsubst
 
 
 ## Setup
 
-### Define Default Command Line Variables 
+### Define Default Command Line Variables
 This tutorial will use command line variables. Copy and run the following  the following to set default command line variables 
 
 ```bash
@@ -55,7 +55,7 @@ Results:
 }
 ```
 
-## Create AKS Cluster 
+## Create AKS Cluster
 Create an AKS cluster using the az aks create command with the --enable-addons monitoring parameter to enable Container insights. The following example creates a cluster named myAKSCluster with one node:
 
 ```bash
@@ -72,8 +72,8 @@ if ! [ -x "$(command -v kubectl)" ]; then az aks install-cli; fi
 ```
 
 2. Configure kubectl to connect to your Kubernetes cluster using the az aks get-credentials command. The following command:
-    - Downloads credentials and configures the Kubernetes CLI to use them.
-    - Uses ~/.kube/config, the default location for the Kubernetes configuration file. Specify a different location for your Kubernetes configuration file using --file argument. 
+	- Downloads credentials and configures the Kubernetes CLI to use them.
+	- Uses ~/.kube/config, the default location for the Kubernetes configuration file. Specify a different location for your Kubernetes configuration file using --file argument. 
 
 > [!WARNING]
 > This will overwrite any existing credentials with the same entry
@@ -91,7 +91,7 @@ kubectl get nodes
 The following output example shows the single node created in the previous steps. Make sure the node status is Ready:
 
 
-## Deploy the Application 
+## Deploy the Application
 
 A [Kubernetes manifest file](https://docs.microsoft.com/en-us/azure/aks/concepts-clusters-workloads#deployments-and-yaml-manifests) defines a cluster's desired state, such as which container images to run.
 
@@ -107,96 +107,95 @@ Two [Kubernetes Services](https://docs.microsoft.com/en-us/azure/aks/concepts-ne
 
 1. Create a file named azure-vote.yaml and copy in the following manifest.
 
-    - If you use the Azure Cloud Shell, this file can be created using code, vi, or nano as if working on a virtual or physical system.
-    
-    ```yaml
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: azure-vote-back
-    spec:
-      replicas: 1
-      selector:
-        matchLabels:
-          app: azure-vote-back
-      template:
-        metadata:
-          labels:
-            app: azure-vote-back
-        spec:
-          nodeSelector:
-            "kubernetes.io/os": linux
-          containers:
-          - name: azure-vote-back
-            image: mcr.microsoft.com/oss/bitnami/redis:6.0.8
-            env:
-            - name: ALLOW_EMPTY_PASSWORD
-              value: "yes"
-            resources:
-              requests:
-                cpu: 100m
-                memory: 128Mi
-              limits:
-                cpu: 250m
-                memory: 256Mi
-            ports:
-            - containerPort: 6379
-              name: redis
-    ---
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: azure-vote-back
-    spec:
-      ports:
-      - port: 6379
-      selector:
-        app: azure-vote-back
-    ---
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: azure-vote-front
-    spec:
-      replicas: 1
-      selector:
-        matchLabels:
-          app: azure-vote-front
-      template:
-        metadata:
-          labels:
-            app: azure-vote-front
-        spec:
-          nodeSelector:
-            "kubernetes.io/os": linux
-          containers:
-          - name: azure-vote-front
-            image: mcr.microsoft.com/azuredocs/azure-vote-front:v1
-            resources:
-              requests:
-                cpu: 100m
-                memory: 128Mi
-              limits:
-                cpu: 250m
-                memory: 256Mi
-            ports:
-            - containerPort: 80
-            env:
-            - name: REDIS
-              value: "azure-vote-back"
-    ---
-    apiVersion: v1
-    kind: Service
-    metadata:
-      name: azure-vote-front
-    spec:
-      type: LoadBalancer
-      ports:
-      - port: 80
-      selector:
-        app: azure-vote-front
-    
-    ```
+	- If you use the Azure Cloud Shell, this file can be created using code, vi, or nano as if working on a virtual or physical system.
+	```yaml
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  name: azure-vote-back
+	spec:
+	  replicas: 1
+	  selector:
+	    matchLabels:
+	      app: azure-vote-back
+	  template:
+	    metadata:
+	      labels:
+	        app: azure-vote-back
+	    spec:
+	      nodeSelector:
+	        "kubernetes.io/os": linux
+	      containers:
+	      - name: azure-vote-back
+	        image: mcr.microsoft.com/oss/bitnami/redis:6.0.8
+	        env:
+	        - name: ALLOW_EMPTY_PASSWORD
+	          value: "yes"
+	        resources:
+	          requests:
+	            cpu: 100m
+	            memory: 128Mi
+	          limits:
+	            cpu: 250m
+	            memory: 256Mi
+	        ports:
+	        - containerPort: 6379
+	          name: redis
+	---
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: azure-vote-back
+	spec:
+	  ports:
+	  - port: 6379
+	  selector:
+	    app: azure-vote-back
+	---
+	apiVersion: apps/v1
+	kind: Deployment
+	metadata:
+	  name: azure-vote-front
+	spec:
+	  replicas: 1
+	  selector:
+	    matchLabels:
+	      app: azure-vote-front
+	  template:
+	    metadata:
+	      labels:
+	        app: azure-vote-front
+	    spec:
+	      nodeSelector:
+	        "kubernetes.io/os": linux
+	      containers:
+	      - name: azure-vote-front
+	        image: mcr.microsoft.com/azuredocs/azure-vote-front:v1
+	        resources:
+	          requests:
+	            cpu: 100m
+	            memory: 128Mi
+	          limits:
+	            cpu: 250m
+	            memory: 256Mi
+	        ports:
+	        - containerPort: 80
+	        env:
+	        - name: REDIS
+	          value: "azure-vote-back"
+	---
+	apiVersion: v1
+	kind: Service
+	metadata:
+	  name: azure-vote-front
+	spec:
+	  type: LoadBalancer
+	  ports:
+	  - port: 80
+	  selector:
+	    app: azure-vote-front
+	    
+	```
 
 2. Deploy the application using the [kubectl apply](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands#apply) command and specify the name of your YAML manifest:
 ```
@@ -213,8 +212,8 @@ kubectl get service
 ```
 
 Store the public IP Address as an environment variable for later use.
->[!Note]
-> This commmand loops for 2 minutes and queries the output of kubectl get service for the IP Address. Sometimes it can take a few seconds to propogate correctly 
+> [!Note]
+> This command loops for 2 minutes and queries the output of kubectl get service for the IP Address. Sometimes it can take a few seconds to propagate correctly 
 ```bash
 runtime="2 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do export IP_ADDRESS=$(kubectl get service azure-vote-front --output jsonpath='{.status.loadBalancer.ingress[0].ip}'); if ! [ -z $IP_ADDRESS ]; then break; else sleep 10; fi; done
 ```

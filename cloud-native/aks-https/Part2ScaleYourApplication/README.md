@@ -8,7 +8,7 @@ In the previous tutorials a sample application was created and an Application Ga
 
 ## Setup
 
-### Define Default Command Line Variables 
+### Define Default Command Line Variables
 This tutorial will use command line variables. Copy and run the following  the following to set default command line variables 
 
 ```bash
@@ -23,15 +23,15 @@ export AKS_TO_APPGW_PEERING_NAME="AKStoAppGWVnetPeering"
 ## Add Application Gateway Ingress Controller
 The Application Gateway Ingress Controller (AGIC) is a Kubernetes application, which makes it possible for Azure Kubernetes Service (AKS) customers to leverage Azure's native Application Gateway L7 load-balancer to expose cloud software to the Internet. AGIC monitors the Kubernetes cluster it is hosted on and continuously updates an Application Gateway, so that selected services are exposed to the Internet
 
-AGIC helps eliminate the need to have another load balancer/public IP in front of the AKS cluster and avoids multiple hops in your datapath before requests reach the AKS cluster. Application Gateway talks to pods using their private IP directly and does not require NodePort or KubeProxy services. This also brings better performance to your deployments.
+AGIC helps eliminate the need to have another load balancer/public IP in front of the AKS cluster and avoids multiple hops in your data path before requests reach the AKS cluster. Application Gateway talks to pods using their private IP directly and does not require NodePort or KubeProxy services. This also brings better performance to your deployments.
 
-## Deploy a new Application Gateway 
+## Deploy a new Application Gateway
 1. Create a Public IP for Application Gateway by running the following:
 ```
 az network public-ip create --name $PUBLIC_IP_NAME --resource-group $RESOURCE_GROUP_NAME --allocation-method Static --sku Standard
 ```
 
-2. Create a Virtual Network(Vnet) for Application Gateway by running the following:
+2. Create a Virtual Network (VNet) for Application Gateway by running the following:
 ```
 az network vnet create --name $VNET_NAME --resource-group $RESOURCE_GROUP_NAME --address-prefix 11.0.0.0/8 --subnet-name $SUBNET_NAME --subnet-prefix 11.1.0.0/16 
 ```
@@ -44,14 +44,14 @@ az network vnet create --name $VNET_NAME --resource-group $RESOURCE_GROUP_NAME -
 az network application-gateway create --name $APPLICATION_GATEWAY_NAME --location $RESOURCE_LOCATION --resource-group $RESOURCE_GROUP_NAME --sku Standard_v2 --public-ip-address $PUBLIC_IP_NAME --vnet-name $VNET_NAME --subnet $SUBNET_NAME
 ```
 
-## Enable the AGIC add-on in existing AKS cluster 
+## Enable the AGIC add-on in existing AKS cluster
 
 1. Store Application Gateway ID by running the following:
 ```
 APPLICATION_GATEWAY_ID=$(az network application-gateway show --name $APPLICATION_GATEWAY_NAME --resource-group $RESOURCE_GROUP_NAME --output tsv --query "id") 
 ```
 
-2. Enable Application Gateway Ingress Addon by running the following:
+2. Enable Application Gateway Ingress Add-on by running the following:
 
 > [!NOTE]
 > This will take a few minutes
@@ -63,28 +63,28 @@ az aks enable-addons --name $AKS_CLUSTER_NAME --resource-group $RESOURCE_GROUP_N
 ```
 NODE_RESOURCE_GROUP=$(az aks show --name myAKSCluster --resource-group $RESOURCE_GROUP_NAME --output tsv --query "nodeResourceGroup")
 ```
-4. Store the Vnet name as an environment variable by running the following:
+4. Store the VNet name as an environment variable by running the following:
 ```
 AKS_VNET_NAME=$(az network vnet list --resource-group $NODE_RESOURCE_GROUP --output tsv --query "[0].name")
 ```
 
-5. Store the Vnet ID as an environment variable by running the following:
+5. Store the VNet ID as an environment variable by running the following:
 ```
 AKS_VNET_ID=$(az network vnet show --name $AKS_VNET_NAME --resource-group $NODE_RESOURCE_GROUP --output tsv --query "id")
 ```
-## Peer the two virtual networks together 
+## Peer the two virtual networks together
 Since we deployed the AKS cluster in its own virtual network and the Application Gateway in another virtual network, you'll need to peer the two virtual networks together in order for traffic to flow from the Application Gateway to the pods in the cluster. Peering the two virtual networks requires running the Azure CLI command two separate times, to ensure that the connection is bi-directional. The first command will create a peering connection from the Application Gateway virtual network to the AKS virtual network; the second command will create a peering connection in the other direction.
 
-1. Create the peering from Application Gateway to AKS by runnig the following:
+1. Create the peering from Application Gateway to AKS by running the following:
 ```
 az network vnet peering create --name $APPGW_TO_AKS_PEERING_NAME --resource-group $RESOURCE_GROUP_NAME --vnet-name $VNET_NAME --remote-vnet $AKS_VNET_ID --allow-vnet-access 
 ```
 
-2. Store Id of Application Gateway Vnet As enviornment variable by running the following:
+2. Store Id of Application Gateway VNet As environment variable by running the following:
 ```
 APPLICATION_GATEWAY_VNET_ID=$(az network vnet show --name $VNET_NAME --resource-group $RESOURCE_GROUP_NAME --output tsv --query "id")
 ```
-3. Create Vnet Peering from AKS to Application Gateway
+3. Create VNet Peering from AKS to Application Gateway
 ```
 az network vnet peering create --name $AKS_TO_APPGW_PEERING_NAME --resource-group $NODE_RESOURCE_GROUP --vnet-name $AKS_VNET_NAME --remote-vnet $APPLICATION_GATEWAY_VNET_ID --allow-vnet-access
 ```
@@ -97,7 +97,7 @@ runtime="2 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) 
 
 1. Create a file named azure-vote-agic-yaml and copy in the following manifest.
 
-    - If you use the Azure Cloud Shell, this file can be created using code, vi, or nano as if working on a virtual or physical system.
+	- If you use the Azure Cloud Shell, this file can be created using code, vi, or nano as if working on a virtual or physical system.
 
 ```yaml
 apiVersion: apps/v1

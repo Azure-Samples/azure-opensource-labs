@@ -12,7 +12,7 @@ Custom values are required for the following inputs.
 We will now choose and define the custom domain which your application will use. The application will be reachable at {mycustomdomain}.eastus.cloudapp.azure.com
  
  Run the following command with a unique custom domain:
->[!Note] Do not add any capitalization or .com. The custom domain must be unique and fit the pattern: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$
+> [!Note] Do not add any capitalization or .com. The custom domain must be unique and fit the pattern: ^[a-z][a-z0-9-]{1,61}[a-z0-9]$
 
 ```
 export CUSTOM_DOMAIN_NAME="myuniquecustomdomain"
@@ -23,7 +23,7 @@ You can validate the custom domain works by running the following
 if [[ ! $CUSTOM_DOMAIN_NAME =~ ^[a-z][a-z0-9-]{1,61}[a-z0-9] ]]; then echo "Invalid Domain, run'export CUSTOM_DOMAIN_NAME="customdomainname"' again and choose a new domain"; else echo "Custom Domain Set!"; fi; 
 ```
 
-In order to obtain an SSL certificate from Lets Encrpyt we need to provide a valid email address.
+In order to obtain an SSL certificate from Lets Encrypt we need to provide a valid email address.
 
 Set a valid email address for SSL validation by running the following:
 ```
@@ -53,7 +53,7 @@ az network public-ip show --ids $PUBLIC_IP_ID --query "[dnsSettings.fqdn]" --out
 
     Validate the domain works by opening a web browser to the FQDN of the application.
 
-4. Store the custom domain as en enviornment variable. This will be used later when setting up https termination.
+4. Store the custom domain as en environment variable. This will be used later when setting up https termination.
 
 ```bash
 export FQDN=$(az network public-ip show --ids $PUBLIC_IP_ID --query "[dnsSettings.fqdn]" --output tsv)
@@ -97,7 +97,7 @@ helm repo add jetstack https://charts.jetstack.io
 helm repo update
 ```
 
-3. Install Cert-Manager addon via helm by running the following:
+3. Install Cert-Manager add-on via helm by running the following:
 ```
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.7.0
 ```
@@ -271,7 +271,7 @@ spec:
  ```
 
 7. Deploy the YAML file complete with SSL termination by running the following command: 
-    >[!NOTE] envsubst will replace variables in the YAML file with command line variables previosuly defined
+	> [!NOTE] envsubst will replace variables in the YAML file with command line variables previously defined
 
 ```
 envsubst < azure-vote-agic-ssl.yml | kubectl apply -f -
@@ -299,8 +299,8 @@ True
 ## Browse your AKS Deployment Secured via HTTPS!
 Run the following command to get the HTTPS endpoint for your application:
 
->[!Note]
-> It often takes 2-3 minutes for the SSL certificate to propogate and the site to be reachable via https 
+> [!Note]
+> It often takes 2-3 minutes for the SSL certificate to propagate and the site to be reachable via https 
 ```
 echo https://$FQDN
 ```
