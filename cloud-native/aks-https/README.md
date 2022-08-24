@@ -111,7 +111,14 @@ az aks get-credentials \
 kubectl get nodes
 ```
 
-The following output example shows the single node created in the previous steps. Make sure the node status is Ready:
+The following output example shows the single node created in the previous steps. Make sure the node status is Ready.
+
+```
+NAME                                STATUS     ROLES   AGE   VERSION
+aks-nodepool1-42214820-vmss000000   Ready      agent   20d   v1.21.9
+aks-nodepool1-42214820-vmss000001   Ready      agent   20d   v1.21.9
+aks-nodepool1-42214820-vmss000002   Ready      agent   20d   v1.21.9
+```
 
 ## Deploy the Application
 
