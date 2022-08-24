@@ -110,10 +110,8 @@ kubectl get nodes
 The following output example shows the single node created in the previous steps. Make sure the node status is Ready.
 
 ```
-NAME                                STATUS     ROLES   AGE   VERSION
-aks-nodepool1-42214820-vmss000000   Ready      agent   20d   v1.21.9
-aks-nodepool1-42214820-vmss000001   Ready      agent   20d   v1.21.9
-aks-nodepool1-42214820-vmss000002   Ready      agent   20d   v1.21.9
+NAME                                STATUS   ROLES   AGE     VERSION
+aks-nodepool1-26003523-vmss000000   Ready    agent   8m54s   v1.23.8
 ```
 
 ## Deploy the Application
