@@ -242,7 +242,7 @@ Store the public IP Address as an environment variable for later use.
 > This command loops for 2 minutes and queries the output of kubectl get service for the IP Address. Sometimes it can take a few seconds to propagate correctly.
 
 ```bash
-runtime="2 minute"; endtime=$(date -ud "$runtime" +%s); while [[ $(date -u +%s) -le $endtime ]]; do export IP_ADDRESS=$(kubectl get service azure-vote-front --output jsonpath='{.status.loadBalancer.ingress[0].ip}'); if ! [ -z $IP_ADDRESS ]; then break; else sleep 10; fi; done
+IP_ADDRESS=$(kubectl get service azure-vote-front --output jsonpath='{.status.loadBalancer.ingress[0].ip}')
 ```
 
 Run the following command to obtain the URL.
