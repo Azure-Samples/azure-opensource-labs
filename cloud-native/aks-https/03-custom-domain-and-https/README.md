@@ -33,7 +33,7 @@ In order to obtain an SSL certificate from Lets Encrypt we need to provide a val
 Set a valid email address for SSL validation by running the following:
 
 ```bash
-SSL_EMAIL_ADDRESS="myemailadress@gmail.com"
+export SSL_EMAIL_ADDRESS="myemailadress@gmail.com"
 ```
 
 ## Add custom domain to AGIC
@@ -70,7 +70,7 @@ Validate the domain works by opening a web browser to the FQDN of the applicatio
 Store the custom domain as an environment variable. This will be used later when setting up https termination.
 
 ```bash
-FQDN=$(az network public-ip show \
+export FQDN=$(az network public-ip show \
     --ids $PUBLIC_IP_ID \
     --query "[dnsSettings.fqdn]" \
     --output tsv)
