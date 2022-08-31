@@ -134,6 +134,7 @@ runcmd:
 - cd /home/azureuser/
 - bash tailscale.sh "$(jq -r '.tskey' env.json)"
 - echo $(date) > hello.txt
+- chown -R azureuser:azureuser /home/azureuser/
 '''
 
 var cloudInitTailscaleFormat = format(cloudInitTailscale, base64(string(env)))
@@ -174,6 +175,7 @@ runcmd:
 - bash tailscale.sh "$(jq -r '.tskey' env.json)"
 - docker run --name postgres --restart always -e POSTGRES_HOST_AUTH_METHOD=trust -v /home/azureuser/postgresql/data:/var/lib/postgresql/data -p 5432:5432 -d postgres:14
 - echo $(date) > hello.txt
+- chown -R azureuser:azureuser /home/azureuser/
 '''
 
 var cloudInitTailscalePostgresFormat = format(cloudInitTailscalePostgres, base64(string(env)))
