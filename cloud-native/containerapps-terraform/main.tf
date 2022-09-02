@@ -57,14 +57,40 @@ resource "azurerm_virtual_network" "aca" {
   location            = azurerm_resource_group.aca.location
 
   subnet {
-    name           = "snet-environment"
+    name           = "Environment"
     address_prefix = "10.0.0.0/23"
   }
 
   subnet {
-    name           = "snet-sandbox"
+    name           = "Sandbox"
     address_prefix = "10.0.2.0/23"
   }
+}
+
+resource "azurerm_network_security_group" "env" {
+  count               = var.environment_virtual_network.use_custom_vnet ? 1 : 0
+  name                = "nsg-${local.resource_name}-environment"
+  location            = azurerm_resource_group.aca.location
+  resource_group_name = azurerm_resource_group.aca.name
+}
+
+resource "azurerm_subnet_network_security_group_association" "env" {
+  count               = var.environment_virtual_network.use_custom_vnet ? 1 : 0
+  subnet_id                 = element(azurerm_virtual_network.aca[0].subnet.*.id, index(azurerm_virtual_network.aca[0].subnet.*.name, "Environment"))
+  network_security_group_id = azurerm_network_security_group.env[0].id
+}
+
+resource "azurerm_network_security_group" "sb" {
+  count               = var.environment_virtual_network.use_custom_vnet ? 1 : 0
+  name                = "nsg-${local.resource_name}-sandbox"
+  location            = azurerm_resource_group.aca.location
+  resource_group_name = azurerm_resource_group.aca.name
+}
+
+resource "azurerm_subnet_network_security_group_association" "sb" {
+  count               = var.environment_virtual_network.use_custom_vnet ? 1 : 0
+  subnet_id                 = element(azurerm_virtual_network.aca[0].subnet.*.id, index(azurerm_virtual_network.aca[0].subnet.*.name, "Sandbox"))
+  network_security_group_id = azurerm_network_security_group.sb[0].id
 }
 
 resource "azurerm_container_registry" "aca" {
@@ -102,7 +128,7 @@ resource "azapi_resource" "env" {
       }
       # if you want to use a custom VNET, set the vnetConfiguration property
       vnetConfiguration = var.environment_virtual_network.use_custom_vnet ? {
-        infrastructureSubnetId = element(azurerm_virtual_network.aca[0].subnet.*.id, index(azurerm_virtual_network.aca[0].subnet.*.name, "snet-environment"))
+        infrastructureSubnetId = element(azurerm_virtual_network.aca[0].subnet.*.id, index(azurerm_virtual_network.aca[0].subnet.*.name, "Environment"))
         internal               = var.environment_virtual_network.is_internal
       } : null
     }
@@ -147,6 +173,16 @@ resource "azapi_resource" "helloworld" {
         scale = {
           minReplicas = 0
           maxReplicas = 30
+          rules = [
+            {
+              name = "http-rule"
+              http = {
+                metadata = {
+                  concurrentRequests = "100"
+                }
+              }
+            }
+          ]
         }
       }
     }
@@ -200,5 +236,13 @@ resource "azurerm_role_assignment" "amg_admin" {
   principal_id         = data.azurerm_client_config.aca.object_id
 }
 
+resource "local_file" "helloworld" {
+  filename = "./k6_scripts.js"
+  content = templatefile("./k6_scripts.tmpl",
+    {
+      INGRESS_FQDN = format("%s%s", "https://", jsondecode(azapi_resource.helloworld.output).properties.configuration.ingress.fqdn)
+    }
+  )
+}
 
 # // todo: https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/resources/service_principal

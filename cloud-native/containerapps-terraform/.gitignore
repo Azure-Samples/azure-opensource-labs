@@ -32,3 +32,6 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# Ignore k6_scripts.js file which gett generated when terraform runs
+k6_scripts.js
