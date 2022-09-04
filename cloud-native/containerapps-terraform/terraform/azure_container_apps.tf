@@ -145,6 +145,10 @@ resource "azapi_resource" "sender" {
           }
         ]
         revisionSuffix = random_string.aca.result
+        scale = {
+          minReplicas = 1
+          maxReplicas = 1
+        }
       }
     }
   })

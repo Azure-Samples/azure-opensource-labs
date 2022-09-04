@@ -64,12 +64,12 @@ func main() {
 		panic(err)
 	}
 
-	x := 0
+	batchCounter := 0
 
 	client := GetClient()
 	for {
-		x++
-		
+		batchCounter++
+
 		// sleep for 1 minutes then double the batch size until it reaches 150
 		time.Sleep(1 * time.Minute)
 
@@ -79,14 +79,16 @@ func main() {
 		} else {
 			fmt.Println("resetting the batch size to 1...")
 			batchSizeInt = 1
+			// sleep for 30 minutes then start ramping up again
+			time.Sleep(30 * time.Minute)
 		}
 
 		messages := []string{}
 		for i := 1; i <= batchSizeInt; i++ {
-			messages = append(messages, "message "+strconv.Itoa(i)+" sent at "+time.Now().String())
+			messages = append(messages, "batch "+strconv.Itoa(batchCounter)+" message "+strconv.Itoa(i)+" sent at "+time.Now().String())
 		}
 		
-		fmt.Println("send batch " + strconv.Itoa(x) + " with " + strconv.Itoa(batchSizeInt) + " messages as a batch...")
+		fmt.Println("send batch "+strconv.Itoa(batchCounter)+" with "+strconv.Itoa(batchSizeInt)+" messages...")
 		SendMessageBatch(messages[:], client)
 	}
 }
