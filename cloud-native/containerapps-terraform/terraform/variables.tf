@@ -9,3 +9,9 @@ variable "environment_virtual_network" {
     use_custom_vnet = false
   }
 }
+
+variable "location" {
+  type        = string
+  description = "The Azure location where all resources in this example should be created."
+  default     = "eastus"
+}
