@@ -169,6 +169,32 @@ OUTPUT=$(az deployment group create \
 echo $OUTPUT | jq -r '.properties.outputs.sshCommand.value'
 ```
 
+## ARM64-Based VM SKUs
+
+If you want to try any of the above deployment options using the new Ampere Altra Arm64-based SKUs, you can pass in the following parameters:
+
+```bash
+osImage='Ubuntu 20.04-LTS (arm64)'
+vmSize='Standard_D2ps_v5'
+```
+
+Here is an example command:
+
+```bash
+az deployment group create \
+    --resource-group $RESOURCE_GROUP \
+    --template-file vm.bicep \
+    --parameters \
+        vmName="$VM_NAME" \
+        vmSize='Standard_D2ps_v5' \
+        osImage='Ubuntu 20.04-LTS (arm64)' \
+        cloudInit='tailscale-private' \
+        env="$ENV"
+```
+
+> The `vmSize` parameter in the [vm.bicep](./vm.bicep) template currently accepts either `Standard_D2ps_v5` or `Standard_D2ps_v5`
+> When using any of these SKUs, you must make sure the `osImage` is set to `Ubuntu 20.04-LTS (arm64)` as this value will select the proper OS image that can be used with arm64 architecture.
+
 ## Delete Resources
 
 When you are finished you may wish to empty the entire Resource Group, which can be done quickly be deploying an empty ARM template, [empty.json](empty.json). This leaves the Resource Group in place and ready for another deployment.

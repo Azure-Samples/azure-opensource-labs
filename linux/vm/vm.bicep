@@ -11,6 +11,8 @@ param vmName string = 'vm1'
   'Standard_B4ms'
   'Standard_D2s_v5'
   'Standard_D4s_v5'
+  'Standard_D2ps_v5'
+  'Standard_D4ps_v5'
 ])
 param vmSize string = 'Standard_B2s'
 
@@ -37,6 +39,7 @@ param osDiskSize int = 256
 @allowed([
   'Ubuntu 20.04-LTS'
   'Ubuntu 18.04-LTS'
+  'Ubuntu 20.04-LTS (arm64)'
 ])
 param osImage string = 'Ubuntu 20.04-LTS'
 
@@ -205,6 +208,12 @@ var kvImageReference = {
     publisher: 'Canonical'
     offer: 'UbuntuServer'
     sku: '18.04-LTS'
+    version: 'latest'
+  }
+  'Ubuntu 20.04-LTS (arm64)': {
+    publisher: 'canonical'
+    offer: '0001-com-ubuntu-server-focal'
+    sku: '20_04-lts-arm64'
     version: 'latest'
   }
 }
