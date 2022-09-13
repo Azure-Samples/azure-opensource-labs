@@ -38,8 +38,8 @@ param osDiskSize int = 256
 @description('The OS image for the VM.')
 @allowed([
   'Ubuntu 20.04-LTS'
-  'Ubuntu 18.04-LTS'
   'Ubuntu 20.04-LTS (arm64)'
+  'Ubuntu 18.04-LTS'
 ])
 param osImage string = 'Ubuntu 20.04-LTS'
 

@@ -131,8 +131,8 @@ EOF
 
 RESOURCE_GROUP='220700-azure-linux'
 VM_NAME='tailscale-vm1'
-
 ENV=$(cat env.json)
+
 OUTPUT=$(az deployment group create \
     --resource-group $RESOURCE_GROUP \
     --template-file vm.bicep \
@@ -158,6 +158,7 @@ EOF
 RESOURCE_GROUP='220700-azure-linux'
 VM_NAME='tailscale-vm2'
 ENV=$(cat env.json)
+
 OUTPUT=$(az deployment group create \
     --resource-group $RESOURCE_GROUP \
     --template-file vm.bicep \
@@ -169,31 +170,34 @@ OUTPUT=$(az deployment group create \
 echo $OUTPUT | jq -r '.properties.outputs.sshCommand.value'
 ```
 
-## ARM64-Based VM SKUs
+### Option 5: Ampere Altra Arm–based VM SKUs
 
-If you want to try any of the above deployment options using the new Ampere Altra Arm64-based SKUs, you can pass in the following parameters:
-
-```bash
-osImage='Ubuntu 20.04-LTS (arm64)'
-vmSize='Standard_D2ps_v5'
-```
-
-Here is an example command:
+If you want to try any of the above deployment options using the new [Ampere Altra Arm64-based VM SKUs](https://azure.microsoft.com/en-us/blog/azure-virtual-machines-with-ampere-altra-arm-based-processors-generally-available/), pass in the necessary `osImage` and `vmSize` parameters below.
 
 ```bash
+cat << EOF > env.json
+{"tskey":"<YOUR_TAILSCALE_AUTH_KEY>"}
+EOF
+
+RESOURCE_GROUP='220900-azure-linux'
+VM_NAME='arm1'
+VM_SIZE='Standard_D2ps_v5'
+ENV=$(cat env.json)
+
 az deployment group create \
     --resource-group $RESOURCE_GROUP \
     --template-file vm.bicep \
     --parameters \
         vmName="$VM_NAME" \
-        vmSize='Standard_D2ps_v5' \
-        osImage='Ubuntu 20.04-LTS (arm64)' \
         cloudInit='tailscale-private' \
-        env="$ENV"
+        env="$ENV" \
+        vmSize="$VM_SIZE" \
+        osImage='Ubuntu 20.04-LTS (arm64)'
 ```
 
-> The `vmSize` parameter in the [vm.bicep](./vm.bicep) template currently accepts either `Standard_D2ps_v5` or `Standard_D2ps_v5`
-> When using any of these SKUs, you must make sure the `osImage` is set to `Ubuntu 20.04-LTS (arm64)` as this value will select the proper OS image that can be used with arm64 architecture.
+The `vmSize` parameter in the [vm.bicep](./vm.bicep) template currently accepts either `Standard_D2ps_v5` or `Standard_D2ps_v5`.
+
+When using any of these SKUs, you must make sure the `osImage` is set to `Ubuntu 20.04-LTS (arm64)` as this value will select the proper OS image that can be used with arm64 architecture.
 
 ## Delete Resources
 
