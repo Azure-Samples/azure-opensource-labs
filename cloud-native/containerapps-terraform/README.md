@@ -1,6 +1,6 @@
 # Explore Azure Container Apps, Terraform, KEDA, and Grafana
 
-In this lab you will deploy Azure Container Apps, Azure Container Registry, Azure Service Bus, Azure Managed Grafana, and potentially other Azure Services (i.e., Azure Virtual Network) using [Terraform](https://registry.terraform.io/providers/hashicorp/azurerm/latest). At the time of this writing some services are not available in Hashicorp's `azurerm` provider so we will deploy container apps and the managed Grafana service using the [AzAPI](https://docs.microsoft.com/azure/developer/terraform/overview-azapi-provider) provider.
+In this lab you will deploy Azure Container Apps, Azure Container Registry, Azure Service Bus, Azure Managed Grafana, and potentially other Azure Services (i.e., Azure Virtual Network) using [Terraform](https://learn.hashicorp.com/tutorials/terraform/infrastructure-as-code?in=terraform/azure-get-started). At the time of this writing some services are not available in Hashicorp's `azurerm` [provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest) so we will deploy container apps and the managed Grafana service using the [AzAPI](https://docs.microsoft.com/azure/developer/terraform/overview-azapi-provider) provider.
 
 You will deploy two types of container apps to demonstrate Azure Container Apps autoscaling features. The `helloworld` container app is a simple app found in the Azure Container Apps [quickstart guide](https://docs.microsoft.com/azure/container-apps/get-started?tabs=bash). This container app will be configured for **HTTP scaling**. Upon creation of the resources, a `k6_scripts.js` file will appear in your directory. You can use to load test the application.
 
@@ -18,21 +18,32 @@ To import dashboards, navigate to your Azure Managed Grafana site, click on the 
 - The [Terraform CLI](https://www.terraform.io/downloads)
 - The [k6 CLI](https://k6.io/docs/getting-started/installation/)
 
+## Clone this repository
+
+Before you begin, clone this repository to your location of choice.
+
+```bash
+git clone https://github.com/Azure-Samples/azure-opensource-labs.git
+```
+
 ## Deploy via Terraform CLI
 
 Terraform will use your Azure CLI login context to deploy the resources into your subscription. Login to the Azure CLI and ensure you have selected the proper subscription.
 
 ```bash
 az login
-
-# optionally run this command if you have more than one subscription
-az account set -s <YOUR_SUBSCRIPTION_NAME>
 ```
 
-Run the Terraform deployment script
+Optionally set the correct subscription if you have more than one.
 
 ```bash
-cd cloud-native/containerapps-terraform
+az account set -s '<YOUR_SUBSCRIPTION_NAME>'
+```
+
+Change to the `cloud-native/containerapps-terraform/terraform` subdirectory of this repo and run the Terraform deployment script.
+
+```bash
+cd cloud-native/containerapps-terraform/terraform
 terraform init
 terraform apply
 ```
@@ -43,15 +54,23 @@ Review the items that will be deployed by Terraform, then type `yes` in the cons
 
 ## Explore Container Apps and its scaling features
 
-The container apps will already have autoscaling fully configured and enabled. Feel free to open the Azure portal and explore the deployment and its configuration.
+The container apps will already have autoscaling fully configured and enabled. 
 
-To test the autoscale feature on the `helloworld` app, you can run the following command:
+Open the [Azure portal](https://portal.azure.com).
+
+Navigate to the `rg-fittingshiner` resource group to explore the deployment and its configuration.
+
+Next, use [k6](https://k6.io/) load testing tool to send load to the application URL.
+
+This will use the [k6_scripts.js](./k6_scripts.js) file that was created by [k6_load_test_script.tf](./k6_load_test_script.tf) based on the [k6_scripts.tpl](./k6_scripts.tpl) template, when we ran the `terraform apply` command. It will output the `const res = http.get('${INGRESS_FQDN}');` with the correct application URL for your `helloworld` app.
+
+Run the below command to send some load to your application.
 
 ```bash
 k6 run --vus 200 --duration 10s k6_scripts.js
 ```
 
-Optionally, you can view these videos for more info on each deployment:
+Once you have sent some traffic to the service, you can watch these videos for more details on the deployment.
 
 - [http-scaling](https://vimeo.com/manage/videos/746678347)
 - [event-driven-scaling](https://vimeo.com/manage/videos/746678266)
