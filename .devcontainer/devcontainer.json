@@ -31,6 +31,7 @@
 		"azure-cli": "latest",
 		"bicep": "latest",
 		"dotnet": "latest",
-		"golang": "latest"
+		"golang": "latest",
+		"terraform": "latest"
 	}
 }
