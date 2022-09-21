@@ -52,7 +52,7 @@ terraform apply
 
 Review the items that will be deployed by Terraform, then type `yes` in the console to confirm the deployment.
 
-> For a more in depth guide on how the Terraform is put together using the AzAPI provider, go check out this [blog post](https://dev.to/azure/monitoring-azure-container-apps-with-azure-managed-grafana-148j).
+For a more in depth guide on how the Terraform is put together using the AzAPI provider, go check out this [blog post](https://dev.to/azure/monitoring-azure-container-apps-with-azure-managed-grafana-148j).
 
 ## Explore Container Apps and its scaling features
 
