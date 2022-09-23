@@ -1,0 +1,10 @@
+{
+  "moduleAliases": {
+    "ts": {},
+    "br": {
+      "oss-labs": {
+        "registry": "cloudnativeadvocates.azurecr.io"
+      }
+    }
+  }
+}
