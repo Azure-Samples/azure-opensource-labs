@@ -99,11 +99,12 @@ module aks 'br/oss-labs:bicep/modules/azure-kubernetes-service:v0.1' = {
     registryName: acr.outputs.name
     vnetSubnetID: networkPlugin != 'kubenet' ? vnet.outputs.subnetId : ''
     logAnalyticsWorkspaceResourceID: law.outputs.id
+    nodeTaints: [ 'CriticalAddonsOnly=true:NoSchedule' ] // If deploying a user node pool too, you can taint the system node pool to prevent application pods from being scheduled on it; otherwise, leave empty
   }
 }
 
 // Setup the user node pools and deploy into a subnet
-module armpool 'br/oss-labs:bicep/modules/azure-kubernetes-service-nodepools:v0.1' = {
+module aksPools 'br/oss-labs:bicep/modules/azure-kubernetes-service-nodepools:v0.1' = {
   scope: rg
   name: 'armNodePoolsDeploy'
   params: {
@@ -114,11 +115,11 @@ module armpool 'br/oss-labs:bicep/modules/azure-kubernetes-service-nodepools:v0.
         mode: 'User'
         vmSize: 'Standard_D4pds_v5' // Make sure the SKU is available in your region.
         enableAutoScaling: true
-        scaleDownMode: 'Deallocate' // Delete is the default.
+        scaleDownMode: 'Delete' // Delete is the default.
         minCount: 0 // If autoscale is enabled, then set the min number of nodes you wish to run.
-        maxCount: 3 // Set this to the maximum number of nodes to run. If autoscale is not enabled, this value will be used as the node count.
+        maxCount: 2 // Set this to the maximum number of nodes to run. If autoscale is not enabled, this value will be used as the node count.
         type: 'VirtualMachineScaleSets' // If autoscale is enabled, then the node type must be VirtualMachineScaleSets (default is AvailabilitySet).
-        osDiskType: 'Managed' // If autoscale is enabled and scale down mode is set to Deallocate, then the OS disk must be managed (default is Ephemeral).
+        osDiskType: 'Ephemeral' // If autoscale is enabled and scale down mode is set to Deallocate, then the OS disk must be managed (default is Ephemeral).
         nodeTaints: '' // Add a taint like this `key=value:NoSchedule` or leave as empty string to not taint your nodes
         vnetSubnetID: networkPlugin != 'kubenet' ? vnet.outputs.subnetId : '' // If the cluster is using azure network plugin, then you can pass in the subnet resource ID like this `vnet.outputs.subnetId`; otherwise, leave it empty
       }
