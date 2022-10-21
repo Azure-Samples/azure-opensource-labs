@@ -1,0 +1,15 @@
+apiVersion: policy.openservicemesh.io/v1alpha1
+kind: IngressBackend
+metadata:
+  name: bookbuyer
+  namespace: bookbuyer
+spec:
+  backends:
+  - name: bookbuyer
+    port:
+      number: 14001 # targetPort of bookbuyer service
+      protocol: http
+  sources:
+  - kind: Service
+    namespace: app-routing-system
+    name: nginx

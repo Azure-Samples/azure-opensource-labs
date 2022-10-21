@@ -1,0 +1,31 @@
+---
+kind: TrafficTarget
+apiVersion: access.smi-spec.io/v1alpha3
+metadata:
+  name: bookstore-access-bookwarehouse
+  namespace: bookwarehouse
+spec:
+  destination:
+    kind: ServiceAccount
+    name: bookwarehouse
+    namespace: bookwarehouse
+  rules:
+  - kind: HTTPRouteGroup
+    name: bookwarehouse-service-routes
+    matches:
+    - restock-books
+  sources:
+  - kind: ServiceAccount
+    name: bookstore
+    namespace: bookstore
+---
+apiVersion: specs.smi-spec.io/v1alpha4
+kind: HTTPRouteGroup
+metadata:
+  name: bookwarehouse-service-routes
+  namespace: bookwarehouse
+spec:
+  matches:
+    - name: restock-books
+      methods:
+      - POST
