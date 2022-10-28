@@ -1,0 +1,48 @@
+name: Publish Bicep modules
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 'Az CLI login'
+        uses: azure/login@v1
+        with:
+            client-id: ${{ secrets.AZURE_CLIENT_ID }}
+            tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      
+      - name: Install Bicep
+        run: |
+          az version
+          az bicep install
+
+      - name: Publish Bicep modules to Azure Container Registry
+        run: |
+          for d in */
+          do
+            cd $d
+            version="v$(cat metadata.json | jq -r '.version.major').$(cat metadata.json | jq -r '.version.minor')"
+            if [ -z "$(az acr repository show -n ${{ secrets.ACR_SERVER }} --image bicep/modules/${d::-1}:$version 2>/dev/null)" ];
+            then 
+              echo "Publishing br:${{ secrets.ACR_SERVER }}/bicep/modules/${d::-1}:$version";
+              az bicep publish --file main.bicep --target "br:${{ secrets.ACR_SERVER }}/bicep/modules/${d::-1}:$version";
+            else 
+              echo "Skipping br:${{ secrets.ACR_SERVER }}/bicep/modules/${d::-1}:$version as it already exists";
+            fi
+            cd - > /dev/null
+          done
+        working-directory: bicep/modules
