@@ -168,7 +168,7 @@ Unfortunately, neither of these images support `arm64` architecture 😞
 Let's check if Redis has an updated image on Docker Hub that supports `arm64`
 
 ```bash
-docker manifest redis:latest
+docker manifest inspect redis:latest
 ```
 
 From the output, we can see it does 🥳
