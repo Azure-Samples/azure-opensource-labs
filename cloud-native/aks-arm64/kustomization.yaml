@@ -1,0 +1,8 @@
+resources:
+- azure-voting-app-deploy.yaml
+
+# Change the image name and version
+images:
+- name: cloudnativeadvocates.azurecr.io/azure-vote-front:v1.0.0
+  newName: <YOUR_ACR_SERVER>/azure-vote-front
+  newTag: v1.0.0
