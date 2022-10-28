@@ -260,25 +260,18 @@ acrPassword=$(az acr credential show --name "acr${name}" --query "passwords[0].v
 Using the GitHub CLI, run the following commands to set your repository secrets
 
 ```bash
-ghAccount=<YOUR_GITHUB_ACCOUNT>
-ghRepo=<YOUR_REPO_NAME>
+ghRepo="<YOUR_GITHUB_ACCOUNT>/<YOUR_REPO_NAME>"
 
 gh auth login
-gh secret set ACR_SERVER --body $acrServer --repos $ghAccount/$ghRepo
-gh secret set ACR_USERNAME --body $acrUsername --repos $ghAccount/$ghRepo
-gh secret set ACR_PASSWORD --body $acrPassword --repos $ghAccount/$ghRepo
+gh secret set ACR_SERVER --body $acrServer --repo $ghRepo
+gh secret set ACR_USERNAME --body $acrUsername --repo $ghRepo
+gh secret set ACR_PASSWORD --body $acrPassword --repo $ghRepo
 ```
 
 To push an image to the Azure Container Registry, create a new release using the following command:
 
 ```bash
-gh release create v1.0.0
-
-# answers to the prompts                                             
-? Title (optional) v1.0.0
-? Release notes Leave blank
-? Is this a prerelease? No
-? Submit? Publish release
+gh release create v1.0.0 --notes "" --repo $ghRepo
 ```
 
 Publishing a new release will trigger the GitHub Action workflow to build and publish the container image.
@@ -288,9 +281,9 @@ Publishing a new release will trigger the GitHub Action workflow to build and pu
 To view the output of the workflow, you can run these commands:
 
 ```bash
-gh run view
-gh run view --job=XXXXXXXXX        # your job number will be listed in the command above
-gh run view --log --job=XXXXXXXXXX # the log will be available when the job is complete
+gh run view --repo $ghRepo
+gh run view --repo $ghRepo --job=XXXXXXXXX        # your job number will be listed in the command above
+gh run view --repo $ghRepo --log --job=XXXXXXXXXX # the log will be available when the job is complete
 ```
 
 To validate your image, you can run the following:
@@ -363,5 +356,5 @@ If you do not wish to keep the Azure Voting App repo in your GitHub account, you
 
 ```bash
 gh auth refresh -h github.com -s delete_repo
-gh repo delete <YOUR_GITHUB_ACCOUNT>/<YOUR_GITHUB_REPO>
+gh repo delete $ghRepo
 ```
