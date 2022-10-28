@@ -127,7 +127,7 @@ ZONEID=$(az network dns zone show -g rg-${name} -n $dnsName --query id --output 
 az role assignment create --role "DNS Zone Contributor" --assignee $MANAGEDIDENTITY_OBJECTID --scope $ZONEID
 ```
 
-## Delete DNS to Azure DNS
+## Delegate DNS to Azure DNS
 
 Now is a good time to log into your domain name registrar's management portal and [delegate your DNS zone to Azure DNS](https://learn.microsoft.com/azure/dns/dns-delegate-domain-azure-dns#delegate-the-domain).
 
