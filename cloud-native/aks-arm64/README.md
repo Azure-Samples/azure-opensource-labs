@@ -19,7 +19,11 @@ As part of the application deployment process, we'll also explore some things yo
 * Bash shell (e.g. macOS, Linux, [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/windows/wsl/about), [Multipass](https://multipass.run/), [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/quickstart), [GitHub Codespaces](https://github.com/features/codespaces), etc)
 * The [Docker CLI](https://www.docker.com/products/docker-desktop/)
 
-## Deploy Azure Resources
+> **⚠️ NOTE**
+>
+> This deployment uses Azure Bicep templates to provision Azure infrastructure. If you'd like to use Terraform instead, head over to [Deploy Azure Resources using Terraform](https://github.com/Azure-Samples/azure-opensource-labs/tree/main/cloud-native/aks-terraform-arm64#deploy-azure-resources-using-terraform) then come back to complete the remainder of the steps in this lab guide.
+
+## Deploy Azure Resources using Azure Bicep
 
 Start by cloning this repo and navigating to the `cloud-native/aks-arm64` directory.
 
