@@ -30,7 +30,7 @@ This module deploys a [Microsoft.ContainerService/managedClusters](https://learn
 | `ipFamilies` | |  `'IPv4'` <br/>  `'IPv6'` |
 | `vnetSubnetID` | Id of the Vnet to deploy cluster into | |
 | `nodeTaints` | Enable nodeTaints on the system node pool (e.g., [\'CriticalAddonsOnly=true:NoSchedule\']) | |
-| `addonProfiles` | Add-ons to enable | Object? 🤔 No concrete definition so your best best is to deploy using Azure CLI or Portal and see what the JSON metadata looks like |
+| `addonProfiles` | Add-ons to enable | No concrete definition so your best bet is to deploy using Azure CLI or Portal and see what the JSON metadata looks like |
 
 ## Outputs
 

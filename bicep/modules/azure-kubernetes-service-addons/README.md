@@ -10,7 +10,7 @@ This module updates an AKS cluster to append add-ons. [`addonProfiles`](https://
 |------|-------------|----------------|
 | `location` | Region to deploy resource into | Azure region that offers this resource |
 | `clusterId` | Existing cluster resource Id |  |
-| `addonProfiles` | Add-ons to enable | Object? 🤔 No concrete definition so your best best is to deploy using Azure CLI or Portal and see what the JSON metadata looks like |
+| `addonProfiles` | Add-ons to enable | No concrete definition so your best bet is to deploy using Azure CLI or Portal and see what the JSON metadata looks like |
 
 ## Outputs
 

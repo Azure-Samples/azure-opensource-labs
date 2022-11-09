@@ -121,6 +121,7 @@ module aksAddonIng 'br/oss-labs:bicep/modules/azure-kubernetes-service-ingress:v
   ]
 }
 
+// todo: troubleshoot this
 // var mcResourceGroup = resourceGroup(aks.outputs.nodeResourceGroupName)
 // resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
 //   name: 'webapprouting-${aks.outputs.name}'

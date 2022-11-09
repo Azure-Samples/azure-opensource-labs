@@ -42,16 +42,16 @@ Open a terminal and initialize the following variables which will be passed into
 location=eastus
 
 # random name that will be used for azure resources
-name=books$RANDOM
+name=vote$RANDOM
 
-# get the latest version of kubernetes
-kubernetesVersion=$(az aks get-versions -l $location -o table | head -3 | tail -n 1 | cut -f 1 -d ' ')
+# get the latest (n-1) version of kubernetes
+kubernetesVersion=$(az aks get-versions -l $location -o table | head -4 | tail -n 1 | cut -f 1 -d ' ')
 
 # kubernetes node count
 systemNodeCount=3
 
 # azure vm size for nodes
-systemNodeSize=Standard_D4s_v5
+systemNodeSize=Standard_D4ds_v5
 
 # get your user name
 userName=$(az account show --query user.name -o tsv)
@@ -334,14 +334,14 @@ Your output will look similar to this:
     "cnameRecord": null,
     "etag": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
     "fqdn": "vote.contoso.work.",
-    "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/rg-books24543/providers/Microsoft.Network/dnszones/contoso.work/A/hello",
+    "id": "/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/rg-vote24543/providers/Microsoft.Network/dnszones/contoso.work/A/hello",
     "metadata": null,
     "mxRecords": null,
     "name": "hello",
     "nsRecords": null,
     "provisioningState": "Succeeded",
     "ptrRecords": null,
-    "resourceGroup": "rg-books6045",
+    "resourceGroup": "rg-vote6045",
     "soaRecord": null,
     "srvRecords": null,
     "targetResource": {
