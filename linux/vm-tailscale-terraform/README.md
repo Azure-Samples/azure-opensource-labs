@@ -113,7 +113,9 @@ To install and configure Tailscale, **user-data script** executes the [`tailscal
 
 The multipart archive cloud-init configuration is then passed into the [`custom_data`](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine#custom_data) property of the [Linux virtual machine resource](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/linux_virtual_machine).
 
-## Clean up
+## Final steps
+
+You can view the Azure Resources that were created as part of this lab by opening the [Azure Portal](https://portal.azure.com) and looking for Resource Group with an `rg-` prefix (e.g. `rg-factualworm`).
 
 When you are done exploring, run the `destroy` command to delete all your resources.
 
@@ -121,7 +123,7 @@ When you are done exploring, run the `destroy` command to delete all your resour
 terraform destroy
 ```
 
-## What else is there
+## What's next?
 
 Using this approach, you can add as many user-data types needed for your virtual machine's cloud-init configuration.
 
