@@ -38,7 +38,7 @@ variable "snet_address_space" {
 variable "vm_sku" {
   type        = string
   description = "Size of the Azure Virtual Machine"
-  default     = "Standard_D4s_v5"
+  default     = "Standard_B2s"
 }
 
 variable "vm_username" {

@@ -42,10 +42,12 @@ tailscale_api_key       = "<YOUR_TAILSCALE_API_KEY>"
 location                = "westus3"
 vnet_address_space      = "10.21.0.0/28"
 snet_address_space      = "10.21.0.0/28"
-vm_sku                  = "Standard_D16s_v5"
+vm_sku                  = "Standard_D2s_v5"
 vm_username             = "paul"
 vm_os_disk_storage_type = "Premium_LRS"
 ```
+
+For example, here we are using a `Standard_D2s_v5` [Dsv5](https://learn.microsoft.com/azure/virtual-machines/dv5-dsv5-series) series SKU for the Virtual Machine, rather than the `Standard_B2s` [B-series burstable](https://learn.microsoft.com/azure/virtual-machines/sizes-b-series-burstable) VM we use by default in [variables.tf](./variables.tf).
 
 The `terraform.tfvars` file is a special file within Terraform. When the Terraform CLI detects a file with the name of `terraform.tfvars` or `*.auto.tfvars`, it will automatically map the values to variables at runtime without needing to pass in the *.tfvars file to the command.
 
