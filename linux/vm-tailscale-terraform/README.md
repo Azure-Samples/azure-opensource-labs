@@ -11,8 +11,8 @@ To complete this lab you will need to following:
 - Bash shell (e.g. macOS, Linux, [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/windows/wsl/about), [Multipass](https://multipass.run/), [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/quickstart), [GitHub Codespaces](https://github.com/features/codespaces), etc)
 - The [Terraform CLI](https://www.terraform.io/downloads)
 - A [Tailscale account](https://login.tailscale.com/start)
-  - Your [Tailscale API key](https://login.tailscale.com/admin/settings/keys) to automatically generate authentication keys for your machines to be able to join your Tailnet. See [Tailscale API](https://tailscale.com/kb/1101/api/?q=api%20key) for more information
-  - Your unique [Tailnet name](https://tailscale.com/kb/1217/tailnet-name/)
+  - Your [Tailscale API key](https://login.tailscale.com/admin/settings/keys) to automatically generate authentication keys for your machines to be able to join your Tailnet (see [Tailscale API](https://tailscale.com/kb/1101/api/?q=api%20key) for more information)
+  - Your unique [Tailnet organization name](https://tailscale.com/kb/1217/tailnet-name/#organization-name) (optional)
 
 ## How to do it
 
@@ -23,9 +23,13 @@ All of the variables except for `tailnet_name` and `tailscale_api_key` have a de
 Create a new `terraform.tfvars` file in the same location as the [`main.tf`](./main.tf) file and add the following entries.
 
 ```terraform
-tailnet_name      = "<YOUR_TAILNET_NAME>"
+tailnet_name      = "-"
 tailscale_api_key = "<YOUR_TAILSCALE_API_KEY>"
 ```
+
+The `tailnet_name` value is populated with your `Organization` from the [General](https://login.tailscale.com/admin/settings/general) (e.g. `example.com`). However, you can leave this as `-` to target your default Tailnet. Note the [Tailnet organization name](https://tailscale.com/kb/1217/tailnet-name/#organization-name) is different to your Tailnet name which is in the form `example-name.ts.net`.
+
+Also note the `tailscale_api_key` is populated with the Tailscale `API key` from the [Keys](https://login.tailscale.com/admin/settings/keys) page, and not an `Auth key`. You can also set this key to expire in as little as 1 day.
 
 If you'd like to further customize the deployment, you can add additional values for the variables defined in `variables.tf`.
 
@@ -33,7 +37,7 @@ Here is an example:
 
 ```terraform
 # example terraform.tfvars file
-tailnet_name            = "<YOUR_TAILNET_NAME>"
+tailnet_name            = "-"
 tailscale_api_key       = "<YOUR_TAILSCALE_API_KEY>"
 location                = "westus3"
 vnet_address_space      = "10.21.0.0/28"
