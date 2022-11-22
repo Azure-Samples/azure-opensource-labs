@@ -21,7 +21,7 @@ As part of the application deployment process, we'll also explore some things yo
 
 > **⚠️ NOTE**
 >
-> This deployment uses Azure Bicep templates to provision Azure infrastructure. If you'd like to use Terraform instead, head over to [Deploy Azure Resources using Terraform](https://github.com/Azure-Samples/azure-opensource-labs/tree/main/cloud-native/aks-terraform-arm64#deploy-azure-resources-using-terraform) then come back to complete the remainder of the steps in this lab guide.
+> This deployment uses Azure Bicep templates to provision Azure infrastructure. If you'd like to use Terraform instead, head over to [Azure Kubernetes Service with ARM64 node pools and Terraform](../aks-arm64-terraform#deploy-azure-resources-using-terraform) then come back to complete the remainder of the steps in this lab guide.
 
 ## Deploy Azure Resources using Azure Bicep
 

@@ -1,6 +1,6 @@
 # Azure Kubernetes Service with ARM64 node pools and Terraform
 
-This directory holds Terraform configuration files for deploying an AKS cluster with ARM64 node pools. It is an alternative to [deploying with Azure Bicep](https://github.com/Azure-Samples/azure-opensource-labs/tree/main/cloud-native/aks-arm64#deploy-azure-resources-using-azure-bicep)
+This directory holds Terraform configuration files for deploying an AKS cluster with ARM64 node pools. It is an alternative to [deploying with Azure Bicep](../aks-arm64#deploy-azure-resources-using-azure-bicep)
 
 ## Requirements
 
@@ -55,7 +55,7 @@ kubectl get nodes -o wide
 
 ## Next steps
 
-Continue on to the [Deploying `ARM64` workloads to Kubernetes](../aks-arm64/aks-arm64#deploying-arm64-workloads-to-kubernetes) portion of the [Azure Kubernetes Service with ARM64 node pools](../aks-arm64/) lab to deploy workloads to your cluster.
+Continue on to the [Deploying `ARM64` workloads to Kubernetes](../aks-arm64#deploying-arm64-workloads-to-kubernetes) portion of the [Azure Kubernetes Service with ARM64 node pools](../aks-arm64/) lab to deploy workloads to your cluster.
 
 ## Clean up resources
 
