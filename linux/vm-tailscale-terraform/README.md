@@ -63,6 +63,12 @@ Make sure you are in the right directory, run the following command if needed.
 cd linux/vm-tailscale-terraform 
 ```
 
+Run the `init` command.
+
+```bash
+terraform init
+```
+
 Run the `apply` command.
 
 ```bash
