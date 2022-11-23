@@ -21,7 +21,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-module kv '../../bicep/modules/azure-key-vault/main.bicep' = {
+module kv 'br/oss-labs:bicep/modules/azure-key-vault:v0.1' = {
   scope: rg
   name: 'akvDeploy'
   params: {
@@ -33,29 +33,6 @@ module kv '../../bicep/modules/azure-key-vault/main.bicep' = {
     tenantId: tenant().tenantId
   }
 }
-
-// module dns '../../bicep/modules/azure-dns/main.bicep' = {
-//   scope: rg
-//   name: 'dnsDeploy'
-//   params: {
-//     location: 'Global'
-//     name: dnsName
-//     tags: tags
-//     zoneType: 'Public'
-//   }
-// }
-
-// // Set up the container registry
-// module acr '../../bicep/modules/azure-container-registry/main.bicep' = {
-//   scope: rg
-//   name: 'acrDeploy'
-//   params: {
-//     name: 'acr${toLower(name)}'
-//     location: location
-//     tags: tags
-//     sku: 'Basic'
-//   }
-// }
 
 // Setup the log analytics workspace
 module law 'br/oss-labs:bicep/modules/azure-log-analytics-workspace:v0.1' = {
@@ -69,7 +46,7 @@ module law 'br/oss-labs:bicep/modules/azure-log-analytics-workspace:v0.1' = {
 }
 
 // Setup the Kubernetes cluster
-module aks '../../bicep/modules/azure-kubernetes-service/main.bicep' = {
+module aks 'br/oss-labs:bicep/modules/azure-kubernetes-service:v0.2' = {
   scope: rg
   name: 'aksDeploy'
   params: {
