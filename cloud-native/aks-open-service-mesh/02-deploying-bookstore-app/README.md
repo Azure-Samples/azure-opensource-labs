@@ -50,7 +50,7 @@ Namespace [bookthief] successfully added to mesh [osm]
 Namespace [bookwarehouse] successfully added to mesh [osm]
 ```
 
-Let's take a look at the labels and annotations that have been added to these namespaces.
+Let's take a look at the labels that have been added to these namespaces.
 
 ```bash
 kubectl get namespace -A --show-labels | grep book
@@ -85,7 +85,7 @@ kubectl apply -f https://raw.githubusercontent.com/openservicemesh/osm-docs/rele
 kubectl apply -f https://raw.githubusercontent.com/openservicemesh/osm-docs/release-v1.2/manifests/apps/mysql.yaml
 ```
 
-## Exploring the `bookbuyer` pod and viewing some things `osm` does
+## Exploring the `bookbuyer` pod and viewing `osm` configuration
 
 Check on the `bookbuyer` pods
 

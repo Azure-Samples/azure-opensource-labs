@@ -3,12 +3,13 @@
 	"image": "mcr.microsoft.com/vscode/devcontainers/base:jammy",
 	// Features to add to the dev container. More info: https://containers.dev/implementors/features.
 	"features": {
-		"ghcr.io/devcontainers/features/azure-cli:1.0.6": {
+		"ghcr.io/devcontainers/features/azure-cli:1.0.7": {
 			"version": "latest",
-			"extensions": "aks-preview,amg,containerapp"
+			"extensions": "aks-preview,amg,containerapp",
+			"installBicep": true
 		},
 		// "ghcr.io/devcontainers/features/dotnet:1.0.8": {
-		// 	"version": "7"
+		// 	"version": "6"
 		// },
 		"ghcr.io/devcontainers/features/go:1.1.0": {
 			"version": "latest"

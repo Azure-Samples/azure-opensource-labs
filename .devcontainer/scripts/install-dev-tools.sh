@@ -14,8 +14,10 @@ sudo apt-get install -y kubectl bash-completion
 K6_VERSION=v0.41.0
 curl -sL "https://github.com/grafana/k6/releases/download/$K6_VERSION/k6-$K6_VERSION-linux-amd64.tar.gz" | tar -vxzf -
 sudo mv ./k6-$K6_VERSION-linux-amd64/k6 /usr/local/bin/k6
+rm -Rf ./k6-$K6_VERSION-linux-amd64
 
 # install osm
 OSM_VERSION=v1.2.0
 curl -sL "https://github.com/openservicemesh/osm/releases/download/$OSM_VERSION/osm-$OSM_VERSION-linux-amd64.tar.gz" | tar -vxzf -
 sudo mv ./linux-amd64/osm /usr/local/bin/osm
+rm -Rf ./linux-amd64

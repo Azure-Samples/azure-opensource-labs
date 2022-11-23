@@ -1,4 +1,4 @@
-# Web Application Routing with Azure Kubernetes Service and Open Service Mesh
+# Azure Kubernetes Service with Open Service Mesh
 
 In this multi-part lab, you will deploy an [AKS][aks] cluster with the [Web Application Routing (Preview)][aks_addon_web_app_routing] and [Open Service Mesh (OSM)][aks_addon_osm] add-ons enabled. These add-ons are open-source components that are installed and managed by the AKS platform. OSM can be installed on any Kubernetes cluster (see [guide](https://release-v1-2.docs.openservicemesh.io/docs/getting_started/install_apps/)); however, in this lab, we will explore the AKS-managed version and demonstrate how it integrates with other components.
 
@@ -57,6 +57,8 @@ az provider register --namespace Microsoft.Insights
 
 Deploy Azure infrastructure with the Azure Bicep template.
 
+> Take a look at this [blog post](https://dev.to/azure/sharing-bicep-modules-with-azure-container-registry-4mo0) to see how the Bicep modules are put together.
+
 ```bash
 az deployment sub create \
   --name "$name-deploy" \
@@ -78,8 +80,7 @@ The template will deploy the following resources into your subscription:
   * [`azure-keyvault-secrets-provider`](https://learn.microsoft.com/azure/aks/csi-secrets-store-driver)
   * [`monitoring`](https://learn.microsoft.com/azure/azure-monitor/containers/container-insights-overview)
   * [`open-service-mesh`](https://learn.microsoft.com/azure/aks/open-service-mesh-about)
-
-> Take a look at this [blog post](https://dev.to/azure/sharing-bicep-modules-with-azure-container-registry-4mo0) to see how the Bicep modules are put together.
+  * [`web_application_routing`](https://learn.microsoft.com/azure/aks/web-app-routing?tabs=with-osm)
 
 ## Validate the Azure deployment
 
@@ -111,14 +112,6 @@ Run the following command to verify you have access to the cluster:
 
 ```bash
 kubectl cluster-info
-```
-
-## Validate the `web_application_routing` add-ons
-
-Let's first check to see if the web application routing add-on has been installed successfully.
-
-```bash
-az aks show -g rg-${name} -n aks-${name} --query "ingressProfile"
 ```
 
 ## Validate OSM resources and configurations
@@ -172,13 +165,13 @@ These resources are typically [installed manually using the OSM CLI command `osm
 
 > With open-source OSM, you have an option on the namespace where `osm` is installed (normally in the `osm-system` namespace), but since this is managed by AKS, it has been installed in the `kube-system` namespace for you.
 
-If you need view the default configuration for OSM, you can run the following command.
+To view the default configuration for OSM, you can run the following command.
 
 ```bash
 kubectl get meshconfig osm-mesh-config -n kube-system -o yaml
 ```
 
-Pay attention to the `traffic` configuration. A snippet has been included below.
+Pay special attention to the `traffic` configuration; a snippet has been included below.
 
 ```text
 ...
@@ -193,7 +186,7 @@ traffic:
 ...
 ```
 
-The `enablePermissiveTrafficPolicyMode` has been set to `true`. This is the default configuration and when set to `true`, pods enrolled in the service mesh can communicate freely. For more info on this see: [Permissive Traffic Policy Mode][osm_permissive_traffic_policy]
+The `enablePermissiveTrafficPolicyMode` has been set to `true`. This is the default configuration and when set to `true`, pods enrolled in the service mesh communicate freely. For more info on this see: [Permissive Traffic Policy Mode][osm_permissive_traffic_policy]
 
 ### Namespaces are vital to OSM
 
@@ -217,6 +210,8 @@ osm         kube-system      HTTPRouteGroup:v1alpha4,TCPRoute:v1alpha4,TrafficSp
 To list the OSM controller pods for a mesh, please run the following command passing in the mesh's namespace
         kubectl get pods -n <osm-mesh-namespace> -l app=osm-controller
 ```
+
+> Note the Service Mesh Interface (SMI) specs that are supported by OSM. These may be subject to change with the ongoing dialog on [The GAMMA Initiative](https://gateway-api.sigs.k8s.io/contributing/gamma/) happening within the community.
 
 As suggested in the output above, let's get a list of OSM controller pods.
 

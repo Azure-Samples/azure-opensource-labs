@@ -123,9 +123,9 @@ module aksAddonIng 'br/oss-labs:bicep/modules/azure-kubernetes-service-ingress:v
 }
 
 // Deploy the open service mesh add-on
-module aksAddonOms 'br/oss-labs:bicep/modules/azure-kubernetes-service-addons:v0.1' = {
+module aksAddonOsm 'br/oss-labs:bicep/modules/azure-kubernetes-service-addons:v0.1' = {
   scope: rg
-  name: 'aksAddonOmsDeploy'
+  name: 'aksAddonOsmDeploy'
   params: {
     location: location
     clusterId: aks.outputs.id
