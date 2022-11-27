@@ -41,6 +41,10 @@ az deployment group create \
 ## portal
 
 ```bash
+# create vm.json
+az bicep build -f vm.bicep
+
+# create url
 TEMPLATE_URL='https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/linux-mastodon-1/linux/vm-mastodon/vm.json'
 OUTPUT_URL='https://portal.azure.com/#create/Microsoft.Template/uri/'$(printf "$TEMPLATE_URL" | jq -s -R -r @uri )
 echo $OUTPUT_URL
