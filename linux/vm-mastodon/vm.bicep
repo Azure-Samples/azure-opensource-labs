@@ -130,7 +130,7 @@ write_files:
 
 - path: /home/azureuser/tailscale.sh
   content: |
-    [[ -z "${1:-}" ]] && echo "no tskey. skipping." && exit 0
+    [[ -z "$1" ]] && echo "no tskey. skipping." && exit 0
 
     curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
     curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list
