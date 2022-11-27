@@ -1,5 +1,5 @@
 @description('The name of your Virtual Machine.')
-param vmName string = 'vm1'
+param vmName string = 'web1'
 
 @description('The Virtual Machine size.')
 @allowed([
@@ -62,17 +62,31 @@ param adminPasswordOrKey string = ''
 @description('Deploy with cloud-init.')
 @allowed([
   'none'
-  'docker'
-  'tailscale'
-  'tailscale-private'
-  'tailscale-postgres'
-  'url'
+  'tailscale-mastodon'
 ])
-param cloudInit string = 'none'
+param cloudInit string = 'tailscale-mastodon'
 
-@description('Environment variables as JSON object.')
+//@description('Environment variables as JSON object.')
+//@secure()
+//param env object = {}
+
 @secure()
-param env object = {}
+@description('Tailscale Auth Key')
+param tsKey string = ''
+
+@description('Lets Encrypt Email')
+param letsEncryptEmail string = ''
+
+@description('Site Address')
+param siteAddress string = ''
+
+var siteAddress_var = siteAddress != '' ? siteAddress : toLower('${vmName}-${rand}.${location}.cloudapp.azure.com')
+
+var env = {
+  tskey: tsKey
+  letsEncryptEmail: letsEncryptEmail
+  siteAddress: siteAddress_var
+}
 
 var rand = substring(uniqueString(resourceGroup().id), 0, 6)
 var virtualNetworkName_var = virtualNetworkName != '' ? virtualNetworkName : '${resourceGroup().name}-vnet'
@@ -84,31 +98,15 @@ var ipConfigName = '${vmName}-ipconfig'
 var subnetAddressPrefix = '10.1.0.0/24'
 var addressPrefix = '10.1.0.0/16'
 
-var cloudInitDocker = '''
+var cloudInitTailscaleMastodon = '''
 #cloud-config
 # vim: syntax=yaml
 
 packages:
 - docker.io
+- docker-compose
 - jq
-
-# create the docker group
-groups:
-- docker
-
-# Add default auto created user to docker group
-system_info:
-  default_user:
-    groups: [docker]
-'''
-
-var cloudInitTailscale = '''
-#cloud-config
-# vim: syntax=yaml
-
-packages:
-- docker.io
-- jq
+- make
 
 # create the docker group
 groups:
@@ -120,9 +118,11 @@ system_info:
     groups: [docker]
 
 write_files:
+
 - path: /home/azureuser/env.json
   content: {0}
   encoding: b64
+
 - path: /home/azureuser/tailscale.sh
   content: |
     curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
@@ -133,68 +133,34 @@ write_files:
     
     sudo tailscale up --advertise-routes=10.1.0.0/24,168.63.129.16/32 --accept-dns=false --ssh --authkey "$1"
 
-runcmd:
-- cd /home/azureuser/
-- bash tailscale.sh "$(jq -r '.tskey' env.json)"
-- echo $(date) > hello.txt
-- chown -R azureuser:azureuser /home/azureuser/
-'''
-
-var cloudInitTailscaleFormat = format(cloudInitTailscale, base64(string(env)))
-
-var cloudInitTailscalePostgres = '''
-#cloud-config
-# vim: syntax=yaml
-
-packages:
-- docker.io
-- jq
-
-# create the docker group
-groups:
-- docker
-
-# Add default auto created user to docker group
-system_info:
-  default_user:
-    groups: [docker]
-
-write_files:
-- path: /home/azureuser/env.json
-  content: {0}
-  encoding: b64
-- path: /home/azureuser/tailscale.sh
+- path: /home/azureuser/mastodon.sh
   content: |
-    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
-    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list
+    cd $HOME
+    git clone https://github.com/asw101/tmp -b fractured-monkey-1
+    cd tmp
     
-    sudo apt-get update
-    sudo apt-get install -y tailscale
+    export SITE_ADDRESS=$(jq -r '.siteAddress' env.json)
+    export LETS_ENCRYPT_EMAIL=$(jq -r '.letsEncryptEmail' env.json)
+    export TLS_INTERNAL=''
     
-    sudo tailscale up --advertise-routes=10.1.0.0/24,168.63.129.16/32 --accept-dns=false --ssh --authkey "$1"
+    make run-postgres
+    make config
+    sudo make setup-db
+    make setup-admin > ../admin.txt
+    make run
 
 runcmd:
 - cd /home/azureuser/
 - bash tailscale.sh "$(jq -r '.tskey' env.json)"
-- docker run --name postgres --restart always -e POSTGRES_HOST_AUTH_METHOD=trust -v /home/azureuser/postgresql/data:/var/lib/postgresql/data -p 5432:5432 -d postgres:14
 - echo $(date) > hello.txt
 - chown -R azureuser:azureuser /home/azureuser/
 '''
 
-var cloudInitTailscalePostgresFormat = format(cloudInitTailscalePostgres, base64(string(env)))
-
-var cloudInitUrl = '''
-#include
-https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/main/linux/vm/cloud-init/cloud-init.sh
-'''
+var cloudInitTailscaleMastodonFormat = format(cloudInitTailscaleMastodon, base64(string(env)))
 
 var kvCloudInit = {
   none: json('null')
-  docker: base64(cloudInitDocker)
-  tailscale: base64(cloudInitTailscaleFormat)
-  'tailscale-private': base64(cloudInitTailscaleFormat)
-  'tailscale-postgres': base64(cloudInitTailscalePostgresFormat)
-  url: base64(cloudInitUrl)
+  'tailscale-mastodon': base64(cloudInitTailscaleMastodonFormat)
 }
 
 var kvImageReference = {
