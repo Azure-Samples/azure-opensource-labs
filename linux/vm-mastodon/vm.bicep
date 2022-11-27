@@ -1,5 +1,6 @@
-@description('Location for all resources.')
-param location string = resourceGroup().location
+// @description('Location for all resources.')
+// param location string = resourceGroup().location
+var location = resourceGroup().location
 
 @description('The name of your Virtual Machine.')
 param vmName string = 'web1'
