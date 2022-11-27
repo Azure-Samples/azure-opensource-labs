@@ -153,9 +153,9 @@ write_files:
 runcmd:
 - cd /home/azureuser/
 - bash tailscale.sh "$(jq -r '.tskey' env.json)"
-- echo $(date) > hello.txt
 - chown -R azureuser:azureuser /home/azureuser/
 - bash mastodon.sh
+- echo $(date) > hello.txt
 '''
 
 var cloudInitTailscaleMastodonFormat = format(cloudInitTailscaleMastodon, base64(string(env)))
