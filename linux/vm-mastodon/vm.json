@@ -5,17 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "9049832487126006931"
+      "templateHash": "11545705452520662279"
     }
   },
   "parameters": {
-    "location": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "metadata": {
-        "description": "Location for all resources."
-      }
-    },
     "vmName": {
       "type": "string",
       "defaultValue": "web1",
@@ -76,6 +69,7 @@
     }
   },
   "variables": {
+    "location": "[resourceGroup().location]",
     "diskAccountType": "Premium_LRS",
     "osDiskSize": 256,
     "osImage": "Ubuntu 20.04-LTS",
@@ -86,7 +80,7 @@
     "env": {
       "tskey": "[parameters('tsKey')]",
       "letsEncryptEmail": "[parameters('letsEncryptEmail')]",
-      "siteAddress": "[if(not(equals(parameters('siteAddress'), '')), parameters('siteAddress'), toLower(format('{0}-{1}.{2}.cloudapp.azure.com', parameters('vmName'), variables('rand'), parameters('location'))))]"
+      "siteAddress": "[if(not(equals(parameters('siteAddress'), '')), parameters('siteAddress'), toLower(format('{0}-{1}.{2}.cloudapp.azure.com', parameters('vmName'), variables('rand'), variables('location'))))]"
     },
     "rand": "[substring(uniqueString(resourceGroup().id), 0, 6)]",
     "virtualNetworkName_var": "[if(not(equals(variables('virtualNetworkName'), '')), variables('virtualNetworkName'), format('{0}-vnet', resourceGroup().name))]",
@@ -197,13 +191,13 @@
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2018-11-30",
       "name": "[format('{0}-identity', resourceGroup().name)]",
-      "location": "[parameters('location')]"
+      "location": "[variables('location')]"
     },
     {
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2021-05-01",
       "name": "[variables('networkInterfaceName')]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "properties": {
         "ipConfigurations": [
           {
@@ -230,7 +224,7 @@
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2021-05-01",
       "name": "[format('{0}-nsg', resourceGroup().name)]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "properties": {
         "securityRules": "[variables('nsgSecurityRules')]"
       }
@@ -240,7 +234,7 @@
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2021-05-01",
       "name": "[variables('virtualNetworkName_var')]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -272,7 +266,7 @@
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2021-05-01",
       "name": "[variables('publicIPAddressName')]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "sku": {
         "name": "Standard"
       },
@@ -287,7 +281,7 @@
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2021-11-01",
       "name": "[parameters('vmName')]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": {
