@@ -82,7 +82,7 @@ param cloudInit string = 'tailscale-mastodon'
 @description('Tailscale Auth Key [optional]')
 param tsKey string = ''
 
-@description('Site Address [optiona]')
+@description('Site Address [optional]')
 param siteAddress string = ''
 
 @description('Lets Encrypt Email [required]')
