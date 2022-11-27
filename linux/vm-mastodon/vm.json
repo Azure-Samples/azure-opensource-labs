@@ -5,10 +5,17 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "11424918933171709150"
+      "templateHash": "9049832487126006931"
     }
   },
   "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    },
     "vmName": {
       "type": "string",
       "defaultValue": "web1",
@@ -35,80 +42,6 @@
         "description": "The Virtual Machine size."
       }
     },
-    "diskAccountType": {
-      "type": "string",
-      "defaultValue": "Premium_LRS",
-      "allowedValues": [
-        "Standard_LRS",
-        "Premium_LRS",
-        "UltraSSD_LRS"
-      ],
-      "metadata": {
-        "description": "The Storage Account Type for OS and Data disks."
-      }
-    },
-    "osDiskSize": {
-      "type": "int",
-      "defaultValue": 256,
-      "allowedValues": [
-        1024,
-        512,
-        256,
-        128,
-        64,
-        32
-      ],
-      "metadata": {
-        "description": "The OS Disk size."
-      }
-    },
-    "osImage": {
-      "type": "string",
-      "defaultValue": "Ubuntu 20.04-LTS",
-      "allowedValues": [
-        "Ubuntu 20.04-LTS",
-        "Ubuntu 20.04-LTS (arm64)",
-        "Ubuntu 18.04-LTS"
-      ],
-      "metadata": {
-        "description": "The OS image for the VM."
-      }
-    },
-    "location": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "metadata": {
-        "description": "Location for all resources."
-      }
-    },
-    "virtualNetworkName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Name of the VNET."
-      }
-    },
-    "allowIpPort22": {
-      "type": "string",
-      "defaultValue": "127.0.0.1",
-      "metadata": {
-        "description": "Default IP to allow Port 22 (SSH). Set to your own IP Address"
-      }
-    },
-    "adminUsername": {
-      "type": "string",
-      "defaultValue": "azureuser",
-      "metadata": {
-        "description": "Username for the Virtual Machine."
-      }
-    },
-    "adminPasswordOrKey": {
-      "type": "secureString",
-      "defaultValue": "",
-      "metadata": {
-        "description": "SSH Key for the Virtual Machine."
-      }
-    },
     "cloudInit": {
       "type": "string",
       "defaultValue": "tailscale-mastodon",
@@ -124,41 +57,47 @@
       "type": "secureString",
       "defaultValue": "",
       "metadata": {
-        "description": "Tailscale Auth Key"
-      }
-    },
-    "letsEncryptEmail": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Lets Encrypt Email"
+        "description": "Tailscale Auth Key [optional]"
       }
     },
     "siteAddress": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Site Address"
+        "description": "Site Address [optiona]"
+      }
+    },
+    "letsEncryptEmail": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Lets Encrypt Email [required]"
       }
     }
   },
   "variables": {
-    "siteAddress_var": "[if(not(equals(parameters('siteAddress'), '')), parameters('siteAddress'), toLower(format('{0}-{1}.{2}.cloudapp.azure.com', parameters('vmName'), variables('rand'), parameters('location'))))]",
+    "diskAccountType": "Premium_LRS",
+    "osDiskSize": 256,
+    "osImage": "Ubuntu 20.04-LTS",
+    "virtualNetworkName": "",
+    "allowIpPort22": "127.0.0.1",
+    "adminUsername": "azureuser",
+    "adminPasswordOrKey": "",
     "env": {
       "tskey": "[parameters('tsKey')]",
       "letsEncryptEmail": "[parameters('letsEncryptEmail')]",
-      "siteAddress": "[variables('siteAddress_var')]"
+      "siteAddress": "[if(not(equals(parameters('siteAddress'), '')), parameters('siteAddress'), toLower(format('{0}-{1}.{2}.cloudapp.azure.com', parameters('vmName'), variables('rand'), parameters('location'))))]"
     },
     "rand": "[substring(uniqueString(resourceGroup().id), 0, 6)]",
-    "virtualNetworkName_var": "[if(not(equals(parameters('virtualNetworkName'), '')), parameters('virtualNetworkName'), format('{0}-vnet', resourceGroup().name))]",
+    "virtualNetworkName_var": "[if(not(equals(variables('virtualNetworkName'), '')), variables('virtualNetworkName'), format('{0}-vnet', resourceGroup().name))]",
     "subnetName": "default",
-    "keyData_var": "[if(not(equals(parameters('adminPasswordOrKey'), '')), parameters('adminPasswordOrKey'), 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3gkRpKwprN00sT7yekr0xO0F+uTllDua02puhu1v0zGu3aENvUsygBHJiTy+flgrO2q3mY9F5/D67+WHDeSpr5s71UtnbzMxTams89qmo+raTm+IqjzdNujaWf0/pbT6JUkQq0fR0BfIvg3/7NTXhlzjmCOP2EpD91LzN6b5jAm/5hXr0V5mcpERo8kk2GWxjKmwmDOV+huH1DIFDpMxT3WzR2qvZp1DZbNSYmKkrite3FHlPGLXA1I3bRQT+iTj8vRGpxOPSiMdPK4RNMEZVXSGQ3OZbSl2FBCbd/tdJ1idKo8/ZCkHxdh9/em28/yfPUK0D164shgiEdIkdOQJv')]",
+    "keyData_var": "[if(not(equals(variables('adminPasswordOrKey'), '')), variables('adminPasswordOrKey'), 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3gkRpKwprN00sT7yekr0xO0F+uTllDua02puhu1v0zGu3aENvUsygBHJiTy+flgrO2q3mY9F5/D67+WHDeSpr5s71UtnbzMxTams89qmo+raTm+IqjzdNujaWf0/pbT6JUkQq0fR0BfIvg3/7NTXhlzjmCOP2EpD91LzN6b5jAm/5hXr0V5mcpERo8kk2GWxjKmwmDOV+huH1DIFDpMxT3WzR2qvZp1DZbNSYmKkrite3FHlPGLXA1I3bRQT+iTj8vRGpxOPSiMdPK4RNMEZVXSGQ3OZbSl2FBCbd/tdJ1idKo8/ZCkHxdh9/em28/yfPUK0D164shgiEdIkdOQJv')]",
     "publicIPAddressName": "[format('{0}-ip', parameters('vmName'))]",
     "networkInterfaceName": "[format('{0}-nic', parameters('vmName'))]",
     "ipConfigName": "[format('{0}-ipconfig', parameters('vmName'))]",
     "subnetAddressPrefix": "10.1.0.0/24",
     "addressPrefix": "10.1.0.0/16",
-    "cloudInitTailscaleMastodon": "#cloud-config\n# vim: syntax=yaml\n\npackages:\n- docker.io\n- docker-compose\n- jq\n- make\n\n# create the docker group\ngroups:\n- docker\n\n# Add default auto created user to docker group\nsystem_info:\n  default_user:\n    groups: [docker]\n\nwrite_files:\n\n- path: /home/azureuser/env.json\n  content: {0}\n  encoding: b64\n\n- path: /home/azureuser/tailscale.sh\n  content: |\n    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null\n    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list\n    \n    sudo apt-get update\n    sudo apt-get install -y tailscale\n    \n    sudo tailscale up --advertise-routes=10.1.0.0/24,168.63.129.16/32 --accept-dns=false --ssh --authkey \"$1\"\n\n- path: /home/azureuser/mastodon.sh\n  content: |\n    cd $HOME\n\n    export SITE_ADDRESS=$(jq -r '.siteAddress' env.json)\n    export LETS_ENCRYPT_EMAIL=$(jq -r '.letsEncryptEmail' env.json)\n    export TLS_INTERNAL=''\n    \n    git clone https://github.com/asw101/tmp -b fractured-monkey-1\n    cd tmp\n    \n    make run-postgres\n    make config\n    sudo make setup-db\n    make setup-admin > ../admin.txt\n    make run\n\nruncmd:\n- cd /home/azureuser/\n- bash tailscale.sh \"$(jq -r '.tskey' env.json)\"\n- chown -R azureuser:azureuser /home/azureuser/\n- bash mastodon.sh\n- echo $(date) > hello.txt\n",
+    "cloudInitTailscaleMastodon": "#cloud-config\n# vim: syntax=yaml\n\npackages:\n- docker.io\n- docker-compose\n- jq\n- make\n\n# create the docker group\ngroups:\n- docker\n\n# Add default auto created user to docker group\nsystem_info:\n  default_user:\n    groups: [docker]\n\nwrite_files:\n\n- path: /home/azureuser/env.json\n  content: {0}\n  encoding: b64\n\n- path: /home/azureuser/tailscale.sh\n  content: |\n    [[ -z \"${1:-}\" ]] && echo \"no tskey. skipping.\" && exit 0\n\n    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null\n    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list\n    \n    sudo apt-get update\n    sudo apt-get install -y tailscale\n    \n    sudo tailscale up --advertise-routes=10.1.0.0/24,168.63.129.16/32 --accept-dns=false --ssh --authkey \"$1\"\n\n- path: /home/azureuser/mastodon.sh\n  content: |\n    cd $HOME\n\n    export SITE_ADDRESS=$(jq -r '.siteAddress' env.json)\n    export LETS_ENCRYPT_EMAIL=$(jq -r '.letsEncryptEmail' env.json)\n    export TLS_INTERNAL=''\n    \n    git clone https://github.com/asw101/tmp -b fractured-monkey-1\n    cd tmp\n    \n    make run-postgres\n    make config\n    sudo make setup-db\n    make setup-admin > ../admin.txt\n    make run\n\nruncmd:\n- cd /home/azureuser/\n- bash tailscale.sh \"$(jq -r '.tskey' env.json)\"\n- chown -R azureuser:azureuser /home/azureuser/\n- bash mastodon.sh\n- echo $(date) > hello.txt\n",
     "cloudInitTailscaleMastodonFormat": "[format(variables('cloudInitTailscaleMastodon'), base64(string(variables('env'))))]",
     "kvCloudInit": {
       "none": "[json('null')]",
@@ -192,7 +131,7 @@
           "protocol": "Tcp",
           "access": "Allow",
           "direction": "Inbound",
-          "sourceAddressPrefix": "[parameters('allowIpPort22')]",
+          "sourceAddressPrefix": "[variables('allowIpPort22')]",
           "sourcePortRange": "*",
           "destinationAddressPrefix": "*",
           "destinationPortRange": "22"
@@ -297,7 +236,7 @@
       }
     },
     {
-      "condition": "[equals(parameters('virtualNetworkName'), '')]",
+      "condition": "[equals(variables('virtualNetworkName'), '')]",
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2021-05-01",
       "name": "[variables('virtualNetworkName_var')]",
@@ -362,13 +301,13 @@
         "storageProfile": {
           "osDisk": {
             "managedDisk": {
-              "storageAccountType": "[parameters('diskAccountType')]"
+              "storageAccountType": "[variables('diskAccountType')]"
             },
             "name": "[format('{0}-osdisk1', parameters('vmName'))]",
-            "diskSizeGB": "[parameters('osDiskSize')]",
+            "diskSizeGB": "[variables('osDiskSize')]",
             "createOption": "FromImage"
           },
-          "imageReference": "[variables('kvImageReference')[parameters('osImage')]]"
+          "imageReference": "[variables('kvImageReference')[variables('osImage')]]"
         },
         "networkProfile": {
           "networkInterfaces": [
@@ -380,14 +319,14 @@
         "osProfile": {
           "computerName": "[parameters('vmName')]",
           "customData": "[variables('kvCloudInit')[parameters('cloudInit')]]",
-          "adminUsername": "[parameters('adminUsername')]",
+          "adminUsername": "[variables('adminUsername')]",
           "linuxConfiguration": {
             "disablePasswordAuthentication": true,
             "ssh": {
               "publicKeys": [
                 {
                   "keyData": "[variables('keyData_var')]",
-                  "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]"
+                  "path": "[format('/home/{0}/.ssh/authorized_keys', variables('adminUsername'))]"
                 }
               ]
             }
@@ -403,7 +342,7 @@
   "outputs": {
     "adminUsername": {
       "type": "string",
-      "value": "[parameters('adminUsername')]"
+      "value": "[variables('adminUsername')]"
     },
     "hostname": {
       "type": "string",
@@ -411,7 +350,7 @@
     },
     "sshCommand": {
       "type": "string",
-      "value": "[format('ssh {0}@{1}', parameters('adminUsername'), if(not(equals(parameters('cloudInit'), 'tailscale-private')), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn, parameters('vmName')))]"
+      "value": "[format('ssh {0}@{1}', variables('adminUsername'), if(not(equals(parameters('cloudInit'), 'tailscale-private')), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn, parameters('vmName')))]"
     }
   }
 }
