@@ -1,3 +1,6 @@
+@description('Location for all resources.')
+param location string = resourceGroup().location
+
 @description('The name of your Virtual Machine.')
 param vmName string = 'web1'
 
@@ -16,48 +19,52 @@ param vmName string = 'web1'
 ])
 param vmSize string = 'Standard_B2s'
 
-@description('The Storage Account Type for OS and Data disks.')
-@allowed([
-  'Standard_LRS'
-  'Premium_LRS'
-  'UltraSSD_LRS'
-])
-param diskAccountType string = 'Premium_LRS'
+// @description('The Storage Account Type for OS and Data disks.')
+// @allowed([
+//   'Standard_LRS'
+//   'Premium_LRS'
+//   'UltraSSD_LRS'
+// ])
+// param diskAccountType string = 'Premium_LRS'
+var diskAccountType = 'Premium_LRS'
 
-@description('The OS Disk size.')
-@allowed([
-  1024
-  512
-  256
-  128
-  64
-  32
-])
-param osDiskSize int = 256
+// @description('The OS Disk size.')
+// @allowed([
+//   1024
+//   512
+//   256
+//   128
+//   64
+//   32
+// ])
+// param osDiskSize int = 256
+var osDiskSize = 256
 
-@description('The OS image for the VM.')
-@allowed([
-  'Ubuntu 20.04-LTS'
-  'Ubuntu 20.04-LTS (arm64)'
-  'Ubuntu 18.04-LTS'
-])
-param osImage string = 'Ubuntu 20.04-LTS'
+// @description('The OS image for the VM.')
+// @allowed([
+//   'Ubuntu 20.04-LTS'
+//   'Ubuntu 20.04-LTS (arm64)'
+//   'Ubuntu 18.04-LTS'
+// ])
+// param osImage string = 'Ubuntu 20.04-LTS'
+var osImage = 'Ubuntu 20.04-LTS'
 
-@description('Location for all resources.')
-param location string = resourceGroup().location
+// @description('Name of the VNET.')
+// param virtualNetworkName string = ''
+var virtualNetworkName = ''
 
-@description('Name of the VNET.')
-param virtualNetworkName string = ''
+// @description('Default IP to allow Port 22 (SSH). Set to your own IP Address')
+// param allowIpPort22 string = '127.0.0.1'
+var allowIpPort22 = '127.0.0.1'
 
-@description('Default IP to allow Port 22 (SSH). Set to your own IP Address')
-param allowIpPort22 string = '127.0.0.1'
+// @description('Username for the Virtual Machine.')
+// param adminUsername string = 'azureuser'
+var adminUsername = 'azureuser'
 
-@description('Username for the Virtual Machine.')
-param adminUsername string = 'azureuser'
-
-@secure()
-@description('SSH Key for the Virtual Machine.')
-param adminPasswordOrKey string = ''
+// @secure()
+// @description('SSH Key for the Virtual Machine.')
+// param adminPasswordOrKey string = ''
+var adminPasswordOrKey = ''
 
 @description('Deploy with cloud-init.')
 @allowed([
@@ -71,21 +78,19 @@ param cloudInit string = 'tailscale-mastodon'
 //param env object = {}
 
 @secure()
-@description('Tailscale Auth Key')
+@description('Tailscale Auth Key [optional]')
 param tsKey string = ''
 
-@description('Lets Encrypt Email')
-param letsEncryptEmail string = ''
-
-@description('Site Address')
+@description('Site Address [optiona]')
 param siteAddress string = ''
 
-var siteAddress_var = siteAddress != '' ? siteAddress : toLower('${vmName}-${rand}.${location}.cloudapp.azure.com')
+@description('Lets Encrypt Email [required]')
+param letsEncryptEmail string = ''
 
 var env = {
   tskey: tsKey
   letsEncryptEmail: letsEncryptEmail
-  siteAddress: siteAddress_var
+  siteAddress: siteAddress != '' ? siteAddress : toLower('${vmName}-${rand}.${location}.cloudapp.azure.com')
 }
 
 var rand = substring(uniqueString(resourceGroup().id), 0, 6)
@@ -125,6 +130,8 @@ write_files:
 
 - path: /home/azureuser/tailscale.sh
   content: |
+    [[ -z "${1:-}" ]] && echo "no tskey. skipping." && exit 0
+
     curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null
     curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list
     
