@@ -3,6 +3,8 @@
 ## cli
 
 ```bash
+cd linux/vm-mastodon/
+
 RESOURCE_GROUP='221100-vm-mastodon'
 LOCATION='eastus'
 
