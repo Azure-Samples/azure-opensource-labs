@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "11545705452520662279"
+      "templateHash": "13878800897395994748"
     }
   },
   "parameters": {
@@ -77,10 +77,11 @@
     "allowIpPort22": "127.0.0.1",
     "adminUsername": "azureuser",
     "adminPasswordOrKey": "",
+    "siteAddress_var": "[if(not(equals(parameters('siteAddress'), '')), parameters('siteAddress'), toLower(format('{0}-{1}.{2}.cloudapp.azure.com', parameters('vmName'), variables('rand'), variables('location'))))]",
     "env": {
       "tskey": "[parameters('tsKey')]",
       "letsEncryptEmail": "[parameters('letsEncryptEmail')]",
-      "siteAddress": "[if(not(equals(parameters('siteAddress'), '')), parameters('siteAddress'), toLower(format('{0}-{1}.{2}.cloudapp.azure.com', parameters('vmName'), variables('rand'), variables('location'))))]"
+      "siteAddress": "[variables('siteAddress_var')]"
     },
     "rand": "[substring(uniqueString(resourceGroup().id), 0, 6)]",
     "virtualNetworkName_var": "[if(not(equals(variables('virtualNetworkName'), '')), variables('virtualNetworkName'), format('{0}-vnet', resourceGroup().name))]",
