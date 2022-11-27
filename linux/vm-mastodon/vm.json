@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "1898677224453014212"
+      "templateHash": "8214542542044752048"
     }
   },
   "parameters": {
@@ -57,7 +57,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Site Address [optiona]"
+        "description": "Site Address [optional]"
       }
     },
     "letsEncryptEmail": {
@@ -77,11 +77,10 @@
     "allowIpPort22": "127.0.0.1",
     "adminUsername": "azureuser",
     "adminPasswordOrKey": "",
-    "siteAddress_var": "[if(not(equals(parameters('siteAddress'), '')), parameters('siteAddress'), toLower(format('{0}-{1}.{2}.cloudapp.azure.com', parameters('vmName'), variables('rand'), variables('location'))))]",
     "env": {
       "tskey": "[parameters('tsKey')]",
       "letsEncryptEmail": "[parameters('letsEncryptEmail')]",
-      "siteAddress": "[variables('siteAddress_var')]"
+      "siteAddress": "[if(not(equals(parameters('siteAddress'), '')), parameters('siteAddress'), toLower(format('{0}-{1}.{2}.cloudapp.azure.com', parameters('vmName'), variables('rand'), variables('location'))))]"
     },
     "rand": "[substring(uniqueString(resourceGroup().id), 0, 6)]",
     "virtualNetworkName_var": "[if(not(equals(variables('virtualNetworkName'), '')), variables('virtualNetworkName'), format('{0}-vnet', resourceGroup().name))]",
