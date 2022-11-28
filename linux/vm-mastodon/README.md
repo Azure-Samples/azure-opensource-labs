@@ -1,4 +1,4 @@
-# NOTES
+# Mastodon on Azure with Linux & Docker Compose
 
 ## Azure Portal
 
