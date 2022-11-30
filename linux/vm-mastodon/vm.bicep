@@ -153,7 +153,7 @@ write_files:
     cd tmp
     
     make run-postgres
-    make config
+    sudo make config
     sudo make setup-db
     make setup-admin > ../admin.txt
     make run
