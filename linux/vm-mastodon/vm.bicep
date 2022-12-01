@@ -152,18 +152,14 @@ write_files:
     git clone https://github.com/asw101/tmp -b fractured-monkey-1
     cd tmp
     
-    make run-postgres
-    sudo make config
-    sudo make setup-db
-    make setup-admin > ../admin.txt
-    make run
+    make all
 
 runcmd:
 - cd /home/azureuser/
-- bash tailscale.sh "$(jq -r '.tskey' env.json)"
 - chown -R azureuser:azureuser /home/azureuser/
-- bash mastodon.sh
-- echo $(date) > hello.txt
+- sudo -u azureuser bash tailscale.sh "$(jq -r '.tskey' env.json)"
+- sudo -u azureuser bash mastodon.sh
+- sudo -u azureuser echo $(date) > hello.txt
 '''
 
 var cloudInitTailscaleMastodonFormat = format(cloudInitTailscaleMastodon, base64(string(env)))
