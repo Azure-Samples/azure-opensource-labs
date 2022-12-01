@@ -15,7 +15,7 @@ If you would like to deploy the Bicep template via the Azure CLI, explore the **
 If you are using Tailscale, you can simply run this at the command line.
 
 ```bash
-ssh azureuser@web1 'cat ~/admin.txt'
+ssh azureuser@web1 'cat ~/tmp/admin.txt'
 ```
 
 ### Azure Portal
@@ -27,7 +27,7 @@ If you are using the Azure Portal, take the following steps:
 3. Click on the VM.
 4. Find `Operations > Run command` on the left hand side.
 5. Click `RunShellScript`.
-6. Type `cat /home/azureuser/admin.txt`.
+6. Type `cat /home/azureuser/tmp/admin.txt`.
 7. Click `Run` and wait for the output.
 
 ## Azure CLI
