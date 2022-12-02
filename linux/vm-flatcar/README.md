@@ -21,7 +21,21 @@ If you would like to deploy the Bicep template via the Azure CLI, explore the **
 
 ## Azure CLI + Make
 
-We will be using the Azure CLI and the [Makefile](./Makefile) to run `az group create`, and `az deployment group create` commands.
+## Deploy
+
+Run the following command to ensure the resource group exists, and is empty, and make a fresh deployment.
+
+```bash
+cd linux/vm-flatcar
+
+make group empty deploy
+
+# or
+
+make
+```
+
+This will use the Azure CLI and the [Makefile](./Makefile) to run `az group create`, and `az deployment group create` commands.
 
 ### group
 
@@ -39,27 +53,7 @@ Emptys the resource group by deploying [empty.bicep](./empty.bicep) with `--mode
 
 Builds [vm.json](./vm.json) from [vm.bicep](./vm.bicep), which will be used for the portal deployment option above. It will also commit and push it via `git`.
 
-## Deploy
+### portal-url
 
-Run the following command to ensure the resource group exists, and is empty, and make a fresh deployment.
+Generates a deployment URL for the Azure Portal using `jq`.
 
-```bash
-cd linux/vm-flatcar
-make group empty deploy
-```
-
-## Azure Portal (continued)
-
-```bash
-# create vm.json
-az bicep build -f vm.bicep
-
-# create url
-BRANCH_OR_COMMIT='linux-flatcar'
-#BRANCH_OR_COMMIT=$(git rev-parse HEAD)
-TEMPLATE_URL="https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/${BRANCH_OR_COMMIT}/linux/vm-flatcar/vm.json"
-OUTPUT_URL='https://portal.azure.com/#create/Microsoft.Template/uri/'$(printf "$TEMPLATE_URL" | jq -s -R -r @uri )
-echo $OUTPUT_URL
-
-# https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Flinux-flatcar%2Flinux%2Fvm-flatcar%2Fvm.json
-```
