@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.8.9.13224",
-      "templateHash": "10129054514934823555"
+      "templateHash": "11806446759124871533"
     }
   },
   "parameters": {
@@ -107,7 +107,7 @@
         "description": "SSH Key for the Virtual Machine."
       }
     },
-    "cloudInit": {
+    "customData": {
       "type": "string",
       "defaultValue": "ignition",
       "allowedValues": [
@@ -136,10 +136,10 @@
     "ipConfigName": "[format('{0}-ipconfig', parameters('vmName'))]",
     "subnetAddressPrefix": "10.1.0.0/24",
     "addressPrefix": "10.1.0.0/16",
-    "cloudInitIgnition": "{\n  \"ignition\": {\n      \"version\": \"3.3.0\"\n  },\n  \"systemd\": {\n      \"units\": [\n          {\n              \"contents\": \"[Unit]\\nDescription=NGINX example\\nAfter=docker.service\\nRequires=docker.service\\n[Service]\\nTimeoutStartSec=0\\nExecStartPre=-/usr/bin/docker rm --force nginx1\\nExecStart=/usr/bin/docker run --name nginx1 --pull always --net host docker.io/nginx:1\\nExecStop=/usr/bin/docker stop nginx1\\nRestart=always\\nRestartSec=5s\\n[Install]\\nWantedBy=multi-user.target\",\n              \"enabled\": true,\n              \"name\": \"nginx.service\"\n          }\n      ]\n  }\n}\n",
-    "kvCloudInit": {
+    "customDataIgnition": "{\n  \"ignition\": {\n      \"version\": \"3.3.0\"\n  },\n  \"systemd\": {\n      \"units\": [\n          {\n              \"contents\": \"[Unit]\\nDescription=NGINX example\\nAfter=docker.service\\nRequires=docker.service\\n[Service]\\nTimeoutStartSec=0\\nExecStartPre=-/usr/bin/docker rm --force nginx1\\nExecStart=/usr/bin/docker run --name nginx1 --pull always --net host docker.io/nginx:1\\nExecStop=/usr/bin/docker stop nginx1\\nRestart=always\\nRestartSec=5s\\n[Install]\\nWantedBy=multi-user.target\",\n              \"enabled\": true,\n              \"name\": \"nginx.service\"\n          }\n      ]\n  }\n}\n",
+    "kvCustomData": {
       "none": "[json('null')]",
-      "ignition": "[base64(variables('cloudInitIgnition'))]"
+      "ignition": "[base64(variables('customDataIgnition'))]"
     },
     "kvImageReference": {
       "flatcar-container-linux": {
@@ -239,7 +239,7 @@
                 "id": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}/subnets/{3}', subscription().subscriptionId, resourceGroup().name, variables('virtualNetworkName_var'), variables('subnetName'))]"
               },
               "privateIPAllocationMethod": "Dynamic",
-              "publicIPAddress": "[if(not(equals(parameters('cloudInit'), 'tailscale-private')), createObject('id', resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))), null())]"
+              "publicIPAddress": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01', 'full')]"
             }
           }
         ],
@@ -294,7 +294,6 @@
       }
     },
     {
-      "condition": "[not(equals(parameters('cloudInit'), 'tailscale-private'))]",
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2021-05-01",
       "name": "[variables('publicIPAddressName')]",
@@ -349,7 +348,7 @@
         },
         "osProfile": {
           "computerName": "[parameters('vmName')]",
-          "customData": "[variables('kvCloudInit')[parameters('cloudInit')]]",
+          "customData": "[variables('kvCustomData')[parameters('customData')]]",
           "adminUsername": "[parameters('adminUsername')]",
           "linuxConfiguration": {
             "disablePasswordAuthentication": true,
@@ -377,11 +376,11 @@
     },
     "hostname": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn]"
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).dnsSettings.fqdn]"
     },
     "sshCommand": {
       "type": "string",
-      "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn)]"
+      "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))).dnsSettings.fqdn)]"
     }
   }
 }
