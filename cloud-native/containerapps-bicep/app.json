@@ -1,0 +1,78 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.8.9.13224",
+      "templateHash": "2417723889712623850"
+    }
+  },
+  "parameters": {
+    "env_name": {
+      "type": "string",
+      "defaultValue": "my-environment"
+    },
+    "app_name": {
+      "type": "string",
+      "defaultValue": "my-container-app"
+    },
+    "registry_server": {
+      "type": "string",
+      "defaultValue": "example.azurecr.io"
+    },
+    "app_image": {
+      "type": "string",
+      "defaultValue": "containerapps-helloworld:latest"
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.App/containerApps",
+      "apiVersion": "2022-06-01-preview",
+      "name": "[parameters('app_name')]",
+      "location": "[parameters('location')]",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name)))]": {}
+        }
+      },
+      "properties": {
+        "managedEnvironmentId": "[resourceId('Microsoft.App/managedEnvironments', parameters('env_name'))]",
+        "configuration": {
+          "ingress": {
+            "external": true,
+            "targetPort": 80
+          },
+          "registries": [
+            {
+              "server": "[parameters('registry_server')]",
+              "identity": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]"
+            }
+          ]
+        },
+        "template": {
+          "containers": [
+            {
+              "image": "[parameters('app_image')]",
+              "name": "[parameters('app_name')]",
+              "resources": {
+                "cpu": "[json('0.5')]",
+                "memory": "1.0Gi"
+              }
+            }
+          ],
+          "scale": {
+            "minReplicas": 1,
+            "maxReplicas": 1
+          }
+        }
+      }
+    }
+  ]
+}

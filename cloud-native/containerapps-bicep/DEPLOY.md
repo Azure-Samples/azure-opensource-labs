@@ -21,6 +21,8 @@ az deployment group create \
 
 ## Build and Deploy Application
 
+[[Deploy via Azure Portal](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Fmain%2Fcloud-native%2Fcontainerapps-bicep%2Fapp.json)]
+
 ```bash
 ACR_NAME=$(az acr list \
     --resource-group $RESOURCE_GROUP \
