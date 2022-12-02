@@ -1,0 +1,14 @@
+{
+    "ignition": {
+        "version": "3.3.0"
+    },
+    "systemd": {
+        "units": [
+            {
+                "contents": "[Unit]\nDescription=NGINX example\nAfter=docker.service\nRequires=docker.service\n[Service]\nTimeoutStartSec=0\nExecStartPre=-/usr/bin/docker rm --force nginx1\nExecStart=/usr/bin/docker run --name nginx1 --pull always --net host docker.io/nginx:1\nExecStop=/usr/bin/docker stop nginx1\nRestart=always\nRestartSec=5s\n[Install]\nWantedBy=multi-user.target",
+                "enabled": true,
+                "name": "nginx.service"
+            }
+        ]
+    }
+}

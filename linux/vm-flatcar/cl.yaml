@@ -1,0 +1,20 @@
+variant: flatcar
+version: 1.0.0
+systemd:
+  units:
+    - name: nginx.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=NGINX example
+        After=docker.service
+        Requires=docker.service
+        [Service]
+        TimeoutStartSec=0
+        ExecStartPre=-/usr/bin/docker rm --force nginx1
+        ExecStart=/usr/bin/docker run --name nginx1 --pull always --net host docker.io/nginx:1
+        ExecStop=/usr/bin/docker stop nginx1
+        Restart=always
+        RestartSec=5s
+        [Install]
+        WantedBy=multi-user.target
