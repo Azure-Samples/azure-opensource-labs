@@ -23,19 +23,21 @@ If you would like to deploy the Bicep template via the Azure CLI, explore the **
 
 ## Deploy
 
-Run the following command to ensure the resource group exists, and is empty, and make a fresh deployment.
+Run `make`, which runs the default target `all`, which runs `group deploy deploy` to ensure the resource group exists, and is empty, and make a fresh deployment.
 
 ```bash
 cd linux/vm-flatcar
 
-make group empty deploy
-
-# or
-
 make
 ```
 
-This will use the Azure CLI and the [Makefile](./Makefile) to run `az group create`, and `az deployment group create` commands.
+You can then run multiple commands as follows.
+
+```bash
+make empty deploy
+```
+
+The above uses the Azure CLI and the [Makefile](./Makefile) to run `az group create`, and `az deployment group create` commands.
 
 ### group
 
