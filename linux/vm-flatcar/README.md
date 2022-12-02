@@ -59,3 +59,6 @@ Builds [vm.json](./vm.json) from [vm.bicep](./vm.bicep), which will be used for 
 
 Generates a deployment URL for the Azure Portal using `jq`.
 
+### browse
+
+Open [README.md](./README.md) in GitHub on the current branch.

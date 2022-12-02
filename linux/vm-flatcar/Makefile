@@ -32,3 +32,7 @@ portal-url:
 	OUTPUT_URL='https://portal.azure.com/#create/Microsoft.Template/uri/'; \
 	TEMPLATE_URL_ENCODED=$$(printf "$$TEMPLATE_URL" | jq -s -R -r @uri); \
 	echo $$OUTPUT_URL$$TEMPLATE_URL_ENCODED
+
+browse:
+	BRANCH=$$(git branch --show-current); \
+	gh browse README.md --branch $${BRANCH}
