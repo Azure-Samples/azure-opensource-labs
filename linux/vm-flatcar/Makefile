@@ -20,9 +20,9 @@ empty:
 		--mode Complete
 
 arm:
-	az bicep build -f vm.bicep
-	git add vm.json
-	git commit -m "Update vm.json"
+	az bicep build -f vm.bicep && \
+	git add vm.json && \
+	git commit -m "Update vm.json" && \
 	git push
 
 BRANCH_OR_COMMIT ?= linux-flatcar
