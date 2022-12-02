@@ -1,0 +1,52 @@
+# DEPLOY
+
+## Deploy Infrastructure
+
+```bash
+RESOURCE_GROUP="221200-container-apps"
+LOCATION="eastus"
+
+az group create \
+  --name $RESOURCE_GROUP \
+  --location "$LOCATION"
+
+az deployment group create \
+  --resource-group "$RESOURCE_GROUP" \
+  --template-file ./containerapp.bicep \
+  --parameters \
+      location="$LOCATION"
+```
+
+## Build and Deploy Application
+
+```bash
+ACR_NAME=$(az acr list \
+    --resource-group $RESOURCE_GROUP \
+    --query '[0].name' \
+    --out tsv)
+
+IDENTITY_ID=$(az identity show \
+  --name "${RESOURCE_GROUP}-identity" \
+  --resource-group $RESOURCE_GROUP \
+  --query id \
+  --out tsv)
+
+IMAGE_NAME='asw101/go-hello'
+
+# clone repo
+gh repo clone asw101/go-hello
+cd go-hello/
+
+# build the container
+az acr build -t $IMAGE_NAME -r $ACR_NAME .
+
+# deploy container
+az containerapp create \
+  --resource-group $RESOURCE_GROUP \
+  --name 'my-container-app' \
+  --environment 'my-environment' \
+  --user-assigned $IDENTITY_ID \
+  --registry-identity $IDENTITY_ID \
+  --registry-server "$ACR_NAME.azurecr.io" \
+  --image "$ACR_NAME.azurecr.io/$IMAGE_NAME:latest"
+```
