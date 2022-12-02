@@ -1,8 +1,7 @@
 RESOURCE_GROUP ?= 221100-vm-flatcar
 LOCATION ?= eastus
 
-all:
-	group empty deploy
+all: group empty deploy
 
 group:
 	az group create \
