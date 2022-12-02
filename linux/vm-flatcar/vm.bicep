@@ -1,3 +1,7 @@
+// @description('Location for all resources.')
+// param location string = resourceGroup().location
+var location = resourceGroup().location
+
 @description('The name of your Virtual Machine.')
 param vmName string = 'vm1'
 
@@ -40,9 +44,6 @@ param osDiskSize int = 256
   'flatcar-container-linux'
 ])
 param osImage string = 'flatcar-container-linux'
-
-@description('Location for all resources.')
-param location string = resourceGroup().location
 
 @description('Name of the VNET.')
 param virtualNetworkName string = ''
@@ -197,7 +198,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-05-01' = {
             id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${virtualNetworkName_var}/subnets/${subnetName}'
           }
           privateIPAllocationMethod: 'Dynamic'
-          publicIPAddress: publicIP.id
+          publicIPAddress: { id: publicIP.id }
         }
       }
     ]
