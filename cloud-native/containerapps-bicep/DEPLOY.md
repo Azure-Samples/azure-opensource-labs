@@ -2,6 +2,8 @@
 
 ## Deploy Infrastructure
 
+[[Deploy via Azure Portal](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Fmain%2Fcloud-native%2Fcontainerapps-bicep%2Fcontainerapp.json)]
+
 ```bash
 RESOURCE_GROUP="221200-container-apps"
 LOCATION="eastus"
