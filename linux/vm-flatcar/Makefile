@@ -21,3 +21,6 @@ empty:
 
 arm:
 	az bicep build -f vm.bicep
+	git add vm.json
+	git commit -m "Update vm.json"
+	git push

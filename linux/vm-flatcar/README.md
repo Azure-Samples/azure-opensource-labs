@@ -37,7 +37,7 @@ Emptys the resource group by deploying [empty.bicep](./empty.bicep) with `--mode
 
 ### arm
 
-Builds [vm.json](./vm.json) from [vm.bicep](./vm.bicep), which will be used for the portal deployment option above.
+Builds [vm.json](./vm.json) from [vm.bicep](./vm.bicep), which will be used for the portal deployment option above. It will also commit and push it via `git`.
 
 ## Deploy
 
