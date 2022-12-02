@@ -62,7 +62,7 @@ param adminPasswordOrKey string = ''
   'none'
   'ignition'
 ])
-param cloudInit string = 'ignition'
+param customData string = 'ignition'
 
 @description('Environment variables as JSON object.')
 @secure()
@@ -78,7 +78,7 @@ var ipConfigName = '${vmName}-ipconfig'
 var subnetAddressPrefix = '10.1.0.0/24'
 var addressPrefix = '10.1.0.0/16'
 
-var cloudInitIgnition = '''
+var customDataIgnition = '''
 {
   "ignition": {
       "version": "3.3.0"
@@ -95,9 +95,9 @@ var cloudInitIgnition = '''
 }
 '''
 
-var kvCloudInit = {
+var kvCustomData = {
   none: json('null')
-  ignition: base64(cloudInitIgnition)
+  ignition: base64(customDataIgnition)
 }
 
 var kvImageReference = {
@@ -197,7 +197,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2021-05-01' = {
             id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${virtualNetworkName_var}/subnets/${subnetName}'
           }
           privateIPAllocationMethod: 'Dynamic'
-          publicIPAddress: (cloudInit != 'tailscale-private' ? { id: publicIP.id } : null)
+          publicIPAddress: publicIP.id
         }
       }
     ]
@@ -245,7 +245,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = if (virtualNetwor
   }
 }
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2021-05-01' = if (cloudInit != 'tailscale-private') {
+resource publicIP 'Microsoft.Network/publicIPAddresses@2021-05-01' = {
   name: publicIPAddressName
   location: location
   sku: {
@@ -297,7 +297,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
     }
     osProfile: {
       computerName: vmName
-      customData: kvCloudInit[cloudInit]
+      customData: kvCustomData[customData]
       adminUsername: adminUsername
       linuxConfiguration: {
         disablePasswordAuthentication: true
