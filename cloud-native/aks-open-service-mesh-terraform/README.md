@@ -11,13 +11,15 @@ This directory holds Terraform configuration files for deploying an AKS cluster 
 
 ## Deploy Azure Resources using Terraform
 
-Terraform will use your Azure CLI login context to deploy the resources into your subscription. Login to the Azure CLI and ensure you have selected the proper subscription.
+Terraform will use your Azure CLI login context to deploy the resources into your subscription. 
+
+Login to the Azure CLI.
 
 ```bash
 az login
 ```
 
-Optionally set the correct subscription if you have more than one.
+Optionally set the correct subscription if you have more than one. You can list them via `az account list`.
 
 ```bash
 az account set -s '<YOUR_SUBSCRIPTION_NAME>'
@@ -41,10 +43,12 @@ Once you've completed the deployment of Azure infrastructure, run the following 
 export name=$(terraform output -raw random_pet_name)
 ```
 
-You can pull down the `kube_config` file with the following command.
+Authenticate `kubectl` against the AKS cluster with the following command.
 
 ```bash
-az aks get-credentials --resource-group "rg-${name}" --name "aks-${name}"
+az aks get-credentials \
+    --resource-group "rg-${name}" \
+    --name "aks-${name}"
 ```
 
 Validate access to your AKS cluster using `kubectl`.
@@ -61,7 +65,7 @@ Continue on to the [Validate OSM resources and configurations](../aks-open-servi
 
 ## Clean up resources
 
-Once you have finished exploring AKS with ARM64 node pools, you should delete the deployment to avoid any further charges.
+Once you have finished exploring Azure Kubernetes Service with Open Service Mesh and Terraform, you should delete the deployment to avoid any further charges.
 
 Run the `destroy` command to delete all your resources.
 
