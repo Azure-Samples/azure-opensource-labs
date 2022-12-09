@@ -1,6 +1,6 @@
 # Azure Kubernetes Service with Open Service Mesh
 
-In this multi-part lab, you will deploy an [AKS][aks] cluster with the [Web Application Routing (Preview)][aks_addon_web_app_routing] and [Open Service Mesh (OSM)][aks_addon_osm] add-ons enabled. These add-ons are open-source components that are installed and managed by the AKS platform. OSM can be installed on any Kubernetes cluster (see [guide](https://release-v1-2.docs.openservicemesh.io/docs/getting_started/install_apps/)); however, in this lab, we will explore the AKS-managed version and demonstrate how it integrates with other components.
+In this multi-part lab, you will deploy an [AKS][aks] cluster with the [Web Application Routing (Preview)][aks_addon_web_app_routing] and [Open Service Mesh (OSM)][aks_addon_osm] add-ons enabled. These add-ons are open-source components that are installed and managed by the AKS platform. OSM can be installed on any Kubernetes cluster (see [guide](https://release-v1-2.docs.openservicemesh.io/docs/getting_started/install_apps/)); however, in this lab, you will explore the AKS-managed version and demonstrate how it integrates with other components.
 
 We'll start by deploying the [OSM Bookstore sample application][osm_bookstore_sample] to the AKS cluster, expose the web applications via the managed ingress controller then configure OSM to secure traffic between the ingress controller and backend services (as well as inter-mesh communications).
 
