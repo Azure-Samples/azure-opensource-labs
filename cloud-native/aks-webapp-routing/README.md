@@ -26,6 +26,10 @@ az provider register --namespace Microsoft.ContainerService
 az extension add --name aks-preview
 ```
 
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Fmain%2Fcloud-native%2Faks-webapp-routing%2Fmain.json)
+
+> Use the button above if you'd like to deploy using the Azure Portal instead of Azure CLI commands.
+
 ## Deploy Azure Resources
 
 Clone this repo and drop into the `aks-webapp-routing` directory.
