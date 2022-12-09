@@ -11,7 +11,6 @@ Before you get started, make sure you have the following:
 * An Azure Subscription (e.g. [Free](https://aka.ms/azure-free-account) or [Student](https://aka.ms/azure-student-account) account)
 * The [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) with [Azure Bicep](https://learn.microsoft.com/azure/azure-resource-manager/bicep/install#azure-cli) installed
 * A [GitHub](https://github.com/) account
-* The [GitHub CLI](https://cli.github.com/)
 * The [`kubectl` CLI](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 * Bash shell (e.g. macOS, Linux, [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/windows/wsl/about), [Multipass](https://multipass.run/), [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/quickstart), [GitHub Codespaces](https://github.com/features/codespaces), etc)
 * The [`osm` CLI](https://learn.microsoft.com/azure/aks/open-service-mesh-binary?pivots=client-operating-system-linux)
@@ -25,8 +24,7 @@ Before you get started, make sure you have the following:
 Clone this repo and drop into the `aks-open-service-mesh` directory.
 
 ```bash
-gh auth login
-gh repo clone Azure-Samples/azure-opensource-labs
+git clone https://github.com/Azure-Samples/azure-opensource-labs.git
 cd azure-opensource-labs/cloud-native/aks-open-service-mesh
 ```
 
