@@ -7,7 +7,7 @@ We'll start by deploying the [OSM Bookstore sample application][osm_bookstore_sa
 ## Requirements
 
 * An Azure Subscription (e.g. [Free](https://aka.ms/azure-free-account) or [Student](https://aka.ms/azure-student-account) account)
-* The [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) with [Azure Bicep](https://learn.microsoft.com/azure/azure-resource-manager/bicep/install#azure-cli) installed
+* The [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) with [Bicep](https://learn.microsoft.com/azure/azure-resource-manager/bicep/install#azure-cli) installed
 * A [GitHub](https://github.com/) account
 * The [`kubectl` CLI](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 * Bash shell (e.g. macOS, Linux, [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/windows/wsl/about), [Multipass](https://multipass.run/), [Azure Cloud Shell](https://docs.microsoft.com/azure/cloud-shell/quickstart), [GitHub Codespaces](https://github.com/features/codespaces), etc)
