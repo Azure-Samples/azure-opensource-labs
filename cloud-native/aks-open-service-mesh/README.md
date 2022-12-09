@@ -18,6 +18,10 @@ Before you get started, make sure you have the following:
 
 ## Deploy Azure Resources
 
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Fmain%2Fcloud-native%2Faks-open-service-mesh%2Fmain.json)
+
+> Use the button above if you'd like to deploy using the Azure Portal instead of Azure CLI commands.
+
 Clone this repo and drop into the `aks-open-service-mesh` directory.
 
 ```bash
