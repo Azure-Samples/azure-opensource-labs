@@ -6,8 +6,6 @@ We'll start by deploying the [OSM Bookstore sample application][osm_bookstore_sa
 
 ## Requirements
 
-Before you get started, make sure you have the following:
-
 * An Azure Subscription (e.g. [Free](https://aka.ms/azure-free-account) or [Student](https://aka.ms/azure-student-account) account)
 * The [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli) with [Azure Bicep](https://learn.microsoft.com/azure/azure-resource-manager/bicep/install#azure-cli) installed
 * A [GitHub](https://github.com/) account
