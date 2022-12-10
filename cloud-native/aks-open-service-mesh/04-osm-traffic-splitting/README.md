@@ -114,7 +114,7 @@ Once you have finished exploring, you should delete the deployment to avoid any 
 az group delete --name rg-${name} --yes
 ```
 
-If you thought this was helpful, please give the repo a ⭐️ or let us know of any questions of feedback by filing a [new issue](https://github.com/Azure-Samples/azure-opensource-labs/issues/new).
+If you found this lab helpful, please give the repo a ⭐️ or let us know your questions or feedback by filing a [new issue](https://github.com/Azure-Samples/azure-opensource-labs/issues/new), or joining the Discord in the [README](https://github.com/Azure-Samples/azure-opensource-labs#azure-open-source-labs).
 
 Cheers!
 
