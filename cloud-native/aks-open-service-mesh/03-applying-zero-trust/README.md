@@ -23,7 +23,7 @@ To secure communications, NGINX it will need to present a certificate to OSM. Th
 * [`nginx.ingress.kubernetes.io/proxy-ssl-secret`][nginx_annotations_proxy_ssl_secret] is the secret name formatted as `namespace/secretName` where the client certificate is stored. This certificate is used by NGINX to proxy HTTPS connects to TLS backends. In our case, this will be set to `kube-system/osm-ingress-client-cert`
 * [`nginx.ingress.kubernetes.io/proxy-ssl-verify`][nginx_annotations_proxy_ssl_verify] enables or disables verification of proxied HTTPS server certificate. In our case, this will be set to `on`
 
-Typically you would need to manually [edit the OSM `meshconfig` resource](https://release-v1-2.docs.openservicemesh.io/docs/demos/ingress_k8s_nginx/#https-ingress-mtls-and-tls) so that OSM can issue and store certificates within a [Kubernetes secret][k8s_secret]. With managed-OSM, this configuration is done for you 🎉
+Typically you would need to manually [edit the OSM `meshconfig` resource](https://release-v1-2.docs.openservicemesh.io/docs/demos/ingress_k8s_nginx/#https-ingress-mtls-and-tls) so that OSM can issue and store certificates within a [Kubernetes secret][k8s_secret]. With managed-OSM, this configuration is done for you.
 
 To retrieve the details of the certificate for ingress gateway, you can run the following command:
 
