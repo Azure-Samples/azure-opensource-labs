@@ -105,10 +105,12 @@ Before we pull down credentials from AKS make sure you have `kubectl` CLI locall
 
 > If you do not have `kubectl` installed yet, run the `az aks install-cli` to install it using Azure CLI. 
 
-Run the following command to download credential for `kubectl` CLI:
+Authenticate `kubectl` against the AKS cluster.
 
 ```bash
-az aks get-credentials -g rg-${name} -n aks-${name}
+az aks get-credentials \
+  --resource-group rg-${name} \
+  --name aks-${name}
 ```
 
 Run the following command to verify you have access to the cluster:
