@@ -16,7 +16,7 @@ The intent of this part of the lab is to just get the application up an running 
 
 Please ensure you have completed the steps in [Part 1](../README.md) before you proceed.
 
-Make sure you are in the correct working directory.
+Make sure you are in the correct working directory (`cloud-native/aks-open-service-mesh/02-deploying-bookstore-app`)
 
 ```bash
 cd 02-deploying-bookstore-app
