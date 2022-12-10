@@ -33,7 +33,7 @@ kubectl get meshconfig osm-mesh-config -n kube-system -o yaml
 
 In the output, you should see `certificate` details. Here is the snippet of code you should look for.
 
-```yml
+```yaml
 ...
 certificate:
   certKeyBitSize: 2048
