@@ -4,10 +4,9 @@ So far we've deployed and exposed the Bookstore app via managed NGINX ingress co
 
 Please ensure you have completed the steps in [Part 2: Bookstore application deployment](../02-deploying-bookstore-app/README.md) before you proceed.
 
-Make sure you are in the right working directory:
+Make sure you are in the right working directory (this command assumes you are currently in the `cloud-native/aks-open-service-mesh/02-deploying-bookstore-app/` directory).
 
 ```bash
-# this command assumes are you currently in the 02-deploying-bookstore-app directory
 cd ../03-applying-zero-trust
 ```
 
