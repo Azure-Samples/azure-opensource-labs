@@ -52,7 +52,7 @@ userName=$(az account show --out tsv --query user.name)
 userObjectId=$(az ad user show --id $userName --out tsv --query id)
 ```
 
-Deploy Azure infrastructure with the Azure Bicep template.
+Deploy Azure infrastructure with the Bicep template.
 
 > Take a look at this [blog post](https://dev.to/azure/sharing-bicep-modules-with-azure-container-registry-4mo0) to see how the Bicep modules are put together.
 
@@ -61,19 +61,20 @@ az deployment sub create \
   --name "$name-deploy" \
   --location $location \
   --template-file main.bicep \
-  --parameters name=$name \
-               location=$location \
-               kubernetesVersion=$kubernetesVersion \
-               systemNodeCount=$systemNodeCount \
-               systemNodeSize=$systemNodeSize \
-               userObjectId=$userObjectId
+  --parameters \
+      name=$name \
+      location=$location \
+      kubernetesVersion=$kubernetesVersion \
+      systemNodeCount=$systemNodeCount \
+      systemNodeSize=$systemNodeSize \
+      userObjectId=$userObjectId
 ```
 
 The template will deploy the following resources into your subscription:
 
 * [Azure Resource Group][rg] to deploy resources into
 * [Azure Log Analytics Workspace][law] to serve as a data store for the monitoring add-on
-* [Azure Kubernetes Service][aks] your managed Kubernetes cluster with [`kubenet`][kubenet] as the container network plugin and [`calico`][calico] for network policy and include the following [AKS add-ons][aks_addons]
+* [Azure Kubernetes Service][aks] your managed Kubernetes cluster with [`kubenet`][kubenet] as the container network plugin, [`calico`][calico] for network policy, and the following [AKS add-ons][aks_addons]
   * [`azure-keyvault-secrets-provider`](https://learn.microsoft.com/azure/aks/csi-secrets-store-driver)
   * [`monitoring`](https://learn.microsoft.com/azure/azure-monitor/containers/container-insights-overview)
   * [`open-service-mesh`](https://learn.microsoft.com/azure/aks/open-service-mesh-about)
