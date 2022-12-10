@@ -1,6 +1,6 @@
 # Part 3: Applying Zero-Trust to the Bookstore application
 
-So far we've deployed and exposed the Bookstore app via managed NGINX ingress controller and onboarded the Bookstore namespaces to OSM. Communication between pods within the service mesh is wide-open with the **permissive traffic policy** enabled and books are being stolen by the `bookthief` app. We need to lock things down and ensure `bookthief` is no longer able to communicate with `bookstore` and steal any more books. We'll also ensure we have end-to-end encryption in place for internal communication between the ingress and backend services using mutual TLS (mTLS).
+So far you have deployed and exposed the Bookstore app via managed NGINX ingress controller and onboarded the Bookstore namespaces to OSM. Communication between pods within the service mesh is wide-open with the **permissive traffic policy** enabled and books are being stolen by the `bookthief` app. You need to lock things down and ensure `bookthief` is no longer able to communicate with `bookstore` and steal any more books. You will also ensure you have end-to-end encryption in place for internal communication between the ingress and backend services using mutual TLS (mTLS).
 
 Please ensure you have completed the steps in [Part 2: Bookstore application deployment](../02-deploying-bookstore-app/README.md) before you proceed.
 
@@ -12,7 +12,7 @@ cd ../03-applying-zero-trust
 
 ## Securing communications between ingress and backend services
 
-We'll start by enforcing mTLS between the NGINX ingress controller. In order to secure communications between our managed ingress controller and OSM, we'll need to update the `Ingress` manifests to include NGINX controller-specific [`annotations`][nginx_annotations] and update our [`IngressBackend`][osm_ingressbackend_api] manifest to enforce HTTPS traffic using TLS certificates which have been created by OSM.
+You will start by enforcing mTLS between the NGINX ingress controller. In order to secure communications between our managed ingress controller and OSM, you will need to update the `Ingress` manifests to include NGINX controller-specific [`annotations`][nginx_annotations] and update our [`IngressBackend`][osm_ingressbackend_api] manifest to enforce HTTPS traffic using TLS certificates which have been created by OSM.
 
 ### Updating `Ingress` manifests
 
@@ -52,11 +52,11 @@ The truncated output above lists the certificate details which will be used by t
 
 ### Updating `IngressBackend` manifests
 
-We'll need to update the `IngressBackend` manifests using the certificate information listed above.
+You will need to update the `IngressBackend` manifests using the certificate information listed above.
 
-First, we need to update the [`IngressBackendSpec`][osm_ingressbackendspec] and change the `PortSpec` from `http` to `https`. Then we'll need to add a `TLSSpec` element and set the `skipClientCertValidation` to `false`.
+First, you need to update the [`IngressBackendSpec`][osm_ingressbackendspec] and change the `PortSpec` from `http` to `https`. Then you will need to add a `TLSSpec` element and set the `skipClientCertValidation` to `false`.
 
-From there, we need to update the [`IngressSourceSpec`][osm_ingresssourcespec] and add a new source with the `kind` attribute being set to `AuthenticatedPrincipal` and set the `name` attribute to `ingress-nginx.ingress.cluster.local`. This tells OSM to expect traffic from the NGINX ingress controller.
+From there, you need to update the [`IngressSourceSpec`][osm_ingresssourcespec] and add a new source with the `kind` attribute being set to `AuthenticatedPrincipal` and set the `name` attribute to `ingress-nginx.ingress.cluster.local`. This tells OSM to expect traffic from the NGINX ingress controller.
 
 OSM provisioned a client certificate for the NGINX ingress service with the Subject ALternative Name (SAN) `ingress-nginx.ingress.cluster.local`, so the `IngressBackend` configuration needs to reference the same SAN for mTLS authentication (between the Nginx ingress service and the backend services).
 
@@ -112,7 +112,7 @@ OSM is running in permissive mode, which means all resources enrolled in the mes
 Run this command to disable permissive traffic policy mode.
 
 ```bash
-kubectl patch meshconfig osm-mesh-config -n kube-system -p '{"spec":{"traffic":{"enablePermissiveTrafficPolicyMode":false}}}'  --type=merge
+kubectl patch meshconfig osm-mesh-config -n kube-system -p '{"spec":{"traffic":{"enablePermissiveTrafficPolicyMode":false}}}' --type=merge
 ```
 
 ### Enable SMI traffic policies
@@ -131,9 +131,9 @@ Here's an overview of each resource:
 
 **[`UDPRoute`][smi_udproute]**: Describes the L4 UDP traffic to filter on in `TrafficTarget` rule definitions.
 
-Using the `HTTPRouteGroup` resource, we can define a traffic filter for GET requests that are made to the `/books-bought` path with specific header information like this.
+Using the `HTTPRouteGroup` resource, you can define a traffic filter for GET requests that are made to the `/books-bought` path with specific header information like this.
 
-```yml
+```yaml
 apiVersion: specs.smi-spec.io/v1alpha4
 kind: HTTPRouteGroup
 metadata:
@@ -154,9 +154,9 @@ spec:
     - GET
 ```
 
-The manifest above will filter network requests and can be used to define rules for allowing traffic flow. Using the `TrafficTarget` resource, we can apply the filter to specific source/destination pairs.
+The manifest above will filter network requests and can be used to define rules for allowing traffic flow. Using the `TrafficTarget` resource, you can apply the filter to specific source/destination pairs.
 
-```yml
+```yaml
 kind: TrafficTarget
 apiVersion: access.smi-spec.io/v1alpha3
 metadata:
@@ -197,7 +197,7 @@ Now if you re-visit the **bookbuyer** and **bookstore** web applications, you'll
 
 Congratulations, you have successfully blocked the **bookthief** application from stealing books 🎉
 
-Now, head over to [Part 4: Traffic splitting with OSM](../04-osm-traffic-splitting/README.md) where we'll deploy a new version of the **bookstore** app and take a canary approach to release **bookstore v2**.
+Next, head over to [Part 4: Traffic splitting with OSM](../04-osm-traffic-splitting/README.md) where you will deploy a new version of the **bookstore** app and take a canary approach to release **bookstore v2**.
 
 ## Resources
 
