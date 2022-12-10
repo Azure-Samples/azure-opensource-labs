@@ -103,7 +103,7 @@ az aks show \
 
 Before we pull down credentials from AKS make sure you have `kubectl` CLI locally.
 
-> If you do not have `kubectl` installed yet, you can run the following command to install it using Azure CLI command: `az aks install-cli`
+> If you do not have `kubectl` installed yet, run the `az aks install-cli` to install it using Azure CLI. 
 
 Run the following command to download credential for `kubectl` CLI:
 
