@@ -26,29 +26,30 @@ git clone https://github.com/Azure-Samples/azure-opensource-labs.git
 cd azure-opensource-labs/cloud-native/aks-open-service-mesh
 ```
 
+Before you proceed, ensure you have the `Microsoft.ContainerService` and `Microsoft.Insights` providers registered.
+
+```bash
+az provider register --namespace Microsoft.ContainerService
+az provider register --namespace Microsoft.Insights
+```
+
 Open a terminal and initialize the following variables which will be passed into the deployment.
 
 ```bash
 # azure region where resources will be deployed to
 location=eastus
-
 # random name that will be used for azure resources
 name=books$RANDOM
 # get the latest (n-1) version of kubernetes
 kubernetesVersion=$(az aks get-versions -l $location --out tsv --query 'orchestrators[-1].orchestratorVersion')
 # kubernetes node count
 systemNodeCount=3
-
 # azure vm size for nodes
 systemNodeSize=Standard_D4s_v5
 # get your user name
 userName=$(az account show --out tsv --query user.name)
 # get your user principal id
-userObjectId=$(az ad user show --id $userName --query id -o tsv)
-
-# ensure you have the following providers
-az provider register --namespace Microsoft.ContainerService
-az provider register --namespace Microsoft.Insights
+userObjectId=$(az ad user show --id $userName --out tsv --query id)
 ```
 
 Deploy Azure infrastructure with the Azure Bicep template.
