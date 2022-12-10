@@ -2,7 +2,7 @@
 
 With an AKS cluster deployed, let's focus on deploying an application and configuring it to work with OSM and NGINX ingress.
 
-The sample app deployed here is the same application demonstrated in [OSM's Getting Started guide](https://release-v1-2.docs.openservicemesh.io/docs/getting_started/install_apps/). The getting started guide uses [port-forwarding for exposing the application](https://release-v1-2.docs.openservicemesh.io/docs/getting_started/install_apps/#view-the-application-uis), but we'll use the managed NGINX ingress controller instead. We'll also need to deploy OSM `IngressBackend` configurations to route NGINX-managed ingress traffic to OSM-managed service backends.
+The sample app deployed here is the same application demonstrated in [OSM's Getting Started guide](https://release-v1-2.docs.openservicemesh.io/docs/getting_started/install_apps/). The getting started guide uses [port-forwarding for exposing the application](https://release-v1-2.docs.openservicemesh.io/docs/getting_started/install_apps/#view-the-application-uis), but you will use the managed NGINX ingress controller instead. You will also need to deploy OSM `IngressBackend` configurations to route NGINX-managed ingress traffic to OSM-managed service backends.
 
 ## Application overview
 
@@ -56,7 +56,7 @@ Let's take a look at the labels that have been added to these namespaces.
 kubectl get namespace -A --show-labels | grep book
 ```
 
-The namespaces have also been annotated by OSM with to specify whether or not the control plane should be injecting data plane side cars into pods. You can see the annotation for each with these commands.
+The namespaces have also been annotated by OSM to specify whether or not the control plane should be injecting data plane side cars into pods. You can see the annotation for each with these commands.
 
 ```bash
 kubectl get namespace bookstore -o jsonpath='{.metadata.annotations}'
@@ -73,7 +73,7 @@ osm namespace list
 
 ## Deploy the application to Kubernetes
 
-The deployment manifests are hosted in [OSM's docs repo](https://github.com/openservicemesh/osm-docs/tree/main/manifests/apps), so we can deploy them directly from there.
+The deployment manifests are hosted in the [OSM docs repo](https://github.com/openservicemesh/osm-docs/tree/main/manifests/apps), so you can deploy them directly from there.
 
 Run the following commands to deploy the applications.
 
@@ -118,7 +118,7 @@ Expose the `bookbuyer` app by deploying a service and ingress.
 kubectl apply -f ./bookbuyer-ui.yaml
 ```
 
-Check the status of the ingress with the following command:
+Check the status of the ingress.
 
 ```bash
 kubectl get ingress -n bookbuyer
@@ -139,7 +139,7 @@ Deploy the `IngressBackend` for `bookbuyer` with the following command:
 kubectl apply -f ./bookbuyer-ui-ingressbackend.yaml
 ```
 
-Check the status of the ingress backend:
+Check the status of the ingress backend.
 
 ```bash
 kubectl get ingressbackend -n bookbuyer
