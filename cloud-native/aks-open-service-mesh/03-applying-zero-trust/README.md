@@ -123,7 +123,7 @@ Communication within the service mesh has gone from default allow, to default de
 
 Here's an overview of each resource:
 
-**[`TrafficTarget`][smi_traffictarget]**: Used to define whitelisting rules for sources to a destination. Access control is based on [service identity][k8s_serviceaccount] which can be allocated to groups of pods.
+**[`TrafficTarget`][smi_traffictarget]**: Used to associate a set of traffic definitions (rules) with a service identity. Access control is based on [service identity][k8s_serviceaccount] which can be allocated to groups of pods.
 
 **[`HTTPRouteGroup`][smi_httproutegroup]**: Describes the HTTP/1 and HTTP/2 traffic characteristics to filter on in `TrafficTarget` rule definitions. Filters can be applied to combinations of HTTP headers, paths using Regex, and methods.
 
