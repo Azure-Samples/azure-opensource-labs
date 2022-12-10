@@ -34,10 +34,8 @@ location=eastus
 
 # random name that will be used for azure resources
 name=books$RANDOM
-
 # get the latest (n-1) version of kubernetes
-kubernetesVersion=$(az aks get-versions -l $location -o table | head -4 | tail -n 1 | cut -f 1 -d ' ')
-
+kubernetesVersion=$(az aks get-versions -l $location --out tsv --query 'orchestrators[-1].orchestratorVersion')
 # kubernetes node count
 systemNodeCount=3
 
