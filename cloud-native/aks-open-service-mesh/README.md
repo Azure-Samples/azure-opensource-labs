@@ -85,13 +85,18 @@ The template will deploy the following resources into your subscription:
 View a list of resources deployed in your resource group by running the following command or view from the [Azure Portal](https://portal.azure.com):
 
 ```bash
-az resource list --resource-group rg-$name -o table
+az resource list \
+  --resource-group rg-${name} \
+  --out table
 ```
 
 To view the AKS add-ons that have been installed and its configurations, run the command below:
 
 ```bash
-az aks show -g rg-${name} -n aks-${name} --query "addonProfiles"
+az aks show \
+  --resource-group rg-${name} \
+  --name aks-${name} \
+  --query "addonProfiles"
 ```
 
 ## Validate access to the Kubernetes cluster
