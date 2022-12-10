@@ -4,14 +4,13 @@ Another core component of OSM is [traffic splitting][osm_traffic_splitting] whic
 
 Please ensure you have completed the steps in [Part 3: Applying Zero-Trust to the Bookstore application](../03-applying-zero-trust/README.md) before you proceed.
 
-Make sure you are in the right working directory:
+Make sure you are in the right working directory (this command assumes you are currently in the `cloud-native/aks-open-service-mesh/03-applying-zero-trust/` directory).:
 
 ```bash
-# this command assumes are you currently in the 03-applying-zero-trust directory
 cd ../04-osm-traffic-splitting
 ```
 
-Run this command to deploy a new version of bookstore (`bookstore-v2`):
+Deploy a new version of bookstore (`bookstore-v2`).
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/openservicemesh/osm-docs/release-v1.2/manifests/apps/bookstore-v2.yaml
@@ -61,7 +60,7 @@ spec:
     weight: 50
 ```
 
-Run the following command to evenly split the traffic:
+Run the following command to evenly split the traffic.
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/openservicemesh/osm-docs/release-v1.2/manifests/split/traffic-split-50-50.yaml
@@ -82,7 +81,7 @@ echo http://$nginx_ingress_host/bookstore
 
 ![bookstore split](./bookstore-split.png)
 
-After a bit of testing you are now ready to cutover all traffic from v1 to v2. Run the following command up distribute 100% of the traffic to v2.
+After some testing you are now ready to cutover all traffic from v1 to v2. Run the following command up distribute 100% of the traffic to v2.
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/openservicemesh/osm-docs/release-v1.2/manifests/split/traffic-split-v2.yaml
@@ -104,7 +103,7 @@ Navigate back to the **bookstore** app in your web browser and you will now see 
 
 ## Wrap up and next steps
 
-In this multi-part lab, we deployed an AKS cluster with Bicep and enabled the Web Application Routing and Open Service Mesh add-ons. These open-source components can be installed in your cluster manually; however, when you enable them as add-ons, they are managed by the Azure platform and are fully supported. 
+In this multi-part lab, we deployed an AKS cluster using Bicep and enabled the Web Application Routing and Open Service Mesh add-ons. These open-source components can be installed in your cluster manually; however, when you enable them as add-ons, they are managed by the Azure platform and are fully supported. 
 
 There's more to OSM than what we explored in this lab. We only controlled traffic from an ingress perspective but with OSM, you can also control [egress traffic][osm_egress]. You can also implement patterns and practices to help with application resiliency using techniques like [rate limiting][osm_rate_limiting], [retry][osm_retry], and [circuit breakers][osm_circuit_breaker]. I encourage you to visit the links in the resources section below to learn and implement more.
 
