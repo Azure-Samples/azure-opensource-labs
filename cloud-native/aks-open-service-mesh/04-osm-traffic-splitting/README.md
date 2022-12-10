@@ -111,7 +111,7 @@ There's more to OSM than what we explored in this lab. We only controlled traffi
 Once you have finished exploring, you should delete the deployment to avoid any further charges.
 
 ```bash
-az group delete --name rg-${name} -y
+az group delete --name rg-${name} --yes
 ```
 
 If you thought this was helpful, please give the repo a ⭐️ or let us know of any questions of feedback by filing a [new issue](https://github.com/Azure-Samples/azure-opensource-labs/issues/new).
