@@ -18,6 +18,8 @@
 - [Lab: Azure Kubernetes Service with ARM64 node pools](aks-arm64/)
 - [Lab: Azure Kubernetes Service with ARM64 node pools and Terraform](aks-arm64-terraform/)
 - [Lab: Web Application Routing with Azure Kubernetes Service](aks-webapp-routing/)
+- [Lab: Azure Kubernetes Service with Open Service Mesh](./aks-open-service-mesh/)
+- [Lab: Azure Kubernetes Service with Open Service Mesh and Terraform](./aks-open-service-mesh-terraform/)
 - [Run scalable and resilient Redis with Kubernetes and Azure Kubernetes Service (techcommunity.microsoft.com)](https://techcommunity.microsoft.com/t5/apps-on-azure-blog/run-scalable-and-resilient-redis-with-kubernetes-and-azure/ba-p/3247956) 
   - [Walkthrough (aaronmsft.com)](https://aaronmsft.com/posts/oss-aks-redis/)
 

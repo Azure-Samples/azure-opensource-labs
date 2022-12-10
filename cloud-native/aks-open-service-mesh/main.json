@@ -1,0 +1,867 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.13.1.58284",
+      "templateHash": "6396720553791256417"
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {}
+    },
+    "kubernetesVersion": {
+      "type": "string",
+      "defaultValue": "1.24.3"
+    },
+    "systemNodeCount": {
+      "type": "int",
+      "defaultValue": 3
+    },
+    "systemNodeSize": {
+      "type": "string",
+      "defaultValue": "Standard_D4s_v5"
+    },
+    "userObjectId": {
+      "type": "string"
+    }
+  },
+  "variables": {
+    "networkPlugin": "kubenet",
+    "networkPolicy": "calico"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "apiVersion": "2021-04-01",
+      "name": "[format('rg-{0}', parameters('name'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]"
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "akvDeploy",
+      "resourceGroup": "[format('rg-{0}', parameters('name'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "name": {
+            "value": "[format('akv-{0}', parameters('name'))]"
+          },
+          "sku": {
+            "value": "standard"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "userObjectId": {
+            "value": "[parameters('userObjectId')]"
+          },
+          "tenantId": {
+            "value": "[tenant().tenantId]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.11.1.770",
+              "templateHash": "4892952174308306416"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "sku": {
+              "type": "string",
+              "defaultValue": "standard",
+              "allowedValues": [
+                "premium",
+                "standard"
+              ]
+            },
+            "userObjectId": {
+              "type": "string",
+              "metadata": {
+                "description": "The object ID of a user, service principal or security group in AAD tenant."
+              }
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "accessPolicies": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "List of AccessPolicyEntry which is used when granting additional permissions for other users or managed identities"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "accessPolicies": [
+                  {
+                    "objectId": "[parameters('userObjectId')]",
+                    "permissions": {
+                      "certificates": [
+                        "all"
+                      ],
+                      "keys": [
+                        "all"
+                      ],
+                      "secrets": [
+                        "all"
+                      ],
+                      "storage": [
+                        "all"
+                      ]
+                    },
+                    "tenantId": "[parameters('tenantId')]"
+                  }
+                ],
+                "sku": {
+                  "family": "A",
+                  "name": "[parameters('sku')]"
+                },
+                "tenantId": "[parameters('tenantId')]"
+              }
+            },
+            {
+              "condition": "[not(empty(parameters('accessPolicies')))]",
+              "type": "Microsoft.KeyVault/vaults/accessPolicies",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('name'), 'add')]",
+              "properties": {
+                "accessPolicies": "[parameters('accessPolicies')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('name'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "lawDeploy",
+      "resourceGroup": "[format('rg-{0}', parameters('name'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('law-{0}', parameters('name'))]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.10.61.36676",
+              "templateHash": "13952838326740707361"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "apiVersion": "2021-12-01-preview",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "retentionInDays": 30,
+                "sku": {
+                  "name": "PerGB2018"
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('name'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "aksDeploy",
+      "resourceGroup": "[format('rg-{0}', parameters('name'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('aks-{0}', parameters('name'))]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "slaTier": {
+            "value": "Free"
+          },
+          "managedIdentityType": {
+            "value": "SystemAssigned"
+          },
+          "kubernetesVersion": {
+            "value": "[parameters('kubernetesVersion')]"
+          },
+          "networkPlugin": {
+            "value": "[variables('networkPlugin')]"
+          },
+          "networkPolicy": {
+            "value": "[variables('networkPolicy')]"
+          },
+          "loadBalancerSku": {
+            "value": "Standard"
+          },
+          "outboundType": {
+            "value": "loadBalancer"
+          },
+          "dnsServiceIP": {
+            "value": "10.0.0.10"
+          },
+          "podCidrs": {
+            "value": [
+              "10.244.0.0/16"
+            ]
+          },
+          "serviceCidrs": {
+            "value": [
+              "10.0.0.0/16"
+            ]
+          },
+          "ipFamilies": {
+            "value": [
+              "IPv4"
+            ]
+          },
+          "defenderEnabled": {
+            "value": false
+          },
+          "imageCleanerEnabled": {
+            "value": false
+          },
+          "systemNodeCount": {
+            "value": "[parameters('systemNodeCount')]"
+          },
+          "systemNodeVmSize": {
+            "value": "[parameters('systemNodeSize')]"
+          },
+          "addonProfiles": {
+            "value": {
+              "omsagent": {
+                "config": {
+                  "logAnalyticsWorkspaceResourceID": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'lawDeploy'), '2020-10-01').outputs.id.value]"
+                },
+                "enabled": true
+              }
+            }
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.11.1.770",
+              "templateHash": "13659293664561970812"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "slaTier": {
+              "type": "string",
+              "defaultValue": "Free",
+              "metadata": {
+                "description": "Defaults to Free tier"
+              },
+              "allowedValues": [
+                "Free",
+                "Paid"
+              ]
+            },
+            "managedIdentityType": {
+              "type": "string",
+              "defaultValue": "SystemAssigned",
+              "metadata": {
+                "description": "Two options are available: SystemAssigned or UserAssigned"
+              },
+              "allowedValues": [
+                "SystemAssigned",
+                "UserAssigned"
+              ]
+            },
+            "userAssignedIdentities": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Required when managed identity type is set to UserAssigned"
+              }
+            },
+            "kubernetesVersion": {
+              "type": "string",
+              "defaultValue": "1.24.3",
+              "metadata": {
+                "description": "Default is 1.24.3"
+              }
+            },
+            "defenderEnabled": {
+              "type": "bool",
+              "defaultValue": false
+            },
+            "imageCleanerEnabled": {
+              "type": "bool",
+              "defaultValue": false
+            },
+            "imageCleanerIntervalHours": {
+              "type": "int",
+              "defaultValue": 12
+            },
+            "systemNodeCount": {
+              "type": "int",
+              "defaultValue": 3
+            },
+            "systemNodeVmSize": {
+              "type": "string",
+              "defaultValue": "Standard_D2s_v5",
+              "metadata": {
+                "description": "Default system node pool size is Standard_D2s_v5"
+              }
+            },
+            "registryName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional parameter to attach AKS cluster to an existing ACR"
+              }
+            },
+            "networkPlugin": {
+              "type": "string",
+              "defaultValue": "kubenet",
+              "metadata": {
+                "description": "Network plugin used for building the Kubernetes network."
+              },
+              "allowedValues": [
+                "kubenet",
+                "azure",
+                "none"
+              ]
+            },
+            "networkPolicy": {
+              "type": "string",
+              "defaultValue": "calico",
+              "metadata": {
+                "description": "Network policy used for building the Kubernetes network."
+              },
+              "allowedValues": [
+                "calico",
+                "azure"
+              ]
+            },
+            "loadBalancerSku": {
+              "type": "string",
+              "defaultValue": "Standard",
+              "metadata": {
+                "description": "The default is standard."
+              },
+              "allowedValues": [
+                "Standard",
+                "Basic"
+              ]
+            },
+            "dnsServiceIP": {
+              "type": "string",
+              "defaultValue": "10.0.0.10",
+              "metadata": {
+                "description": "An IP address assigned to the Kubernetes DNS service. It must be within the Kubernetes service address range specified in serviceCidr."
+              }
+            },
+            "dockerBridgeCidr": {
+              "type": "string",
+              "defaultValue": "172.17.0.1/16",
+              "metadata": {
+                "description": "A CIDR notation IP range assigned to the Docker bridge network. It must not overlap with any Subnet IP ranges or the Kubernetes service address range."
+              }
+            },
+            "outboundType": {
+              "type": "string",
+              "defaultValue": "loadBalancer",
+              "metadata": {
+                "description": "This can only be set at cluster creation time and cannot be changed later."
+              },
+              "allowedValues": [
+                "loadBalancer",
+                "managedNATGateway",
+                "userAssignedNATGateway",
+                "userDefinedRouting"
+              ]
+            },
+            "podCidrs": {
+              "type": "array",
+              "defaultValue": [
+                "10.244.0.0/16"
+              ],
+              "metadata": {
+                "description": "One IPv4 CIDR is expected for single-stack networking. Two CIDRs, one for each IP family (IPv4/IPv6), is expected for dual-stack networking."
+              }
+            },
+            "serviceCidrs": {
+              "type": "array",
+              "defaultValue": [
+                "10.0.0.0/16"
+              ],
+              "metadata": {
+                "description": "One IPv4 CIDR is expected for single-stack networking. Two CIDRs, one for each IP family (IPv4/IPv6), is expected for dual-stack networking. They must not overlap with any Subnet IP ranges."
+              }
+            },
+            "ipFamilies": {
+              "type": "array",
+              "defaultValue": [
+                "IPv4"
+              ],
+              "allowedValues": [
+                "IPv4",
+                "IPv6"
+              ]
+            },
+            "vnetSubnetID": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "If the cluster is using azure network plugin, then you can pass in the subnet resource ID like this `vnet.outputs.subnetId`; otherwise, leave it empty"
+              }
+            },
+            "nodeTaints": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Enable nodeTaints on the system node pool (e.g., ['CriticalAddonsOnly=true:NoSchedule'])"
+              }
+            },
+            "addonProfiles": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "AKS addons to enable"
+              }
+            },
+            "enablePrometheusMetrics": {
+              "type": "bool",
+              "defaultValue": false
+            },
+            "prometheusMetricLabelsAllowlist": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "prometheusMetricAnnotationsAllowList": {
+              "type": "string",
+              "defaultValue": ""
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ContainerService/managedClusters",
+              "apiVersion": "2022-08-03-preview",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "sku": {
+                "name": "Basic",
+                "tier": "[parameters('slaTier')]"
+              },
+              "identity": {
+                "type": "[parameters('managedIdentityType')]",
+                "userAssignedIdentities": "[if(equals(parameters('managedIdentityType'), 'UserAssigned'), parameters('userAssignedIdentities'), null())]"
+              },
+              "properties": {
+                "kubernetesVersion": "[parameters('kubernetesVersion')]",
+                "dnsPrefix": "[parameters('name')]",
+                "azureMonitorProfile": "[if(parameters('enablePrometheusMetrics'), createObject('metrics', createObject('enabled', true(), 'kubeStateMetrics', createObject('metricLabelsAllowlist', parameters('prometheusMetricLabelsAllowlist'), 'metricAnnotationsAllowList', parameters('prometheusMetricAnnotationsAllowList')))), null())]",
+                "networkProfile": {
+                  "networkPlugin": "[parameters('networkPlugin')]",
+                  "networkPolicy": "[parameters('networkPolicy')]",
+                  "loadBalancerSku": "[parameters('loadBalancerSku')]",
+                  "dnsServiceIP": "[parameters('dnsServiceIP')]",
+                  "dockerBridgeCidr": "[parameters('dockerBridgeCidr')]",
+                  "outboundType": "[parameters('outboundType')]",
+                  "podCidrs": "[parameters('podCidrs')]",
+                  "serviceCidrs": "[parameters('serviceCidrs')]",
+                  "ipFamilies": "[parameters('ipFamilies')]"
+                },
+                "agentPoolProfiles": [
+                  {
+                    "name": "system",
+                    "count": "[parameters('systemNodeCount')]",
+                    "vmSize": "[parameters('systemNodeVmSize')]",
+                    "mode": "System",
+                    "vnetSubnetID": "[if(empty(parameters('vnetSubnetID')), null(), parameters('vnetSubnetID'))]",
+                    "nodeTaints": "[if(empty(parameters('nodeTaints')), null(), parameters('nodeTaints'))]"
+                  }
+                ],
+                "securityProfile": {
+                  "defender": {
+                    "securityMonitoring": {
+                      "enabled": "[parameters('defenderEnabled')]"
+                    }
+                  },
+                  "imageCleaner": {
+                    "enabled": "[parameters('imageCleanerEnabled')]",
+                    "intervalHours": "[parameters('imageCleanerIntervalHours')]"
+                  }
+                },
+                "addonProfiles": "[parameters('addonProfiles')]"
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('registryName'), ''))]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('registryName'))]",
+              "name": "[guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), parameters('registryName'))]",
+              "properties": {
+                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name'))).identityProfile.kubeletidentity.objectId]",
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.ContainerService/managedClusters', parameters('name'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), resourceGroup().id)]",
+              "properties": {
+                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2022-08-03-preview', 'full').identity.principalId]",
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.ContainerService/managedClusters', parameters('name'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "value": "[parameters('name')]"
+            },
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.ContainerService/managedClusters', parameters('name'))]"
+            },
+            "kubeletIdentityObjectId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name'))).identityProfile.kubeletidentity.objectId]"
+            },
+            "nodeResourceGroupName": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name'))).nodeResourceGroup]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'lawDeploy')]",
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "aksAddonKvDeploy",
+      "resourceGroup": "[format('rg-{0}', parameters('name'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "clusterId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy'), '2020-10-01').outputs.id.value]"
+          },
+          "addonProfiles": {
+            "value": {
+              "azureKeyvaultSecretsProvider": {
+                "config": {
+                  "enableSecretRotation": "true",
+                  "rotationPollInterval": "2m"
+                },
+                "enabled": true
+              }
+            }
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.11.1.770",
+              "templateHash": "14915970961738979528"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "clusterId": {
+              "type": "string"
+            },
+            "addonProfiles": {
+              "type": "object",
+              "metadata": {
+                "description": "AKS addons to enable"
+              }
+            }
+          },
+          "variables": {
+            "clusterName": "[split(parameters('clusterId'), '/')[8]]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ContainerService/managedClusters",
+              "apiVersion": "2022-08-03-preview",
+              "name": "[variables('clusterName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "mode": "Incremental",
+                "id": "[parameters('clusterId')]",
+                "addonProfiles": "[parameters('addonProfiles')]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy')]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'akvDeploy')]",
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "aksAddonIngDeploy",
+      "resourceGroup": "[format('rg-{0}', parameters('name'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "clusterId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy'), '2020-10-01').outputs.id.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.11.1.770",
+              "templateHash": "16617976211465593204"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "clusterId": {
+              "type": "string"
+            },
+            "dnsZoneResourceId": {
+              "type": "string",
+              "defaultValue": ""
+            }
+          },
+          "variables": {
+            "clusterName": "[split(parameters('clusterId'), '/')[8]]",
+            "attachDnsZone": "[not(equals(parameters('dnsZoneResourceId'), ''))]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ContainerService/managedClusters",
+              "apiVersion": "2022-08-03-preview",
+              "name": "[variables('clusterName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "mode": "Incremental",
+                "id": "[parameters('clusterId')]",
+                "ingressProfile": {
+                  "webAppRouting": {
+                    "dnsZoneResourceId": "[if(variables('attachDnsZone'), parameters('dnsZoneResourceId'), null())]",
+                    "enabled": true
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy')]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksAddonKvDeploy')]",
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2020-10-01",
+      "name": "aksAddonOsmDeploy",
+      "resourceGroup": "[format('rg-{0}', parameters('name'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "clusterId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy'), '2020-10-01').outputs.id.value]"
+          },
+          "addonProfiles": {
+            "value": {
+              "openServiceMesh": {
+                "config": {},
+                "enabled": true
+              }
+            }
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.11.1.770",
+              "templateHash": "14915970961738979528"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "clusterId": {
+              "type": "string"
+            },
+            "addonProfiles": {
+              "type": "object",
+              "metadata": {
+                "description": "AKS addons to enable"
+              }
+            }
+          },
+          "variables": {
+            "clusterName": "[split(parameters('clusterId'), '/')[8]]"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.ContainerService/managedClusters",
+              "apiVersion": "2022-08-03-preview",
+              "name": "[variables('clusterName')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "mode": "Incremental",
+                "id": "[parameters('clusterId')]",
+                "addonProfiles": "[parameters('addonProfiles')]"
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy')]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksAddonIngDeploy')]",
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
+      ]
+    }
+  ]
+}

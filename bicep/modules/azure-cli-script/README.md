@@ -18,3 +18,5 @@ This module deploys a [Microsoft.Resources/deploymentScripts](https://learn.micr
 | Name | Description |
 |------|-------------|
 | N/A  |             |
+
+https://learn.microsoft.com/en-us/azure/templates/microsoft.resources/deploymentscripts?pivots=deployment-language-bicep#azurecliscriptproperties

@@ -1,0 +1,27 @@
+kind: TrafficTarget
+apiVersion: access.smi-spec.io/v1alpha3
+metadata:
+  name: mysql
+  namespace: bookwarehouse
+spec:
+  destination:
+    kind: ServiceAccount
+    name: mysql
+    namespace: bookwarehouse
+  rules:
+  - kind: TCPRoute
+    name: mysql
+  sources:
+  - kind: ServiceAccount
+    name: bookwarehouse
+    namespace: bookwarehouse
+---
+apiVersion: specs.smi-spec.io/v1alpha4
+kind: TCPRoute
+metadata:
+  name: mysql
+  namespace: bookwarehouse
+spec:
+  matches:
+    ports:
+    - 3306

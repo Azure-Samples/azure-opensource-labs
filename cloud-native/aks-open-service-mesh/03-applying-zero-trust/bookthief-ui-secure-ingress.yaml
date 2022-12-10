@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bookthief
+  namespace: bookthief
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    # proxy_ssl_name for a service is of the form <service-account>.<namespace>.cluster.local
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_ssl_name "bookthief.bookthief.cluster.local";
+    nginx.ingress.kubernetes.io/proxy-ssl-secret: "kube-system/osm-ingress-client-cert"
+    nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
+spec:
+  ingressClassName: webapprouting.kubernetes.azure.com
+  rules:
+  - http:
+      paths:
+      - path: /bookthief
+        pathType: Prefix
+        backend:
+          service:
+            name: bookthief
+            port:
+              number: 14001
+---
+apiVersion: policy.openservicemesh.io/v1alpha1
+kind: IngressBackend
+metadata:
+  name: bookthief
+  namespace: bookthief
+spec:
+  backends:
+  - name: bookthief
+    port:
+      number: 14001 # targetPort of bookthief service
+      protocol: https
+    tls:
+      skipClientCertValidation: false
+  sources:
+  - kind: Service
+    namespace: app-routing-system
+    name: nginx
+  - kind: AuthenticatedPrincipal
+    name: ingress-nginx.ingress.cluster.local
