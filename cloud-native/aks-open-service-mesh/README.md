@@ -41,10 +41,8 @@ systemNodeCount=3
 
 # azure vm size for nodes
 systemNodeSize=Standard_D4s_v5
-
 # get your user name
-userName=$(az account show --query user.name -o tsv)
-
+userName=$(az account show --out tsv --query user.name)
 # get your user principal id
 userObjectId=$(az ad user show --id $userName --query id -o tsv)
 
