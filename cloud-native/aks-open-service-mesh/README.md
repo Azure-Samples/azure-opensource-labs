@@ -101,7 +101,7 @@ az aks show \
 
 ## Validate access to the Kubernetes cluster
 
-Before we pull down credentials from AKS make sure you have `kubectl` CLI locally.
+Before you pull down credentials from AKS make sure you have `kubectl` CLI locally.
 
 > If you do not have `kubectl` installed yet, run the `az aks install-cli` to install it using Azure CLI. 
 
@@ -113,7 +113,7 @@ az aks get-credentials \
   --name aks-${name}
 ```
 
-Run the following command to verify you have access to the cluster:
+Verify you have access to the cluster.
 
 ```bash
 kubectl cluster-info
@@ -121,10 +121,13 @@ kubectl cluster-info
 
 ## Validate OSM resources and configurations
 
-Now let's check the OSM add-on by running the following command and ensure `openServiceMesh` has the `enabled` property set to `true`.
+Now let's check the OSM add-on is enabled by running the following command and ensure `openServiceMesh` has the `enabled` property set to `true`.
 
 ```bash
-az aks show -g rg-${name} -n aks-${name} --query "addonProfiles.openServiceMesh"
+az aks show \
+  --resource-group rg-${name} \
+  --name aks-${name} \
+  --query "addonProfiles.openServiceMesh"
 ```
 
 Next, run the following command to check the OSM resources have been deployed into your cluster successfully.
@@ -166,7 +169,7 @@ Here is a high-level overview of the [OSM components][osm] that are installed:
 * `osm-controller` runs on all nodes and is the control plane of the service mesh
 * `osm-injecter` runs on all nodes and is responsible for injecting data plane components (i.e., Envoy proxy sidecars) into application pods
 
-These resources are typically [installed manually using the OSM CLI command `osm install`](https://release-v1-2.docs.openservicemesh.io/docs/getting_started/setup_osm/#installing-osm-on-kubernetes). However, with the AKS add-on, the installation and configuration is done for you and when OSM is deployed with the Web Application Routing add-on, Azure automatically adds additional configuration to allow NGINX and OSM to work together.
+These resources are typically [installed manually using the OSM CLI command `osm install`](https://release-v1-2.docs.openservicemesh.io/docs/getting_started/setup_osm/#installing-osm-on-kubernetes). However, with the AKS add-on, the installation and configuration is done for you. When OSM is deployed with the Web Application Routing add-on, Azure automatically adds additional configuration to allow NGINX and OSM to work together.
 
 > With open-source OSM, you have an option on the namespace where `osm` is installed (normally in the `osm-system` namespace), but since this is managed by AKS, it has been installed in the `kube-system` namespace for you.
 
@@ -216,7 +219,7 @@ To list the OSM controller pods for a mesh, please run the following command pas
         kubectl get pods -n <osm-mesh-namespace> -l app=osm-controller
 ```
 
-> Note the Service Mesh Interface (SMI) specs that are supported by OSM. These may be subject to change with the ongoing dialog on [The GAMMA Initiative](https://gateway-api.sigs.k8s.io/contributing/gamma/) happening within the community.
+> Note the Service Mesh Interface (SMI) specs that are supported by OSM. These may be subject to change with the ongoing dialog on the [GAMMA Initiative](https://gateway-api.sigs.k8s.io/contributing/gamma/) within the community.
 
 As suggested in the output above, let's get a list of OSM controller pods.
 
@@ -237,7 +240,7 @@ NAMESPACE            MESH   SIDECAR-INJECTION
 app-routing-system   osm    disabled
 ```
 
-As mentioned above, we've added both the `web_application_routing` and `open-service-mesh` add-ons and Azure has automatically configured OSM to monitor the NGINX ingress controller's namespace 🎉
+As mentioned above, you have added both the `web_application_routing` and `open-service-mesh` add-ons and Azure has automatically configured OSM to monitor the NGINX ingress controller's namespace 🎉
 
 One important thing to note in the output above is that `SIDECAR-INJECTION` has been set to `disabled`. OSM integration with NGINX requires monitoring of the ingress controller's namespace for service discovery and management of ingress endpoints to backend services. However, OSM should not inject sidecars into the NGINX pods to function properly.
 
@@ -249,7 +252,7 @@ kubectl get namespace --show-labels | grep openservicemesh.io/monitored-by=osm
 
 ## Next steps
 
-We've successfully deployed the AKS cluster and inspected how the Web Application Routing and OSM add-ons are deployed and configured in the cluster. The cluster is now ready for application deployments.
+You have successfully deployed the AKS cluster and inspected how the Web Application Routing and OSM add-ons are deployed and configured in the cluster. The cluster is now ready for application deployments.
 
 Head over to [Part 2: Bookstore application deployment](./02-deploying-bookstore-app/README.md) to deploy our first app.
 
