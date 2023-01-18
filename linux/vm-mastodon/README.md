@@ -4,7 +4,7 @@
 
 Use the following link to deploy the template in this repo using the Azure Portal:
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Flinux-mastodon-1%2Flinux%2Fvm-mastodon%2Fvm.json)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Fmain%2Flinux%2Fvm-mastodon%2Fvm.json)
 
 If you would like to deploy the Bicep template via the Azure CLI, explore the **Azure CLI** section below. To update the Deploy to Azure button with your own template, explore the **Azure Portal (continued)** section below. Otherwise, continue to **Get Credentials**.
 
@@ -75,11 +75,11 @@ az deployment group create \
 az bicep build -f vm.bicep
 
 # create url
-#BRANCH_OR_COMMIT='linux-mastodon-1'
+#BRANCH_OR_COMMIT='main'
 BRANCH_OR_COMMIT=$(git rev-parse HEAD)
 TEMPLATE_URL="https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/${BRANCH_OR_COMMIT}/linux/vm-mastodon/vm.json"
 OUTPUT_URL='https://portal.azure.com/#create/Microsoft.Template/uri/'$(printf "$TEMPLATE_URL" | jq -s -R -r @uri )
 echo $OUTPUT_URL
 
-# https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Flinux-mastodon-1%2Flinux%2Fvm-mastodon%2Fvm.json
+# https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Fmain%2Flinux%2Fvm-mastodon%2Fvm.json
 ```
