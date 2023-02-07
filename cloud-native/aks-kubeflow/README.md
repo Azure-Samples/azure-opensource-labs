@@ -8,11 +8,11 @@ Set some environment variables
 
 ```
 RESOURCE_GROUP='my-aks'
-KUBERNETES_VERSION='1.23.15'
+KUBERNETES_VERSION='1.24.9'
 NODE_VM_SIZE='Standard_D2s_v5'
 ```
 
-Note that the latest 1.23.* `KUBERNETES_VERSION` was discovered via the following command:
+Note that the latest 1.24.* `KUBERNETES_VERSION` was discovered via the following command:
 
 ```
 az aks get-versions \
