@@ -1,4 +1,6 @@
-# Kubeflow on Azure Kubernetes Service (AKS)
+# Kubeflow on Azure Kubernetes Service (AKS) (Basic)
+
+This is the Basic scenario for deployment of Kubeflow via the Azure CLI without any additional configuration. See [README.md](README.md) for the Advanced scenario.
 
 ## Deploy AKS
 
@@ -102,7 +104,3 @@ kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80
 ```
 
 Finally, open [http://localhost:8080](http://localhost:8080/) and login with the default user's credentials. The default email address is `user@example.com` and the default password is `12341234`.
-
-## Next
-
-...
