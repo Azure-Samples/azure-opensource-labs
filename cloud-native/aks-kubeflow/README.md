@@ -1,5 +1,7 @@
 # Kubeflow on Azure Kubernetes Service (AKS)
 
+[Walkthrough (vimeo.com)](https://vimeo.com/asw101/aks-kubeflow)
+
 This lab the Advanced scenario for deployment of Kubeflow using [Mage](https://github.com/magefile/mage) and the included [magefile.go](magefile.go) for automation of deployment steps. See [BASIC-CLI.md](BASIC-CLI.md) for the Basic scenario which provides manual steps without any further automation, configuration of ingress, TLS, and stronger default password.
 
 ## Requirements
