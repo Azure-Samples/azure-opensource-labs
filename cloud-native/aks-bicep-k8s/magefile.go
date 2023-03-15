@@ -3,6 +3,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -11,12 +12,19 @@ import (
 	"github.com/magefile/mage/sh"
 )
 
-// Group creates the Azure resource group
-func Group() error {
+// resourceGroup gets resource group name from the
+// RESOURCE_GROUP env var, or provides a default
+func resourceGroup() string {
 	name := os.Getenv("RESOURCE_GROUP")
 	if name == "" {
 		name = fmt.Sprintf("%s-aks-bicep", time.Now().Format("060100"))
 	}
+	return name
+}
+
+// Group creates the Azure resource group
+func Group() error {
+	name := resourceGroup()
 	location := os.Getenv("LOCATION")
 	if location == "" {
 		location = "eastus"
@@ -33,39 +41,43 @@ func Group() error {
 	return sh.RunV(cmd[0], cmd[1:]...)
 }
 
-// DeployMain deploys main.bicep at the Subscription level
+// DeployMain deploys main.bicep at the Resource Group scope
 func DeployMain() error {
-	name := os.Getenv("RESOURCE_GROUP")
-	if name == "" {
-		name = fmt.Sprintf("%s-aks-bicep", time.Now().Format("060100"))
-	}
+	name := resourceGroup()
 	location := os.Getenv("LOCATION")
 	if location == "" {
 		location = "eastus"
+	}
+	deployCluster := os.Getenv("DEPLOY_CLUSTER")
+	if deployCluster == "" {
+		deployCluster = "true"
+	}
+	switch {
+	case deployCluster == "true" || deployCluster == "false":
+	default:
+		return errors.New("DEPLOY_CLUSTER must be true, false, or empty")
 	}
 
 	file1 := "main.bicep"
 	cmd := []string{
 		"az",
 		"deployment",
-		"sub",
+		"group",
 		"create",
-		"--location",
-		location,
+		"--resource-group",
+		name,
 		"--template-file",
 		file1,
 		"--parameters",
-		"resourceGroup=" + name,
+		"location=" + location,
+		"deployCluster=" + deployCluster,
 	}
 	return sh.RunV(cmd[0], cmd[1:]...)
 }
 
 // AksCredentials gets credentials for the AKS cluster
 func AksCredentials() error {
-	name := os.Getenv("RESOURCE_GROUP")
-	if name == "" {
-		name = fmt.Sprintf("%s-aks-bicep", time.Now().Format("060100"))
-	}
+	name := resourceGroup()
 	aksName := os.Getenv("AKS_NAME")
 	if aksName == "" {
 		aksName = "aks1"
@@ -95,10 +107,7 @@ func AksKubectl() error {
 
 // Empty empties the Azure resource group
 func Empty() error {
-	name := os.Getenv("RESOURCE_GROUP")
-	if name == "" {
-		name = fmt.Sprintf("%s-aks-bicep", time.Now().Format("060100"))
-	}
+	name := resourceGroup()
 	file1 := "empty.bicep"
 	f, err := os.Create(file1)
 	if err != nil {
@@ -130,10 +139,7 @@ func Empty() error {
 
 // GroupDelete deletes the Azure resource group
 func GroupDelete() error {
-	name := os.Getenv("RESOURCE_GROUP")
-	if name == "" {
-		name = fmt.Sprintf("%s-aks-bicep", time.Now().Format("060100"))
-	}
+	name := resourceGroup()
 	cmd := []string{
 		"az",
 		"group",
@@ -143,13 +149,6 @@ func GroupDelete() error {
 		"--yes",
 	}
 	return sh.RunV(cmd[0], cmd[1:]...)
-}
-
-// Wait for the specified number of seconds
-func Wait(secs int) error {
-	fmt.Printf("waiting %ds\n", secs)
-	time.Sleep(time.Second * time.Duration(secs))
-	return nil
 }
 
 // fileReplace replaces values in a file using a map
