@@ -1,29 +1,27 @@
-targetScope = 'subscription'
+param location string = resourceGroup().location
+param clusterName string = 'aks1'
+param deployCluster bool = true
 
-param resourceGroup string = '230300-aks-bicep'
-param location string = deployment().location
-
-resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
-  name: resourceGroup
-  location: location
-}
-
-module aks './aks.bicep' = {
-  name: '${resourceGroup}-aks'
-  scope: rg
+module aks './aks.bicep' = if(deployCluster) {
+  name: '${resourceGroup().name}-aks'
   params: {
     location: location
+    clusterName: clusterName
   }
 }
 
-// module script './deploy-script.bicep' = if(deployScript) {
-//   name: '${resourceGroup}-deployscript'
-//   scope: rg
-//   params: {
-//     location: location
-//     scriptUri: scriptUri
-//   }
-//   dependsOn: [
-//     aks
-//   ]
-// }
+resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-05-02-preview' existing = {
+  name: clusterName
+}
+
+module app './azure-vote.bicep' = {
+  name: '${resourceGroup().name}-app'
+  params: {
+    kubeConfig: aksCluster.listClusterAdminCredential().kubeconfigs[0].value
+  }
+  dependsOn: [
+    aks
+  ]
+}
+
+output lbPublicIp string = app.outputs.frontendIp
