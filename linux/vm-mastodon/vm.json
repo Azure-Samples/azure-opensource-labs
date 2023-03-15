@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.8.9.13224",
-      "templateHash": "3536517954765738678"
+      "version": "0.15.31.15270",
+      "templateHash": "4739098594679767879"
     }
   },
   "parameters": {
@@ -47,7 +47,7 @@
       }
     },
     "tsKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "Tailscale Auth Key [optional]"
@@ -91,7 +91,7 @@
     "ipConfigName": "[format('{0}-ipconfig', parameters('vmName'))]",
     "subnetAddressPrefix": "10.1.0.0/24",
     "addressPrefix": "10.1.0.0/16",
-    "cloudInitTailscaleMastodon": "#cloud-config\n# vim: syntax=yaml\n\npackages:\n- docker.io\n- docker-compose\n- jq\n- make\n\n# create the docker group\ngroups:\n- docker\n\n# Add default auto created user to docker group\nsystem_info:\n  default_user:\n    groups: [docker]\n\nwrite_files:\n\n- path: /home/azureuser/env.json\n  content: {0}\n  encoding: b64\n\n- path: /home/azureuser/tailscale.sh\n  content: |\n    [[ -z \"$1\" ]] && echo \"no tskey. skipping.\" && exit 0\n\n    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null\n    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list\n    \n    sudo apt-get update\n    sudo apt-get install -y tailscale\n    \n    sudo tailscale up --advertise-routes=10.1.0.0/24,168.63.129.16/32 --accept-dns=false --ssh --authkey \"$1\"\n\n- path: /home/azureuser/mastodon.sh\n  content: |\n    cd $HOME\n\n    export SITE_ADDRESS=$(jq -r '.siteAddress' env.json)\n    export LETS_ENCRYPT_EMAIL=$(jq -r '.letsEncryptEmail' env.json)\n    export TLS_INTERNAL=''\n    \n    git clone https://github.com/robconery/fractured-monkey\n    cd fractured-monkey    \n    \n    make all\n\nruncmd:\n- cd /home/azureuser/\n- chown -R azureuser:azureuser /home/azureuser/\n- sudo -u azureuser bash tailscale.sh \"$(jq -r '.tskey' env.json)\"\n- sudo -u azureuser bash mastodon.sh\n- sudo -u azureuser echo $(date) > hello.txt\n",
+    "cloudInitTailscaleMastodon": "#cloud-config\n# vim: syntax=yaml\n\npackages:\n- docker.io\n- docker-compose\n- jq\n- make\n\n# create the docker group\ngroups:\n- docker\n\n# Add default auto created user to docker group\nsystem_info:\n  default_user:\n    groups: [docker]\n\nwrite_files:\n\n- path: /home/azureuser/env.json\n  content: {0}\n  encoding: b64\n\n- path: /home/azureuser/tailscale.sh\n  content: |\n    [[ -z \"$1\" ]] && echo \"no tskey. skipping.\" && exit 0\n\n    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.noarmor.gpg | sudo tee /usr/share/keyrings/tailscale-archive-keyring.gpg >/dev/null\n    curl -fsSL https://pkgs.tailscale.com/stable/ubuntu/focal.tailscale-keyring.list | sudo tee /etc/apt/sources.list.d/tailscale.list\n    \n    sudo apt-get update\n    sudo apt-get install -y tailscale\n    \n    sudo tailscale up --advertise-routes=10.1.0.0/24,168.63.129.16/32 --accept-dns=false --ssh --authkey \"$1\"\n\n- path: /home/azureuser/mastodon.sh\n  content: |\n    cd $HOME\n\n    export SITE_ADDRESS=$(jq -r '.siteAddress' env.json)\n    export LETS_ENCRYPT_EMAIL=$(jq -r '.letsEncryptEmail' env.json)\n    export TLS_INTERNAL=''\n    \n    git clone https://github.com/asw101/fractured-monkey\n    cd fractured-monkey\n\n    make all\n\nruncmd:\n- cd /home/azureuser/\n- chown -R azureuser:azureuser /home/azureuser/\n- sudo -u azureuser bash tailscale.sh \"$(jq -r '.tskey' env.json)\"\n- sudo -u azureuser bash mastodon.sh\n- sudo -u azureuser echo $(date) > hello.txt\n",
     "cloudInitTailscaleMastodonFormat": "[format(variables('cloudInitTailscaleMastodon'), base64(string(variables('env'))))]",
     "kvCloudInit": {
       "none": "[json('null')]",
