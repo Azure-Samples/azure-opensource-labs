@@ -1,13 +1,14 @@
-# Explore Open Source workloads with Azure Kubernetes Service (AKS) and Bicep
+# Explore Open Source workloads with Azure Kubernetes Service (AKS) and the Bicep extensibility Kubernetes provider
 
-In this lab you will deploy an Azure Kubernetes Service (AKS) cluster and other Azure services (Container Registry, Managed Identity, Storage Account, Service Bus), the open source workloads with [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli) and [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) and the [Bicep extensibility Kubernetes provider (Preview)](https://learn.microsoft.com/azure/azure-resource-manager/bicep/bicep-extensibility-kubernetes-provider).
+In this lab you will deploy an Azure Kubernetes Service (AKS) cluster, other Azure services (Container Registry, Managed Identity, Storage Account), and open source workloads, with [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli), [Bicep](https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview) and the [Bicep extensibility Kubernetes provider (Preview)](https://learn.microsoft.com/azure/azure-resource-manager/bicep/bicep-extensibility-kubernetes-provider).
 
 ## Requirements
 
 - An **Azure Subscription** (e.g. [Free](https://aka.ms/azure-free-account) or [Student](https://aka.ms/azure-student-account) account)
 - The [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 - Bash shell (e.g. macOS, Linux, [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/about), [Multipass](https://multipass.run/), [Azure Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/quickstart), [GitHub Codespaces](https://github.com/features/codespaces), etc)
-- A [GitHub Account](https://github.com)
+- [Go](https://go.dev/dl/) (Optional)
+- [Mage](https://magefile.org/) (`go install github.com/magefile/mage@latest`) (Optional)
 
 ## Instructions
 
@@ -19,27 +20,39 @@ Login to the Azure CLI.
 az login
 ```
 
-Install kubectl using the Azure CLI, if required.
+Clone this repository.
 
 ```bash
-az aks install-cli
+git clone https://github.com/Azure-Samples/azure-opensource-labs.git
 ```
 
-Deploy the Bicep template for your Azure Kubernetes Service (AKS) cluster.
+Change to this directory.
 
-```bash
-cd cloud-native/aks-bicep-k8s/01-aks
-bash deploy-main.sh
+```
+cd azure-opensource-labs/cloud-native/aks-bicep-k8s
 ```
 
-Invoke kubectl command on AKS cluster.
+While you can deploy the Bicep templates ([main.go](./main.go)) via the Azure CLI or Azure Portal, we have included a Magefile, [magefile.go](./magefile.go), with the following targets to make deployment easier.
 
-```bash
-RESOURCE_GROUP='230300-aks-bicep-k8s'
-AKS_NAME='aks1'
+```
+$ mage
+Targets:
+  aksCredentials    gets credentials for the AKS cluster
+  aksKubectl        ensures kubectl is installed
+  deployMain        deploys main.bicep at the Resource Group scope
+  empty             empties the Azure resource group
+  group             creates the Azure resource group
+  groupDelete       deletes the Azure resource group
+```
 
-az aks command invoke \
-    --resource-group $RESOURCE_GROUP \
-    --name $AKS_NAME \
-    --command 'kubectl run nginx --image=nginx'
+### Deployment
+
+```
+mage group deployMain
+```
+
+### Delete resources
+
+```
+mage empty
 ```
