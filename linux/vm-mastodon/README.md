@@ -47,20 +47,6 @@ az deployment group create \
     --resource-group $RESOURCE_GROUP \
     --template-file vm.bicep
 
-# vm-test.bicep - defaults
-az deployment group create \
-    --resource-group $RESOURCE_GROUP \
-    --template-file vm-test.bicep
-
-# vm-test.bicep - parameters
-az deployment group create \
-    --resource-group $RESOURCE_GROUP \
-    --template-file vm.bicep \
-    --parameters \
-        tsKey='tskey-auth-kkZtj55CNTRL-nWm4KrGLr9Bfda4KrGLr9BPDdXxWmu75K' \
-        siteAddress='' \
-        letsEncryptEmail='aaron.w@on365.org'
-
 # empty resource group
 az deployment group create \
     --resource-group $RESOURCE_GROUP \
