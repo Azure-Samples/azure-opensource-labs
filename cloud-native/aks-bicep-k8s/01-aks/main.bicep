@@ -1,9 +1,7 @@
 targetScope = 'subscription'
 
-param resourceGroup string = '220600-keda'
+param resourceGroup string = '230300-aks-bicep'
 param location string = deployment().location
-param deployScript bool = false
-param scriptUri string = 'https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/aks-bicep/cloud-native/aks-bicep/01-aks/deploy-script-keda.sh'
 
 resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroup
@@ -18,14 +16,14 @@ module aks './aks.bicep' = {
   }
 }
 
-module script './deploy-script.bicep' = if(deployScript) {
-  name: '${resourceGroup}-deployscript'
-  scope: rg
-  params: {
-    location: location
-    scriptUri: scriptUri
-  }
-  dependsOn: [
-    aks
-  ]
-}
+// module script './deploy-script.bicep' = if(deployScript) {
+//   name: '${resourceGroup}-deployscript'
+//   scope: rg
+//   params: {
+//     location: location
+//     scriptUri: scriptUri
+//   }
+//   dependsOn: [
+//     aks
+//   ]
+// }
