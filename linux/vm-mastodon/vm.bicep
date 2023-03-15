@@ -149,9 +149,9 @@ write_files:
     export LETS_ENCRYPT_EMAIL=$(jq -r '.letsEncryptEmail' env.json)
     export TLS_INTERNAL=''
     
-    git clone https://github.com/robconery/fractured-monkey
-    cd fractured-monkey    
-    
+    git clone https://github.com/asw101/fractured-monkey
+    cd fractured-monkey
+
     make all
 
 runcmd:
