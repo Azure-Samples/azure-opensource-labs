@@ -1,5 +1,6 @@
 param location string = resourceGroup().location
 param clusterName string = 'aks1'
+param namespace string = 'default'
 param deployCluster bool = true
 
 module aks './aks.bicep' = if(deployCluster) {
@@ -18,6 +19,7 @@ module app './azure-vote.bicep' = {
   name: '${resourceGroup().name}-app'
   params: {
     kubeConfig: aksCluster.listClusterAdminCredential().kubeconfigs[0].value
+    namespace: namespace
   }
   dependsOn: [
     aks

@@ -1,8 +1,9 @@
 @secure()
 param kubeConfig string
+param namespace string = 'default'
 
 import 'kubernetes@1.0.0' with {
-  namespace: 'default'
+  namespace: namespace
   kubeConfig: kubeConfig
 }
 
