@@ -65,7 +65,7 @@ func DeployAKS() error {
 	return sh.RunV(cmd[0], cmd[1:]...)
 }
 
-// DeployAKS deploys azure-vote-deploy.bicep at the Resource Group scope
+// DeployAKS uses aks-deploy-app.bicep to deploy AKS_APP_BICEP(=azure-vote.bicep)
 func DeployApp() error {
 	name := resourceGroup()
 	k8sNamespace := os.Getenv("K8S_NAMESPACE")
@@ -76,6 +76,7 @@ func DeployApp() error {
 	if appBicep == "" {
 		appBicep = "azure-vote.bicep"
 	}
+	fmt.Printf("Deploying AKS_APP_BICEP=%s\n", appBicep)
 
 	// make temporary file
 	file1 := "aks-deploy-app.bicep"
