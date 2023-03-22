@@ -72,7 +72,28 @@ func DeployApp() error {
 	if k8sNamespace == "" {
 		k8sNamespace = "default"
 	}
+	appBicep := os.Getenv("AKS_APP_BICEP")
+	if appBicep == "" {
+		appBicep = "azure-vote.bicep"
+	}
+
+	// make temporary file
 	file1 := "aks-deploy-app.bicep"
+	file2 := "tmp.bicep"
+	err := sh.Copy(file2, file1)
+	if err != nil {
+		return err
+	}
+	defer os.RemoveAll(file2)
+
+	replace1 := map[string]string{
+		"azure-vote.bicep": appBicep,
+	}
+	err = fileReplace(file2, replace1)
+	if err != nil {
+		return err
+	}
+
 	cmd := []string{
 		"az",
 		"deployment",
@@ -81,11 +102,11 @@ func DeployApp() error {
 		"--resource-group",
 		name,
 		"--template-file",
-		file1,
+		file2,
 		"--parameters",
 		"namespace=" + k8sNamespace,
 	}
-	err := sh.RunV(cmd[0], cmd[1:]...)
+	err = sh.RunV(cmd[0], cmd[1:]...)
 	if err != nil {
 		fmt.Printf("error. retrying once in 20s.\n")
 		time.Sleep(20 * time.Second)
