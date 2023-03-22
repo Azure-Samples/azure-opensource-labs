@@ -39,8 +39,11 @@ $ mage
 Targets:
   aksCredentials    gets credentials for the AKS cluster
   aksKubectl        ensures kubectl is installed
-  deployMain        deploys main.bicep at the Resource Group scope
+  deployAKS         deploys aks.bicep at the Resource Group scope
+  deployApp         DeployAKS uses aks-deploy-app.bicep to deploy AKS_APP_BICEP(=azure-vote.bicep)
+  deployMain        [experimental] deploys main.bicep at the Resource Group scope
   empty             empties the Azure resource group
+  emptyNamespace    has az invoke kubectl delete all on K8S_NAMESPACE
   group             creates the Azure resource group
   groupDelete       deletes the Azure resource group
 ```
@@ -48,7 +51,7 @@ Targets:
 ### Deployment
 
 ```
-mage group deployMain
+mage group deployAks deployApp
 ```
 
 ### Delete resources
