@@ -41,12 +41,69 @@ func Group() error {
 	return sh.RunV(cmd[0], cmd[1:]...)
 }
 
-// DeployMain deploys main.bicep at the Resource Group scope
+// DeployAKS deploys aks.bicep at the Resource Group scope
+func DeployAKS() error {
+	name := resourceGroup()
+	location := os.Getenv("LOCATION")
+	if location == "" {
+		location = "eastus"
+	}
+
+	file1 := "aks.bicep"
+	cmd := []string{
+		"az",
+		"deployment",
+		"group",
+		"create",
+		"--resource-group",
+		name,
+		"--template-file",
+		file1,
+		"--parameters",
+		"location=" + location,
+	}
+	return sh.RunV(cmd[0], cmd[1:]...)
+}
+
+// DeployAKS deploys azure-vote-deploy.bicep at the Resource Group scope
+func DeployApp() error {
+	name := resourceGroup()
+	k8sNamespace := os.Getenv("K8S_NAMESPACE")
+	if k8sNamespace == "" {
+		k8sNamespace = "default"
+	}
+	file1 := "aks-deploy-app.bicep"
+	cmd := []string{
+		"az",
+		"deployment",
+		"group",
+		"create",
+		"--resource-group",
+		name,
+		"--template-file",
+		file1,
+		"--parameters",
+		"namespace=" + k8sNamespace,
+	}
+	err := sh.RunV(cmd[0], cmd[1:]...)
+	if err != nil {
+		fmt.Printf("error. retrying once in 20s.\n")
+		time.Sleep(20 * time.Second)
+		err = sh.RunV(cmd[0], cmd[1:]...)
+	}
+	return err
+}
+
+// DeployMain [experimental] deploys main.bicep at the Resource Group scope
 func DeployMain() error {
 	name := resourceGroup()
 	location := os.Getenv("LOCATION")
 	if location == "" {
 		location = "eastus"
+	}
+	aksName := os.Getenv("AKS_NAME")
+	if aksName == "" {
+		aksName = "aks1"
 	}
 	deployCluster := os.Getenv("DEPLOY_CLUSTER")
 	if deployCluster == "" {
@@ -70,7 +127,40 @@ func DeployMain() error {
 		file1,
 		"--parameters",
 		"location=" + location,
+		"clusterName=" + aksName,
 		"deployCluster=" + deployCluster,
+	}
+	return sh.RunV(cmd[0], cmd[1:]...)
+}
+
+// EmptyNamespace has az invoke kubectl delete all on K8S_NAMESPACE
+func EmptyNamespace() error {
+	name := resourceGroup()
+	location := os.Getenv("LOCATION")
+	if location == "" {
+		location = "eastus"
+	}
+	aksName := os.Getenv("AKS_NAME")
+	if aksName == "" {
+		aksName = "aks1"
+	}
+	k8sNamespace := os.Getenv("K8S_NAMESPACE")
+	if k8sNamespace == "" {
+		k8sNamespace = "default"
+	}
+
+	kubectlCommand := "kubectl delete all --all -n " + k8sNamespace
+	cmd := []string{
+		"az",
+		"aks",
+		"command",
+		"invoke",
+		"--resource-group",
+		name,
+		"--name",
+		aksName,
+		"--command",
+		kubectlCommand,
 	}
 	return sh.RunV(cmd[0], cmd[1:]...)
 }
