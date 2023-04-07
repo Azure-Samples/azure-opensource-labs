@@ -27,6 +27,30 @@ var sizeMap = {
   }
 }
 
+resource identityName 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: '${resourceGroup().name}-identity'
+  location: location
+}
+
+// resource postgresAdministrator 'Microsoft.DBforPostgreSQL/flexibleServers/administrators@2022-12-01' = {
+//   parent: postgres
+//   name: identityName.properties.principalId
+//   properties: {
+//     principalType: 'ServicePrincipal'
+//     principalName: identityName.name
+//     tenantId: subscription().tenantId
+//   }
+// }
+
+module postgresAdministrator 'postgres-admin.bicep' = {
+  name: 'postgres-admin'
+  params: {
+    postgresName: postgres.name
+    principalId: identityName.properties.principalId
+    principalName: identityName.name
+  }
+}
+
 resource postgres 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
   name: postgresName
   location: location
