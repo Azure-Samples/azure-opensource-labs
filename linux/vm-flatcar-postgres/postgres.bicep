@@ -56,7 +56,7 @@ resource postgres 'Microsoft.DBforPostgreSQL/flexibleServers@2022-12-01' = {
   location: location
   sku: sizeMap[size].sku
   properties: {
-    version: '14'
+    version: '15'
     //administratorLogin: administratorLogin
     //administratorLoginPassword: administratorLoginPassword
     storage: {
