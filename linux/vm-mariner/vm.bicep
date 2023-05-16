@@ -1,6 +1,5 @@
 @description('Location for all resources.')
 param location string = resourceGroup().location
-// var location = resourceGroup().location
 
 @description('The name of your Virtual Machine.')
 param vmName string = 'vm1'
@@ -42,9 +41,8 @@ param osDiskSize int = 256
 @description('The OS image for the VM.')
 @allowed([
   'mariner-gen2'
-  'marienr-gen1'
+  'mariner-gen1'
   'mariner-arm'
-  'flatcar-container-linux'
 ])
 param osImage string = 'mariner-gen2'
 
@@ -64,9 +62,9 @@ param sshKey string = ''
 @description('User data for deployment.')
 param userData string = ''
 
-@description('Deploy with ignition.')
+@description('Deploy with cloud-init.')
 @allowed([
-  'ignition'
+  'cloud-init'
   'none'
 ])
 param customData string = 'none'
@@ -85,57 +83,38 @@ var ipConfigName = '${vmName}-ipconfig'
 var subnetAddressPrefix = '10.1.0.0/24'
 var addressPrefix = '10.1.0.0/16'
 
-var customDataIgnition = '''
-{
-  "ignition": {
-    "version": "3.3.0"
-  },
-  "storage": {
-    "files": [
-      {
-        "contents": {
-          "compression": "",
-          "source": "data:,%7B0%7D"
-        },
-        "group": {
-          "id": 501
-        },
-        "mode": 420,
-        "path": "/home/azureuser/env.json",
-        "user": {
-          "id": 500
-        }
-      }
-    ]
-  },
-  "systemd": {
-    "units": [
-      {
-        "contents": "[Unit]\nDescription=NGINX example\nAfter=docker.service\nRequire=docker.service\n[Service]\nTimeoutStartSec=0\nExecStartPre=-/usr/bin/docker rm --force nginx1\nExecStart=/usr/bin/docker run --name nginx1 --pull always --net host docker.io/nginx:1\nExecStop=/usr/bin/docker stop nginx1\nRestart=always\nRestartSec=5s\n[Install]\nWantedBy=multi-user.target\n",
-        "enabled": true,
-        "name": "nginx.service"
-      }
-    ]
-  }
-}
+var customDataCloudInit = '''
+#cloud-config
+# vim: syntax=yaml
+
+write_files:
+- path: /home/azureuser/env.json
+  content: {0}
+  encoding: b64
+
+runcmd:
+- cd /home/azureuser/
+- chown -R azureuser:azureuser /home/azureuser/
+- sudo tdnf install -y moby-engine moby-cli ca-certificates
+- sudo systemctl enable docker.service
+- sudo systemctl daemon-reload
+- sudo systemctl start docker.service
+- sudo -u azureuser echo $(date) > hello.txt
 '''
 
-//var customDataIgnitionFormat = format(customDataIgnition, string(env))
-
-var customDataIgnitionFormat = replace(customDataIgnition, '%7B0%7D', uriComponent(string(env)))
+var customDataCloudInitFormat = format(customDataCloudInit, base64(string(env)))
 
 var kvCustomData = {
   none: null
-  ignition: base64(customDataIgnitionFormat)
+  'cloud-init': base64(customDataCloudInitFormat)
+}
+
+var kvVmSizeImageReference = {
+  Standard_D2ps_v5:'mariner-arm'
+  Standard_D4ps_v5:'mariner-arm'
 }
 
 var kvImageReference = {
-  'flatcar-container-linux': {
-    publisher: 'kinvolk'
-    offer: 'flatcar-container-linux-free'
-    sku: 'stable-gen2'
-    version: 'latest'
-  }
   'mariner-gen1': {
     publisher: 'MicrosoftCBLMariner'
     offer: 'cbl-mariner'
@@ -155,6 +134,8 @@ var kvImageReference = {
     version: 'latest'
   }
 }
+
+var imageReference = contains(kvVmSizeImageReference, vmSize) ? kvImageReference[kvVmSizeImageReference[vmSize]] : kvImageReference[osImage]
 
 // Base network security group rules
 var nsgSecurityRulesBase = [
@@ -316,11 +297,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
       '${identityName.id}': {}
     }
   }
-  //plan: {
-  //  name: 'stable-gen2'
-  //  product: 'flatcar-container-linux-free'
-  //  publisher: 'kinvolk'
-  //}
   properties: {
     userData: userData
     hardwareProfile: {
@@ -335,7 +311,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
         diskSizeGB: osDiskSize
         createOption: 'FromImage'
       }
-      imageReference: kvImageReference[osImage]
+      imageReference: imageReference
     }
     networkProfile: {
       networkInterfaces: [

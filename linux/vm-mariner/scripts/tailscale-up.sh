@@ -1,7 +1,10 @@
 cd /home/azureuser/
 
-TS_VERSION='1.40.1'
-TS_ARCH='amd64'
+[[ -z "${TS_VERSION:-}" ]] && TS_VERSION='1.40.1'
+[[ "$(uname -m)" == "aarch64" ]] && TS_ARCH='arm64'
+[[ "$(uname -m)" == "x86_64" ]] && TS_ARCH='amd64'
+[[ -z "${TS_ARCH:-}" ]] && TS_ARCH='amd64'
+
 TS_NAME="tailscale_${TS_VERSION}_${TS_ARCH}"
 
 curl -L -o "${TS_NAME}.tgz" "https://pkgs.tailscale.com/stable/${TS_NAME}.tgz"

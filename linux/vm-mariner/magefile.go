@@ -304,6 +304,29 @@ func SshKey() error {
 // VmBicep deploys vm.bicep to the Azure resource group with parameters
 func VmBicep() error {
 	name := resourceGroup()
+	location := os.Getenv("LOCATION")
+	if location == "" {
+		location = "eastus"
+	}
+	vmName := os.Getenv("VM_NAME")
+	if vmName == "" {
+		vmName = "vm1"
+	}
+	vmSize := os.Getenv("VM_SIZE")
+	if vmSize == "" {
+		vmSize = "Standard_B2s"
+	}
+	vmOsDiskSize := os.Getenv("VM_OS_DISK_SIZE")
+	if vmOsDiskSize == "" {
+		vmOsDiskSize = "128"
+	}
+	vmCustomData := os.Getenv("VM_CUSTOMDATA")
+	switch vmCustomData {
+	case "cloud-init":
+		vmCustomData = "cloud-init"
+	default:
+		vmCustomData = "none"
+	}
 
 	env := os.Getenv("ENV")
 	if env == "" {
@@ -339,9 +362,13 @@ func VmBicep() error {
 		"--template-file",
 		file1,
 		"--parameters",
-		"osDiskSize=128",
+		"location=" + location,
+		"vmName=" + vmName,
+		"vmSize=" + vmSize,
+		"osDiskSize=" + vmOsDiskSize,
 		"sshKey=" + sshPublicKey,
 		"allowIpPort22=" + ipAllow,
+		"customData=" + vmCustomData,
 		"env=" + env,
 	}
 	return sh.RunV(cmd[0], cmd[1:]...)
