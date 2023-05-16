@@ -1,5 +1,7 @@
 # Linux on Azure with CBL-Mariner Linux 2.0 and Virtual Machines (VM)
 
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Fmain%2Flinux%2Fvm-mariner%2Fvm.json)
+
 ```
 $ mage
 Targets:
