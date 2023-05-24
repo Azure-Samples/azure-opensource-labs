@@ -4,6 +4,8 @@ package main
 
 import (
 	"bufio"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -67,6 +69,162 @@ func VM() error {
 		vmOsDiskSize,
 		//"--ssh-key-name",
 		//sshKeyName,
+	}
+	return sh.RunV(cmd[0], cmd[1:]...)
+}
+
+// PG creates the Azure Database for Postgres via the CLI (az postgres flexible-server create)
+func PG() error {
+	name := resourceGroup()
+	rand, err := resourceGroupRand()
+	if err != nil {
+		return err
+	}
+
+	location := os.Getenv("LOCATION")
+	if location == "" {
+		location = "eastus"
+	}
+	pgName := os.Getenv("PG_NAME")
+	if pgName == "" {
+		pgName = "postgres-" + rand
+	}
+	pgTier := os.Getenv("PG_TIER")
+	if pgTier == "" {
+		pgTier = "Burstable"
+	}
+	pgSku := os.Getenv("PG_SKU")
+	if pgSku == "" {
+		pgSku = "Standard_B1ms"
+	}
+	pgVersion := os.Getenv("PG_VERSION")
+	if pgVersion == "" {
+		pgVersion = "15"
+	}
+	pgStorageSize := os.Getenv("PG_STORAGE_SIZE")
+	if pgStorageSize == "" {
+		pgStorageSize = "128"
+	}
+
+	cmd := []string{
+		"az",
+		"network",
+		"vnet",
+		"list",
+		"--resource-group",
+		name,
+		"--query",
+		"[0]",
+	}
+
+	b, err := sh.Output(cmd[0], cmd[1:]...)
+	if err != nil {
+		return err
+	}
+
+	vnet := struct {
+		ID           string `json:"id"`
+		Name         string `json:"name"`
+		AddressSpace struct {
+			AddressPrefixes []string `json:"addressPrefixes"`
+		} `json:"addressSpace"`
+		Subnets []struct {
+			ID            string `json:"id"`
+			Name          string `json:"name"`
+			AddressPrefix string `json:"addressPrefix"`
+		} `json:"subnets"`
+	}{}
+
+	err = json.Unmarshal([]byte(b), &vnet)
+	if err != nil {
+		return err
+	}
+
+	// az postgres flexible-server create --resource-group testGroup --name testserver --vnet myVnet --subnet mySubnet --address-prefixes 10.0.0.0/16 --subnet-prefixes 10.0.0.0/24
+	cmd = []string{
+		"az",
+		"postgres",
+		"flexible-server",
+		"create",
+		"--yes",
+		"--resource-group",
+		name,
+		"--name",
+		pgName,
+		"--vnet",
+		vnet.Name,
+		"--version",
+		pgVersion,
+		"--tier",
+		pgTier,
+		"--sku-name",
+		pgSku,
+		"--storage-size",
+		pgStorageSize,
+		"--active-directory-auth",
+		"Enabled",
+		"--password-auth",
+		"Disabled",
+		//"--subnet",
+		//vnet.Subnets[0].Name,
+		//"--address-prefixes",
+		//vnet.AddressSpace.AddressPrefixes[0],
+		//"--subnet-prefixes",
+		//vnet.Subnets[0].AddressPrefix,
+	}
+	return sh.RunV(cmd[0], cmd[1:]...)
+}
+
+// PgAdmin adds the Managed Identity as Postgres server admin
+func PgAdmin() error {
+	name := resourceGroup()
+	rand, err := resourceGroupRand()
+	if err != nil {
+		return err
+	}
+
+	location := os.Getenv("LOCATION")
+	if location == "" {
+		location = "eastus"
+	}
+	pgName := os.Getenv("PG_NAME")
+	if pgName == "" {
+		pgName = "postgres-" + rand
+	}
+
+	cmd := []string{
+		"az",
+		"identity",
+		"list",
+		"--resource-group",
+		name,
+		"--query",
+		"[0].principalId",
+		"--out",
+		"tsv",
+	}
+
+	principalId, err := sh.Output(cmd[0], cmd[1:]...)
+	if err != nil {
+		return err
+	}
+
+	cmd = []string{
+		"az",
+		"postgres",
+		"flexible-server",
+		"ad-admin",
+		"create",
+		"--resource-group",
+		name,
+		"--server-name",
+		pgName,
+		"-u",
+		name + "-identity",
+		"-i",
+		principalId,
+		"-t",
+		"ServicePrincipal",
 	}
 	return sh.RunV(cmd[0], cmd[1:]...)
 }
@@ -462,6 +620,32 @@ func resourceGroup() string {
 		name = fmt.Sprintf("%s-mariner", time.Now().Format("060100"))
 	}
 	return name
+}
+
+func resourceGroupRand() (string, error) {
+	name := resourceGroup()
+	cmd := []string{
+		"az",
+		"group",
+		"show",
+		"--resource-group",
+		name,
+		"--query",
+		"'id'",
+		"--out",
+		"tsv",
+	}
+
+	groupID, err := sh.Output(cmd[0], cmd[1:]...)
+	if err != nil {
+		return "", err
+	}
+
+	hasher := sha256.New()
+	hasher.Write([]byte(groupID))
+	rand := hex.EncodeToString(hasher.Sum(nil))[:6]
+
+	return rand, nil
 }
 
 // Create creates the Azure Resource Group
