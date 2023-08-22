@@ -3,7 +3,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -61,96 +60,6 @@ func DeployAKS() error {
 		file1,
 		"--parameters",
 		"location=" + location,
-	}
-	return sh.RunV(cmd[0], cmd[1:]...)
-}
-
-// DeployAKS uses aks-deploy-app.bicep to deploy AKS_APP_BICEP(=azure-vote.bicep)
-func DeployApp() error {
-	name := resourceGroup()
-	k8sNamespace := os.Getenv("K8S_NAMESPACE")
-	if k8sNamespace == "" {
-		k8sNamespace = "default"
-	}
-	appBicep := os.Getenv("AKS_APP_BICEP")
-	if appBicep == "" {
-		appBicep = "azure-vote.bicep"
-	}
-	fmt.Printf("Deploying AKS_APP_BICEP=%s\n", appBicep)
-
-	// make temporary file
-	file1 := "aks-deploy-app.bicep"
-	file2 := "tmp.bicep"
-	err := sh.Copy(file2, file1)
-	if err != nil {
-		return err
-	}
-	defer os.RemoveAll(file2)
-
-	replace1 := map[string]string{
-		"azure-vote.bicep": appBicep,
-	}
-	err = fileReplace(file2, replace1)
-	if err != nil {
-		return err
-	}
-
-	cmd := []string{
-		"az",
-		"deployment",
-		"group",
-		"create",
-		"--resource-group",
-		name,
-		"--template-file",
-		file2,
-		"--parameters",
-		"namespace=" + k8sNamespace,
-	}
-	err = sh.RunV(cmd[0], cmd[1:]...)
-	if err != nil {
-		fmt.Printf("error. retrying once in 20s.\n")
-		time.Sleep(20 * time.Second)
-		err = sh.RunV(cmd[0], cmd[1:]...)
-	}
-	return err
-}
-
-// DeployMain [experimental] deploys main.bicep at the Resource Group scope
-func DeployMain() error {
-	name := resourceGroup()
-	location := os.Getenv("LOCATION")
-	if location == "" {
-		location = "eastus"
-	}
-	aksName := os.Getenv("AKS_NAME")
-	if aksName == "" {
-		aksName = "aks1"
-	}
-	deployCluster := os.Getenv("DEPLOY_CLUSTER")
-	if deployCluster == "" {
-		deployCluster = "true"
-	}
-	switch {
-	case deployCluster == "true" || deployCluster == "false":
-	default:
-		return errors.New("DEPLOY_CLUSTER must be true, false, or empty")
-	}
-
-	file1 := "main.bicep"
-	cmd := []string{
-		"az",
-		"deployment",
-		"group",
-		"create",
-		"--resource-group",
-		name,
-		"--template-file",
-		file1,
-		"--parameters",
-		"location=" + location,
-		"clusterName=" + aksName,
-		"deployCluster=" + deployCluster,
 	}
 	return sh.RunV(cmd[0], cmd[1:]...)
 }
