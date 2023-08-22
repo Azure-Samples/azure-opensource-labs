@@ -11,7 +11,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-resource aks 'Microsoft.ContainerService/managedClusters@2021-05-01' = {
+resource aks 'Microsoft.ContainerService/managedClusters@2023-05-02-preview' = {
   name: clusterName
   location: location
   identity: {
