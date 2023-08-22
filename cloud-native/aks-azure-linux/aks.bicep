@@ -40,6 +40,9 @@ resource aks 'Microsoft.ContainerService/managedClusters@2023-05-02-preview' = {
         mode: 'User'
         osType: 'Linux'
         osSKU: 'AzureLinux'
+        nodeTaints: [
+          'sku=gpu:NoSchedule'
+        ]
       }
     ]
   }
