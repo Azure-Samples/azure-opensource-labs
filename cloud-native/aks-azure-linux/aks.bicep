@@ -2,7 +2,7 @@ param location string = resourceGroup().location
 param clusterName string = 'aks1'
 param nodeCount int = 1
 param vmSize string = 'standard_d2s_v5'
-param kubernetesVersion string = '1.25.5'
+param kubernetesVersion string = '1.27.3'
 
 var rand = substring(uniqueString(resourceGroup().id), 0, 6)
 
@@ -30,6 +30,16 @@ resource aks 'Microsoft.ContainerService/managedClusters@2021-05-01' = {
         count: nodeCount
         vmSize: vmSize
         mode: 'System'
+        osType: 'Linux'
+        osSKU: 'AzureLinux'
+      }
+      {
+        name: 'gpu1'
+        count: 1
+        vmSize: 'Standard_NC4as_T4_v3'
+        mode: 'User'
+        osType: 'Linux'
+        osSKU: 'AzureLinux'
       }
     ]
   }
