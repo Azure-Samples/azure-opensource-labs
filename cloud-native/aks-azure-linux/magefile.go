@@ -8,8 +8,11 @@ import (
 	"strings"
 	"time"
 
+	"github.com/magefile/mage/mg"
 	"github.com/magefile/mage/sh"
 )
+
+type Group mg.Namespace
 
 // resourceGroup gets resource group name from the
 // RESOURCE_GROUP env var, or provides a default
@@ -21,13 +24,14 @@ func resourceGroup() string {
 	return name
 }
 
-// Group creates the Azure resource group
-func Group() error {
+// Create creates the Azure Resource Group
+func (Group) Create() error {
 	name := resourceGroup()
 	location := os.Getenv("LOCATION")
 	if location == "" {
 		location = "eastus"
 	}
+
 	cmd := []string{
 		"az",
 		"group",
@@ -36,6 +40,59 @@ func Group() error {
 		name,
 		"--location",
 		location,
+	}
+	return sh.RunV(cmd[0], cmd[1:]...)
+}
+
+// Empty empties the Azure Resource Group
+func (Group) Empty() error {
+	name := resourceGroup()
+	file1 := "empty.bicep"
+	f, err := os.Create(file1)
+	if err != nil {
+		return err
+	}
+	f.Close()
+
+	fmt.Printf("Emptying RESOURCE_GROUP %s in 10 seconds.\n", name)
+	time.Sleep(time.Second * 10)
+
+	cmd := []string{
+		"az",
+		"deployment",
+		"group",
+		"create",
+		"--resource-group",
+		name,
+		"--template-file",
+		file1,
+		"--mode",
+		"Complete",
+	}
+	err = sh.RunV(cmd[0], cmd[1:]...)
+	if err != nil {
+		return err
+	}
+	err = os.RemoveAll(file1)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Delete deletes the Azure Resource Group
+func (Group) Delete() error {
+	name := resourceGroup()
+	fmt.Printf("Deleting RESOURCE_GROUP %s in 10 seconds.\n", name)
+	time.Sleep(time.Second * 10)
+
+	cmd := []string{
+		"az",
+		"group",
+		"delete",
+		"--resource-group",
+		name,
+		"--yes",
 	}
 	return sh.RunV(cmd[0], cmd[1:]...)
 }
@@ -122,52 +179,6 @@ func AksKubectl() error {
 		"az",
 		"aks",
 		"install-cli",
-	}
-	return sh.RunV(cmd[0], cmd[1:]...)
-}
-
-// Empty empties the Azure resource group
-func Empty() error {
-	name := resourceGroup()
-	file1 := "empty.bicep"
-	f, err := os.Create(file1)
-	if err != nil {
-		return err
-	}
-	f.Close()
-	cmd := []string{
-		"az",
-		"deployment",
-		"group",
-		"create",
-		"--resource-group",
-		name,
-		"--template-file",
-		file1,
-		"--mode",
-		"Complete",
-	}
-	err = sh.RunV(cmd[0], cmd[1:]...)
-	if err != nil {
-		return err
-	}
-	err = os.RemoveAll(file1)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// GroupDelete deletes the Azure resource group
-func GroupDelete() error {
-	name := resourceGroup()
-	cmd := []string{
-		"az",
-		"group",
-		"delete",
-		"--name",
-		name,
-		"--yes",
 	}
 	return sh.RunV(cmd[0], cmd[1:]...)
 }
