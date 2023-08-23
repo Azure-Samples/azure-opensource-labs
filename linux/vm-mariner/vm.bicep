@@ -17,6 +17,8 @@ param vmName string = 'vm1'
   'Standard_D2ps_v5'
   'Standard_D4ps_v5'
   'Standard_NC4as_T4_v3'
+  'Standard_NC6s_v3'
+  'Standard_NC24ads_A100_v4'
 ])
 param vmSize string = 'Standard_B2s'
 
