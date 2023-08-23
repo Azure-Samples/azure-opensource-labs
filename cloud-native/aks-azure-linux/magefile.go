@@ -19,7 +19,7 @@ type Group mg.Namespace
 func resourceGroup() string {
 	name := os.Getenv("RESOURCE_GROUP")
 	if name == "" {
-		name = fmt.Sprintf("%s-aks-bicep", time.Now().Format("060100"))
+		name = fmt.Sprintf("%s-azure-linux", time.Now().Format("060100"))
 	}
 	return name
 }
