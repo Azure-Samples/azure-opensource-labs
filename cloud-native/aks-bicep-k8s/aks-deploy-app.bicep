@@ -1,7 +1,7 @@
 param clusterName string = 'aks1'
 param namespace string = 'default'
 
-resource aksCluster 'Microsoft.ContainerService/managedClusters@2022-05-02-preview' existing = {
+resource aksCluster 'Microsoft.ContainerService/managedClusters@2023-05-01' existing = {
   name: clusterName
 }
 
