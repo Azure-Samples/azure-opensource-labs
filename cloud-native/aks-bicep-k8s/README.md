@@ -32,7 +32,7 @@ Change to this directory.
 cd azure-opensource-labs/cloud-native/aks-bicep-k8s
 ```
 
-While you can deploy the Bicep templates ([main.go](./main.go)) via the Azure CLI or Azure Portal, we have included a Magefile, [magefile.go](./magefile.go), with the following targets to make deployment easier.
+While you can deploy the Bicep templates ([main.bicep](./main.bicep)) via the Azure CLI or Azure Portal, we have included a Magefile, [magefile.go](./magefile.go), with the following targets to make deployment easier.
 
 ```
 $ mage
