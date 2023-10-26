@@ -19,79 +19,6 @@ import (
 
 type Az mg.Namespace
 
-// VM deploys vm.bicep
-func (Az) VM() error {
-	name := resourceGroup()
-	location := os.Getenv("LOCATION")
-	if location == "" {
-		location = "eastus"
-	}
-	vmName := os.Getenv("VM_NAME")
-	if vmName == "" {
-		vmName = "vm1"
-	}
-	vmSize := os.Getenv("VM_SIZE")
-	if vmSize == "" {
-		vmSize = "Standard_B2s"
-	}
-	vmOsDiskSize := os.Getenv("VM_OS_DISK_SIZE")
-	if vmOsDiskSize == "" {
-		vmOsDiskSize = "128"
-	}
-	vmCustomData := os.Getenv("VM_CUSTOMDATA")
-	switch vmCustomData {
-	case "cloud-init":
-		vmCustomData = "cloud-init"
-	default:
-		vmCustomData = "none"
-	}
-
-	env := os.Getenv("ENV")
-	if env == "" {
-		env = "{}"
-	}
-	tmp1 := map[string]string{}
-	if err := json.Unmarshal([]byte(env), &tmp1); err != nil {
-		return fmt.Errorf("ENV must be valid JSON: %s", err)
-	}
-
-	ipAllow := os.Getenv("IP_ALLOW")
-	if ipAllow == "" {
-		res, err := whoAmI()
-		if err != nil {
-			return err
-		}
-		ipAllow = res
-	}
-
-	sshPublicKey, err := loadSshKey(os.Getenv("SSH_KEY"))
-	if err != nil {
-		return err
-	}
-
-	file1 := "bicep/vm.bicep"
-	cmd := []string{
-		"az",
-		"deployment",
-		"group",
-		"create",
-		"--resource-group",
-		name,
-		"--template-file",
-		file1,
-		"--parameters",
-		"location=" + location,
-		"vmName=" + vmName,
-		"vmSize=" + vmSize,
-		"osDiskSize=" + vmOsDiskSize,
-		"sshKey=" + sshPublicKey,
-		"allowIpPort22=" + ipAllow,
-		"customData=" + vmCustomData,
-		"env=" + env,
-	}
-	return sh.RunV(cmd[0], cmd[1:]...)
-}
-
 // VMSS deploys vm.bicep
 func (Az) VMSS() error {
 	name := resourceGroup()
@@ -171,8 +98,84 @@ func (Az) VMSS() error {
 	return sh.RunV(cmd[0], cmd[1:]...)
 }
 
+// todo: VM and RunScripts are temporarily unexported,
+// but kept for planned testing purposes.
+
+// VM deploys vm.bicep
+func (Az) vm() error {
+	name := resourceGroup()
+	location := os.Getenv("LOCATION")
+	if location == "" {
+		location = "eastus"
+	}
+	vmName := os.Getenv("VM_NAME")
+	if vmName == "" {
+		vmName = "vm1"
+	}
+	vmSize := os.Getenv("VM_SIZE")
+	if vmSize == "" {
+		vmSize = "Standard_B2s"
+	}
+	vmOsDiskSize := os.Getenv("VM_OS_DISK_SIZE")
+	if vmOsDiskSize == "" {
+		vmOsDiskSize = "128"
+	}
+	vmCustomData := os.Getenv("VM_CUSTOMDATA")
+	switch vmCustomData {
+	case "cloud-init":
+		vmCustomData = "cloud-init"
+	default:
+		vmCustomData = "none"
+	}
+
+	env := os.Getenv("ENV")
+	if env == "" {
+		env = "{}"
+	}
+	tmp1 := map[string]string{}
+	if err := json.Unmarshal([]byte(env), &tmp1); err != nil {
+		return fmt.Errorf("ENV must be valid JSON: %s", err)
+	}
+
+	ipAllow := os.Getenv("IP_ALLOW")
+	if ipAllow == "" {
+		res, err := whoAmI()
+		if err != nil {
+			return err
+		}
+		ipAllow = res
+	}
+
+	sshPublicKey, err := loadSshKey(os.Getenv("SSH_KEY"))
+	if err != nil {
+		return err
+	}
+
+	file1 := "bicep/vm.bicep"
+	cmd := []string{
+		"az",
+		"deployment",
+		"group",
+		"create",
+		"--resource-group",
+		name,
+		"--template-file",
+		file1,
+		"--parameters",
+		"location=" + location,
+		"vmName=" + vmName,
+		"vmSize=" + vmSize,
+		"osDiskSize=" + vmOsDiskSize,
+		"sshKey=" + sshPublicKey,
+		"allowIpPort22=" + ipAllow,
+		"customData=" + vmCustomData,
+		"env=" + env,
+	}
+	return sh.RunV(cmd[0], cmd[1:]...)
+}
+
 // RunScripts executes RunCommand on the Azure VM
-func (Az) RunScripts(vmScripts string) error {
+func (Az) runScripts(vmScripts string) error {
 	name := resourceGroup()
 	vmName := os.Getenv("VM_NAME")
 	if vmName == "" {
