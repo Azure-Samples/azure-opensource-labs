@@ -117,7 +117,7 @@ var publicIPAddressType = 'Static'
 var subnetName = 'default'
 var addressPrefix = '10.1.0.0/16'
 var subnetAddressPrefix = '10.1.0.0/24'
-var vnetName = '${resourceGroupName}-vnet'
+var vnetName = virtualNetworkName != '' ? virtualNetworkName : '${resourceGroupName}-vnet'
 var nsgName = '${resourceGroupName}-nsg'
 
 var customDataCloudInit = '''
@@ -480,7 +480,7 @@ resource vmssName_resource 'Microsoft.Compute/virtualMachineScaleSets@2019-12-01
                   properties: {
                     subnet: {
                       #disable-next-line use-resource-id-functions
-                      id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${virtualNetworkName}/subnets/${subnetName}'
+                      id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${vnetName}/subnets/${subnetName}'
                     }
                     loadBalancerBackendAddressPools: [
                       {
