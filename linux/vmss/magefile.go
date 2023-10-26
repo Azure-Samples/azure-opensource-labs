@@ -109,7 +109,7 @@ func (Az) VMSS() error {
 	}
 	vmInstanceCount := os.Getenv("VMSS_INSTANCE_COUNT")
 	if vmInstanceCount == "" {
-		vmInstanceCount = "0"
+		vmInstanceCount = "1"
 	}
 	vmOsDiskSize := os.Getenv("VMSS_OS_DISK_SIZE")
 	if vmOsDiskSize == "" {
@@ -159,13 +159,14 @@ func (Az) VMSS() error {
 		"--parameters",
 		"location=" + location,
 		"vmssName=" + vmName,
-		"adminPasswordOrKey=" + sshPublicKey,
 		"vmSize=" + vmSize,
 		"osDiskSize=" + vmOsDiskSize,
-		//"sshKey=" + sshPublicKey,
 		"allowIpPort22=" + ipAllow,
 		"instanceCount=" + vmInstanceCount,
 		"env=" + env,
+	}
+	if sshPublicKey != "" {
+		cmd = append(cmd, "sshKey="+sshPublicKey)
 	}
 	return sh.RunV(cmd[0], cmd[1:]...)
 }
