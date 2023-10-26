@@ -7,6 +7,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -106,8 +108,8 @@ func (Az) VMSS() error {
 		vmSize = "Standard_B2s"
 	}
 	vmInstanceCount := os.Getenv("VMSS_INSTANCE_COUNT")
-	if vmSize == "" {
-		vmSize = "0"
+	if vmInstanceCount == "" {
+		vmInstanceCount = "0"
 	}
 	vmOsDiskSize := os.Getenv("VMSS_OS_DISK_SIZE")
 	if vmOsDiskSize == "" {
@@ -162,7 +164,6 @@ func (Az) VMSS() error {
 		"osDiskSize=" + vmOsDiskSize,
 		//"sshKey=" + sshPublicKey,
 		"allowIpPort22=" + ipAllow,
-		"customData=" + vmCustomData,
 		"instanceCount=" + vmInstanceCount,
 		"env=" + env,
 	}
@@ -362,19 +363,38 @@ func loadSshKey(sshPublicKey string) (string, error) {
 	return sshPublicKey, nil
 }
 
+type Test mg.Namespace
+
+func (Test) WhoAmI() error {
+	ipAddress, err := whoAmI()
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s\n", ipAddress)
+	return nil
+}
+
 // whoAmI returns our public IP, currently shelling out to dig
 func whoAmI() (string, error) {
-	res, err := sh.Output(
-		"dig",
-		"@1.1.1.1",
-		"ch",
-		"txt",
-		"whoami.cloudflare",
-		"+short",
-	)
+	// note: this is an opendns service
+	// see: https://dnsomatic.com/
+	url1 := "https://myip.dnsomatic.com/"
+
+	req, err := http.NewRequest(http.MethodGet, url1, nil)
 	if err != nil {
 		return "", err
 	}
-	res = strings.ReplaceAll(res, "\"", "")
-	return res, nil
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer res.Body.Close()
+	if res.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("%s returned %d", url1, res.StatusCode)
+	}
+	b, err := io.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
+	return strings.TrimSpace(string(b)), nil
 }
