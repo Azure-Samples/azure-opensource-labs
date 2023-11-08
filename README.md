@@ -28,22 +28,9 @@ Containers, Kubernetes, Azure Kubernetes Service, Azure Container Apps, Open Sou
 
 Linux, Virtual Machines, Virtual Machine Scale Sets, and more.
 
-## Go (golang)
-
-[Go to Go (golang) labs](golang/#readme)
-
-Go, Cloud Native Go, GitHub Actions, Container Apps, GopherCon, and more.
-
-## Python
-
-[Go to Python labs](python/#readme)
-
-Python, Container Apps, PyCon, and more.
-
 ## More
 
-### OSCON 2019
+[Go to More labs](more/#readme)
 
-Our Open Source Labs were originally developed for [OSCON 2019](https://en.wikipedia.org/wiki/O%27Reilly_Open_Source_Convention). These are similar to labs such GopherCon (Azure Go Labs), PyCon (Azure Python Labs), KubeCon (Azure Container Labs), and other in-person and virtual events, many of which will continue to be updated in this repository.
+Go (golang), Python, Cloud Native Go, GitHub Actions, Container Apps, GopherCon, PyCon, OSCON, and more.
 
-You can find the original 2019 labs delivered in person at [OSCON 2019](https://en.wikipedia.org/wiki/O%27Reilly_Open_Source_Convention) via the [oscon-2019](https://github.com/Azure-Samples/azure-opensource-labs/tree/oscon-2019) branch. These labs included VS Code, Django, Windows Subsystem for Linux, .NET, Flask, Dev Containers, PostgreSQL, Functions, Container Registry, Container Instances, Hyperscale Citus, MySQL. We will continue to update and expand on these labs.
