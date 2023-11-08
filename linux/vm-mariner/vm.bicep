@@ -16,6 +16,9 @@ param vmName string = 'vm1'
   'Standard_D4s_v5'
   'Standard_D2ps_v5'
   'Standard_D4ps_v5'
+  'Standard_NC4as_T4_v3'
+  'Standard_NC6s_v3'
+  'Standard_NC24ads_A100_v4'
 ])
 param vmSize string = 'Standard_B2s'
 
@@ -336,6 +339,35 @@ resource vm 'Microsoft.Compute/virtualMachines@2021-11-01' = {
         }
       }
     }
+  }
+}
+
+// storage
+resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
+  name: 'storage${rand}'
+  location: location
+  kind: 'BlockBlobStorage'
+  sku: {
+    name: 'Premium_LRS'
+  }
+}
+
+// via: https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-functions-resource#subscriptionresourceid-example
+var roleDefinitionId = {
+  Owner: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+  Contributor: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  Reader: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+  AcrPull: '7f951dda-4ed3-4680-a7ca-43fe172d538d'
+  StorageBlobDataContributor: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+}
+
+var roleAssignmentStorageAccountDefinition = 'StorageBlobDataContributor'
+resource roleAssignmentStorageAccount 'Microsoft.Authorization/roleAssignments@2020-08-01-preview' = {
+  name: guid(storageAccount.id, roleAssignmentStorageAccountDefinition)
+  scope: storageAccount
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId[roleAssignmentStorageAccountDefinition])
+    principalId: identityName.properties.principalId
   }
 }
 
