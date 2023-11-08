@@ -1,51 +1,32 @@
 # Linux on Azure with Bicep/ARM and Virtual Machine Scale Sets (VMSS)
 
-## Resource Group 
+## Requirements
 
-```bash
-RESOURCE_GROUP='220500-azure-linux'
-LOCATION='eastus'
-az group create \
-    --name $RESOURCE_GROUP \
-    --location $LOCATION
+- [Go](https://go.dev/dl/)
+- [Mage](https://magefile.org/) (`go install github.com/magefile/mage@latest`)
+- [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli)
+
+## Commands
+
+```
+$ mage
+Targets:
+  az:vmss         deploys vm.bicep
+  group:create    creates the Azure Resource Group
+  group:delete    deletes the Azure Resource Group
+  group:empty     empties the Azure Resource Group
+  test:whoAmI 
 ```
 
-## Virtual Machine Scale Set (VMSS)
+## Usage
 
 ```bash
-RESOURCE_GROUP='220500-azure-linux'
-PASSWORD_OR_KEY="$(cat ~/.ssh/id_rsa.pub)"
+# (optional) define the resource group name
+# export RESOURCE_GROUP='231000-azr'
 
-az deployment group create \
-    --resource-group $RESOURCE_GROUP \
-    --template-file vmss.bicep \
-    --parameters adminPasswordOrKey="$PASSWORD_OR_KEY"
+# create the group and deploy the vmss
+mage group:create az:vmss
 
-az deployment group create \
-    --resource-group $RESOURCE_GROUP \
-    --template-file vmss.bicep \
-    --parameters adminPasswordOrKey="$PASSWORD_OR_KEY" \
-        vmName=vm2 \
-        customDataUrl='https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/main/linux/vmss/cloud-init/cloud-init.sh'
-
-# deploy with ALLOW_IP
-IP_ALLOW=$(dig @1.1.1.1 ch txt whoami.cloudflare +short | tr -d '"')
-
-az deployment group create \
-    --resource-group $RESOURCE_GROUP \
-    --template-file vmss.bicep \
-    --parameters adminPasswordOrKey="$PASSWORD_OR_KEY" \
-    allowIpPort22="$IP_ALLOW"
-```
-
-## Portal 
-
-[Deploy to Azure](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Fmain%2Flinux%2Fvmss%2Fvmss.json)
-
-```bash
-TEMPLATE_URL='https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/main/linux/vmss/vmss.json'
-OUTPUT_URL='https://portal.azure.com/#create/Microsoft.Template/uri/'$(printf "$TEMPLATE_URL" | jq -s -R -r @uri )
-echo $OUTPUT_URL
-
-# https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Fmain%2Flinux%2Fvmss%2Fvmss.json
+# tear down and/or delete
+mage group:empty group:delete
 ```

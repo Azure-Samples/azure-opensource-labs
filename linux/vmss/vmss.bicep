@@ -1,46 +1,28 @@
-@description('Name for the Virtual Machine, also used as prefix for various resources.')
+@description('The name of your Virtual Machine.')
 param vmssName string = 'vmss1'
-
-@description('User name for the Virtual Machine.')
-param adminUsername string = 'azureuser'
-
-@description('Type of authentication to use on the Virtual Machine. SSH key is recommended.')
-@allowed([
-  'sshPublicKey'
-  'password'
-])
-param authenticationType string = 'sshPublicKey'
-
-@description('SSH Key or password for the Virtual Machine. SSH key is recommended.')
-@secure()
-param adminPasswordOrKey string = 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3gkRpKwprN00sT7yekr0xO0F+uTllDua02puhu1v0zGu3aENvUsygBHJiTy+flgrO2q3mY9F5/D67+WHDeSpr5s71UtnbzMxTams89qmo+raTm+IqjzdNujaWf0/pbT6JUkQq0fR0BfIvg3/7NTXhlzjmCOP2EpD91LzN6b5jAm/5hXr0V5mcpERo8kk2GWxjKmwmDOV+huH1DIFDpMxT3WzR2qvZp1DZbNSYmKkrite3FHlPGLXA1I3bRQT+iTj8vRGpxOPSiMdPK4RNMEZVXSGQ3OZbSl2FBCbd/tdJ1idKo8/ZCkHxdh9/em28/yfPUK0D164shgiEdIkdOQJv'
-
-@description('Default IP to allow Port 22 (SSH). Set to your own IP Address')
-param allowIpPort22 string = '127.0.0.1'
-
-@description('Unique DNS Name for the Public IP used to access the Virtual Machine.')
-param dnsPrefix string = ''
 
 @description('The Virtual Machine size.')
 @allowed([
   'Standard_B1ls'
   'Standard_B1s'
-  'Standard_B1ms'
   'Standard_B2s'
-  'Standard_F1s'
-  'Standard_DS1_v2'
+  'Standard_B1ms'
   'Standard_B2ms'
-  'Standard_F2s_v2'
-  'Standard_D2s_v3'
-  'Standard_D2ds_v4'
-  'Standard_F2s'
-  'Standard_E2s_v3'
-  'Standard_DS2_v2'
-  'Standard_DS3_v2'
-  'Standard_DS4_v2'
   'Standard_B4ms'
+  'Standard_D2s_v5'
+  'Standard_D4s_v5'
+  'Standard_D2ps_v5'
+  'Standard_D4ps_v5'
 ])
-param vmSize string = 'Standard_D2ds_v4'
+param vmSize string = 'Standard_B2s'
+
+@description('The Storage Account Type for OS and Data disks.')
+@allowed([
+  'Standard_LRS'
+  'Premium_LRS'
+  'UltraSSD_LRS'
+])
+param diskAccountType string = 'Premium_LRS'
 
 @description('The OS Disk size.')
 @allowed([
@@ -51,56 +33,47 @@ param vmSize string = 'Standard_D2ds_v4'
   64
   32
 ])
-param osDiskSize int = 1024
+param osDiskSize int = 256
 
-@description('The Data Disk size.')
+@description('The OS image for the VM.')
 @allowed([
-  1024
-  512
-  256
-  128
-  0
+  //'Ubuntu 22.04-LTS'
+  'Ubuntu 20.04-LTS'
+  'Ubuntu 20.04-LTS (arm64)'
+  'mariner-gen2'
+  'mariner-gen1'
+  'mariner-arm'
 ])
-param dataDiskSize int = 0
-
-@description('The Storage Account Type for OS and Data disks.')
-@allowed([
-  'Premium_LRS'
-  'UltraSSD_LRS'
-])
-param diskAccountType string = 'Premium_LRS'
-
-@description('The OS version for the VM.')
-@allowed([
-  'Canonical'
-  'MicrosoftWindowsDesktop'
-])
-param osPublisher string = 'Canonical'
-
-@description('The OS offer for the VM.')
-@allowed([
-  'UbuntuServer'
-  'Windows-10'
-])
-param osOffer string = 'UbuntuServer'
-
-@description('The OS sku for the VM.')
-@allowed([
-  '18.04-LTS'
-  '16.04.0-LTS'
-  '19h1-pro'
-])
-param osSku string = '18.04-LTS'
+param osImage string = 'Ubuntu 20.04-LTS'
 
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
-@description('URL to cloud-init script')
-param customDataUrl string = ''
+@description('Name of the VNET.')
+param virtualNetworkName string = ''
 
-@description('Environment variables as JSON object')
+@description('Default IP to allow Port 22 (SSH). Set to your own IP Address')
+param allowIpPort22 string = '127.0.0.1'
+
+@description('Username for the Virtual Machine.')
+param adminUsername string = 'azureuser'
+
+@secure()
+@description('SSH Key for the Virtual Machine.')
+param sshKey string = ''
+
+@description('Deploy with cloud-init.')
+@allowed([
+  'cloud-init-mariner'
+  'none'
+])
+param customData string = 'none'
+
+@description('Environment variables as JSON object.')
+@secure()
 param env object = {}
 
+// vmss specific
 @description('Number of VM instances (1000 or less).')
 @maxValue(1000)
 param instanceCount int = 1
@@ -127,41 +100,169 @@ param vmssPriority string = 'Regular'
 ])
 param vmssEvictionPolicy string = 'Deallocate'
 
-var env_var = env
-var customDataUrl_var = customDataUrl
-var customDataAdvanced = base64('#cloud-config\n# vim: syntax=yaml\n\npackages:\n- docker.io\n- jq\n\n# create the docker group\ngroups:\n  - docker\n\n# Add default auto created user to docker group\nsystem_info:\n  default_user:\n    groups: [docker]\n\nwrite_files:\n\n- encoding: b64\n  content: ${base64(string(env_var))}\n  path: /home/azureuser/env.json\n\nruncmd:\n- cd /home/azureuser/\n- $( cat env.json | jq -r \'keys[] as $k | "export \\($k)=\\(.[$k])"\' )\n- curl -L -o cloud-init.sh \'${customDataUrl_var}\'\n- bash cloud-init.sh 2>&1 | tee cloud-init.log\n')
-var customData = base64('#include\n${customDataUrl}')
-var addressPrefix = '10.0.0.0/16'
+var rand = substring(uniqueString(resourceGroup().id), 0, 6)
+var keyData = sshKey != '' ? sshKey : 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC3gkRpKwprN00sT7yekr0xO0F+uTllDua02puhu1v0zGu3aENvUsygBHJiTy+flgrO2q3mY9F5/D67+WHDeSpr5s71UtnbzMxTams89qmo+raTm+IqjzdNujaWf0/pbT6JUkQq0fR0BfIvg3/7NTXhlzjmCOP2EpD91LzN6b5jAm/5hXr0V5mcpERo8kk2GWxjKmwmDOV+huH1DIFDpMxT3WzR2qvZp1DZbNSYmKkrite3FHlPGLXA1I3bRQT+iTj8vRGpxOPSiMdPK4RNMEZVXSGQ3OZbSl2FBCbd/tdJ1idKo8/ZCkHxdh9/em28/yfPUK0D164shgiEdIkdOQJv'
+var resourceGroupName = resourceGroup().name
 var bePoolName = '${vmssName}-bepool'
-var dnsPrefix_var = ((dnsPrefix == '') ? '${vmssName}-${uniqueString(resourceGroup().id)}' : dnsPrefix)
 var frontEndIPConfigID = resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations', loadBalancerName, 'LoadBalancerFrontend')
-var identityName_var = '${resourceGroup().name}-identity'
-var imageOffer = osOffer
-var imagePublisher = osPublisher
-var imageSku = osSku
 var ipConfigName = '${vmssName}-ipconfig'
 var loadBalancerName = '${vmssName}-lb'
-var natBackendPort = 22
-var natEndPort = 50119
 var natPoolName = '${vmssName}-natpool'
+var natBackendPort = 22
 var natStartPort = 50000
+var natEndPort = 50119
 var nicName = '${vmssName}-nic'
-var publicIPAddressID = publicIPAddressName.id
-var publicIPAddressName_var = '${vmssName}-ip'
+var publicIPAddressName = '${vmssName}-ip'
 var publicIPAddressType = 'Static'
 var subnetName = 'default'
-var subnetPrefix = '10.0.0.0/24'
-var virtualNetworkName_var = '${resourceGroup().name}-vnet'
-var nsgName_var = '${resourceGroup().name}-nsg'
-var vmssName_var = vmssName
+var addressPrefix = '10.1.0.0/16'
+var subnetAddressPrefix = '10.1.0.0/24'
+var vnetName = virtualNetworkName != '' ? virtualNetworkName : '${resourceGroupName}-vnet'
+var nsgName = '${resourceGroupName}-nsg'
+
+var customDataCloudInit = '''
+#cloud-config
+# vim: syntax=yaml
+
+write_files:
+- path: /home/azureuser/env.json
+  content: {0}
+  encoding: b64
+
+runcmd:
+- cd /home/azureuser/
+- chown -R azureuser:azureuser /home/azureuser/
+- sudo tdnf install -y moby-engine moby-cli ca-certificates
+- sudo systemctl enable docker.service
+- sudo systemctl daemon-reload
+- sudo systemctl start docker.service
+- sudo -u azureuser echo $(date) > hello.txt
+'''
+
+var customDataCloudInitFormat = format(customDataCloudInit, base64(string(env)))
+
+var kvCustomData = {
+  none: null
+  'cloud-init-mariner': base64(customDataCloudInitFormat)
+}
+
+var kvImageReference = {
+  'Ubuntu 20.04-LTS': {
+    publisher: 'canonical'
+    offer: '0001-com-ubuntu-server-focal'
+    sku: '20_04-lts-gen2'
+    version: 'latest'
+  }
+  'Ubuntu 18.04-LTS': {
+    publisher: 'Canonical'
+    offer: 'UbuntuServer'
+    sku: '18.04-LTS'
+    version: 'latest'
+  }
+  'Ubuntu 20.04-LTS (arm64)': {
+    publisher: 'canonical'
+    offer: '0001-com-ubuntu-server-focal'
+    sku: '20_04-lts-arm64'
+    version: 'latest'
+  }
+  'mariner-gen1': {
+    publisher: 'MicrosoftCBLMariner'
+    offer: 'cbl-mariner'
+    sku: 'cbl-mariner-2'
+    version: 'latest'
+  }
+  'mariner-gen2': {
+    publisher: 'MicrosoftCBLMariner'
+    offer: 'cbl-mariner'
+    sku: 'cbl-mariner-2-gen2'
+    version: 'latest'
+  }
+  'mariner-arm': {
+    publisher: 'MicrosoftCBLMariner'
+    offer: 'cbl-mariner'
+    sku: 'cbl-mariner-2-arm64'
+    version: 'latest'
+  }
+}
+
+// Base network security group rules
+var nsgSecurityRulesBase = [
+  {
+    name: 'Port_22'
+    properties: {
+      priority: 100
+      protocol: 'Tcp'
+      access: 'Allow'
+      direction: 'Inbound'
+      sourceAddressPrefix: allowIpPort22
+      sourcePortRange: '*'
+      destinationAddressPrefix: '*'
+      destinationPortRange: '22'
+    }
+  }
+  {
+    name: 'Port_80'
+    properties: {
+      protocol: '*'
+      sourcePortRange: '*'
+      destinationPortRange: '80'
+      sourceAddressPrefix: 'Internet'
+      destinationAddressPrefix: '*'
+      access: 'Allow'
+      priority: 110
+      direction: 'Inbound'
+    }
+  }
+  {
+    name: 'Port_443'
+    properties: {
+      protocol: '*'
+      sourcePortRange: '*'
+      destinationPortRange: '443'
+      sourceAddressPrefix: 'Internet'
+      destinationAddressPrefix: '*'
+      access: 'Allow'
+      priority: 120
+      direction: 'Inbound'
+    }
+  }
+  {
+    name: 'Port_8080'
+    properties: {
+      protocol: '*'
+      sourcePortRange: '*'
+      destinationPortRange: '8080'
+      sourceAddressPrefix: 'Internet'
+      destinationAddressPrefix: '*'
+      access: 'Allow'
+      priority: 130
+      direction: 'Inbound'
+    }
+  }
+  {
+    name: 'Port_41641'
+    properties: {
+      protocol: 'Udp'
+      sourcePortRange: '*'
+      destinationPortRange: '41641'
+      sourceAddressPrefix: 'Internet'
+      destinationAddressPrefix: '*'
+      access: 'Allow'
+      priority: 140
+      direction: 'Inbound'
+    }
+  }
+]
+
+var nsgSecurityRules = nsgSecurityRulesBase
 
 resource identityName 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: identityName_var
+  name: '${resourceGroup().name}-identity'
   location: location
 }
 
-resource publicIPAddressName 'Microsoft.Network/publicIPAddresses@2020-05-01' = {
-  name: publicIPAddressName_var
+resource publicIP 'Microsoft.Network/publicIPAddresses@2020-05-01' = {
+  name: publicIPAddressName
   location: location
   sku: {
     name: 'Standard'
@@ -169,13 +270,13 @@ resource publicIPAddressName 'Microsoft.Network/publicIPAddresses@2020-05-01' = 
   properties: {
     publicIPAllocationMethod: publicIPAddressType
     dnsSettings: {
-      domainNameLabel: dnsPrefix_var
+      domainNameLabel: toLower('${vmssName}-${rand}')
     }
   }
 }
 
-resource virtualNetworkName 'Microsoft.Network/virtualNetworks@2018-11-01' = {
-  name: virtualNetworkName_var
+resource vnet 'Microsoft.Network/virtualNetworks@2021-05-01' = {
+  name: vnetName
   location: location
   properties: {
     addressSpace: {
@@ -187,74 +288,31 @@ resource virtualNetworkName 'Microsoft.Network/virtualNetworks@2018-11-01' = {
       {
         name: subnetName
         properties: {
-          addressPrefix: subnetPrefix
+          addressPrefix: subnetAddressPrefix
           networkSecurityGroup: {
-            id: nsgName.id
+            id: nsg.id
           }
+          privateEndpointNetworkPolicies: 'Enabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
+        }
+      }
+      {
+        name: 'AzureBastionSubnet'
+        properties: {
+          addressPrefix: '10.1.1.0/26'
+          privateEndpointNetworkPolicies: 'Enabled'
+          privateLinkServiceNetworkPolicies: 'Enabled'
         }
       }
     ]
   }
 }
 
-resource nsgName 'Microsoft.Network/networkSecurityGroups@2018-12-01' = {
-  name: nsgName_var
+resource nsg 'Microsoft.Network/networkSecurityGroups@2018-12-01' = {
+  name: nsgName
   location: location
   properties: {
-    securityRules: [
-      {
-        name: 'Port_22'
-        properties: {
-          protocol: '*'
-          sourcePortRange: '*'
-          destinationPortRange: '22'
-          sourceAddressPrefix: allowIpPort22
-          destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 100
-          direction: 'Inbound'
-        }
-      }
-      {
-        name: 'Port_80'
-        properties: {
-          protocol: '*'
-          sourcePortRange: '*'
-          destinationPortRange: '80'
-          sourceAddressPrefix: 'Internet'
-          destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 110
-          direction: 'Inbound'
-        }
-      }
-      {
-        name: 'Port_443'
-        properties: {
-          protocol: '*'
-          sourcePortRange: '*'
-          destinationPortRange: '443'
-          sourceAddressPrefix: 'Internet'
-          destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 120
-          direction: 'Inbound'
-        }
-      }
-      {
-        name: 'Port_8080'
-        properties: {
-          protocol: '*'
-          sourcePortRange: '*'
-          destinationPortRange: '8080'
-          sourceAddressPrefix: 'Internet'
-          destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 130
-          direction: 'Inbound'
-        }
-      }
-    ]
+    securityRules: nsgSecurityRules
   }
 }
 
@@ -270,7 +328,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2020-05-01' = {
         name: 'LoadBalancerFrontEnd'
         properties: {
           publicIPAddress: {
-            id: publicIPAddressID
+            id: publicIP.id
           }
         }
       }
@@ -303,6 +361,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2020-05-01' = {
             id: frontEndIPConfigID
           }
           backendAddressPool: {
+            #disable-next-line use-resource-id-functions
             id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/loadBalancers/${loadBalancerName}/backendAddressPools/${bePoolName}'
           }
           protocol: 'Tcp'
@@ -323,6 +382,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2020-05-01' = {
             id: frontEndIPConfigID
           }
           backendAddressPool: {
+            #disable-next-line use-resource-id-functions
             id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/loadBalancers/${loadBalancerName}/backendAddressPools/${bePoolName}'
           }
           protocol: 'Tcp'
@@ -360,7 +420,7 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2020-05-01' = {
 }
 
 resource vmssName_resource 'Microsoft.Compute/virtualMachineScaleSets@2019-12-01' = {
-  name: vmssName_var
+  name: vmssName
   location: location
   identity: {
     type: 'UserAssigned'
@@ -390,23 +450,18 @@ resource vmssName_resource 'Microsoft.Compute/virtualMachineScaleSets@2019-12-01
           createOption: 'FromImage'
           caching: 'ReadWrite'
         }
-        imageReference: {
-          publisher: imagePublisher
-          offer: imageOffer
-          sku: imageSku
-          version: 'latest'
-        }
+        imageReference: kvImageReference[osImage]
       }
       osProfile: {
-        computerNamePrefix: vmssName_var
-        customData: ((customDataUrl == '') ? json('null') : customDataAdvanced)
+        computerNamePrefix: vmssName
+        customData: kvCustomData[customData]
         adminUsername: adminUsername
         linuxConfiguration: {
           disablePasswordAuthentication: true
           ssh: {
             publicKeys: [
               {
-                keyData: adminPasswordOrKey
+                keyData: keyData
                 path: '/home/${adminUsername}/.ssh/authorized_keys'
               }
             ]
@@ -424,15 +479,18 @@ resource vmssName_resource 'Microsoft.Compute/virtualMachineScaleSets@2019-12-01
                   name: ipConfigName
                   properties: {
                     subnet: {
-                      id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${virtualNetworkName_var}/subnets/${subnetName}'
+                      #disable-next-line use-resource-id-functions
+                      id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/virtualNetworks/${vnetName}/subnets/${subnetName}'
                     }
                     loadBalancerBackendAddressPools: [
                       {
+                        #disable-next-line use-resource-id-functions
                         id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/loadBalancers/${loadBalancerName}/backendAddressPools/${bePoolName}'
                       }
                     ]
                     loadBalancerInboundNatPools: [
                       {
+                        #disable-next-line use-resource-id-functions
                         id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Network/loadBalancers/${loadBalancerName}/inboundNatPools/${natPoolName}'
                       }
                     ]
@@ -447,8 +505,9 @@ resource vmssName_resource 'Microsoft.Compute/virtualMachineScaleSets@2019-12-01
   }
   dependsOn: [
     loadBalancer
-    virtualNetworkName
+    vnet
   ]
 }
 
-output fqdn string = publicIPAddressName.properties.dnsSettings.fqdn
+output adminUsername string = adminUsername
+output fqdn string = publicIP.properties.dnsSettings.fqdn

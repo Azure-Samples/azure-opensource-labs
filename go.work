@@ -2,4 +2,5 @@ go 1.21.0
 
 use (
     ./cloud-native/aks-azure-linux
+    ./linux/vmss
 )
