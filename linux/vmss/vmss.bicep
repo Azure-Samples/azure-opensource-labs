@@ -436,7 +436,10 @@ resource vmssName_resource 'Microsoft.Compute/virtualMachineScaleSets@2019-12-01
   properties: {
     overprovision: true
     upgradePolicy: {
-      mode: 'Manual'
+      mode: 'Automatic' 
+      automaticOSUpgradePolicy: { 
+        enableAutomaticOSUpgrade: true 
+      } 
     }
     virtualMachineProfile: {
       priority: vmssPriority
