@@ -25,7 +25,7 @@ jobs:
         with:
           modules: PSRule.Rules.Azure
           baseline: Azure.Pillar.Security
-          inputPath: tests/**/*.test.bicep
+          inputPath: tests/
           outputFormat: Sarif
           outputPath: reports/ps-rule-results.sarif
           summary: true
