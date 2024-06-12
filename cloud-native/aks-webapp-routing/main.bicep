@@ -3,7 +3,7 @@ targetScope = 'subscription'
 param name string
 param location string
 param tags object = {}
-param kubernetesVersion string = '1.24.3'
+param kubernetesVersion string = '1.29'
 param systemNodeCount int = 3
 param systemNodeSize string = 'Standard_D4s_v5'
 param userObjectId string

@@ -77,7 +77,7 @@ module aks '../../bicep/modules/azure-kubernetes-service/main.bicep' = {
     tags: tags
     slaTier: 'Free'
     managedIdentityType: 'SystemAssigned'
-    kubernetesVersion: '1.24.3'
+    kubernetesVersion: '1.29'
     networkPlugin: networkPlugin
     networkPolicy: networkPolicy
     loadBalancerSku: 'Standard'
