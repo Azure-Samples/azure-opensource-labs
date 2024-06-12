@@ -1,16 +1,11 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
-  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-    "_EXPERIMENTAL_FEATURES_ENABLED": [
-      "Extensibility"
-    ],
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "6079429815466806129"
+      "version": "0.28.1.47646",
+      "templateHash": "2090419013866571888"
     }
   },
   "parameters": {
@@ -23,14 +18,14 @@
       "defaultValue": "[deployment().location]"
     }
   },
-  "resources": {
-    "rg": {
+  "resources": [
+    {
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2021-04-01",
       "name": "[parameters('resourceGroup')]",
       "location": "[parameters('location')]"
     },
-    "containerapp": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-containerapp', parameters('resourceGroup'))]",
@@ -47,17 +42,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "6415831136297108826"
+              "version": "0.28.1.47646",
+              "templateHash": "6306022001052933983"
             }
           },
           "parameters": {
@@ -83,14 +73,14 @@
             "roleAssignmentAcrPull": "7f951dda-4ed3-4680-a7ca-43fe172d538d",
             "logAnalyticsWorkspaceName": "[format('{0}-logs', parameters('env_name'))]"
           },
-          "resources": {
-            "managedIdentity": {
+          "resources": [
+            {
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
               "apiVersion": "2018-11-30",
               "name": "[format('{0}-identity', resourceGroup().name)]",
               "location": "[parameters('location')]"
             },
-            "containerRegistry": {
+            {
               "type": "Microsoft.ContainerRegistry/registries",
               "apiVersion": "2019-05-01",
               "name": "[format('acr{0}', variables('rand'))]",
@@ -102,21 +92,21 @@
                 "adminUserEnabled": true
               }
             },
-            "roleAssignmentAcr": {
+            {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2020-08-01-preview",
               "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', format('acr{0}', variables('rand')))]",
               "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', format('acr{0}', variables('rand'))), variables('roleAssignmentAcrPull'))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleAssignmentAcrPull'))]",
-                "principalId": "[reference('managedIdentity').principalId]"
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name)), '2018-11-30').principalId]"
               },
               "dependsOn": [
-                "containerRegistry",
-                "managedIdentity"
+                "[resourceId('Microsoft.ContainerRegistry/registries', format('acr{0}', variables('rand')))]",
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]"
               ]
             },
-            "logAnalyticsWorkspace": {
+            {
               "type": "Microsoft.OperationalInsights/workspaces",
               "apiVersion": "2020-03-01-preview",
               "name": "[variables('logAnalyticsWorkspaceName')]",
@@ -131,7 +121,7 @@
                 }
               }
             },
-            "environment": {
+            {
               "type": "Microsoft.App/managedEnvironments",
               "apiVersion": "2022-06-01-preview",
               "name": "[parameters('env_name')]",
@@ -146,10 +136,10 @@
                 }
               },
               "dependsOn": [
-                "logAnalyticsWorkspace"
+                "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
               ]
             },
-            "app": {
+            {
               "type": "Microsoft.App/containerApps",
               "apiVersion": "2022-06-01-preview",
               "name": "my-container-app",
@@ -192,18 +182,18 @@
                 }
               },
               "dependsOn": [
-                "environment",
-                "managedIdentity"
+                "[resourceId('Microsoft.App/managedEnvironments', parameters('env_name'))]",
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]"
               ]
             }
-          }
+          ]
         }
       },
       "dependsOn": [
-        "rg"
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroup'))]"
       ]
     },
-    "postgresKeyvault": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-postgres-keyvault', parameters('resourceGroup'))]",
@@ -220,17 +210,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "11396058816082532653"
+              "version": "0.28.1.47646",
+              "templateHash": "9894607090252028122"
             }
           },
           "parameters": {
@@ -261,14 +246,14 @@
             "secretName": "[format('postgres-{0}-password', variables('rand'))]",
             "secretValue": "[parameters('administratorLoginPassword')]"
           },
-          "resources": {
-            "managedIdentity": {
+          "resources": [
+            {
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
               "apiVersion": "2018-11-30",
               "name": "[format('{0}-identity', resourceGroup().name)]",
               "location": "[parameters('location')]"
             },
-            "keyVault": {
+            {
               "type": "Microsoft.KeyVault/vaults",
               "apiVersion": "2019-09-01",
               "name": "[format('keyvault{0}', variables('rand'))]",
@@ -288,7 +273,7 @@
                 },
                 "accessPolicies": [
                   {
-                    "objectId": "[reference('managedIdentity').principalId]",
+                    "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name)), '2018-11-30').principalId]",
                     "permissions": {
                       "secrets": [
                         "all"
@@ -299,10 +284,10 @@
                 ]
               },
               "dependsOn": [
-                "managedIdentity"
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]"
               ]
             },
-            "keyVaultSecret": {
+            {
               "type": "Microsoft.KeyVault/vaults/secrets",
               "apiVersion": "2021-11-01-preview",
               "name": "[format('{0}/{1}', format('keyvault{0}', variables('rand')), variables('secretName'))]",
@@ -310,10 +295,10 @@
                 "value": "[variables('secretValue')]"
               },
               "dependsOn": [
-                "keyVault"
+                "[resourceId('Microsoft.KeyVault/vaults', format('keyvault{0}', variables('rand')))]"
               ]
             },
-            "postgres": {
+            {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[variables('postgresName')]",
@@ -341,17 +326,12 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.1-experimental",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
-                    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-                    "_EXPERIMENTAL_FEATURES_ENABLED": [
-                      "Extensibility"
-                    ],
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.26.170.59819",
-                      "templateHash": "12327318265168493266"
+                      "version": "0.28.1.47646",
+                      "templateHash": "15148922178248312493"
                     }
                   },
                   "parameters": {
@@ -380,8 +360,8 @@
                     "rand": "[substring(uniqueString(resourceGroup().id), 0, 6)]",
                     "postgresName": "[format('postgres-{0}', variables('rand'))]"
                   },
-                  "resources": {
-                    "postgres": {
+                  "resources": [
+                    {
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers",
                       "apiVersion": "2021-06-01",
                       "name": "[variables('postgresName')]",
@@ -406,7 +386,7 @@
                         }
                       }
                     },
-                    "postgresFirewallRule": {
+                    {
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
                       "apiVersion": "2021-06-01",
                       "name": "[format('{0}/{1}', variables('postgresName'), 'DefaultAllowRule')]",
@@ -415,10 +395,10 @@
                         "startIpAddress": "[parameters('firewallRuleIp')]"
                       },
                       "dependsOn": [
-                        "postgres"
+                        "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('postgresName'))]"
                       ]
                     }
-                  },
+                  ],
                   "outputs": {
                     "postgresName": {
                       "type": "string",
@@ -432,7 +412,7 @@
                 }
               }
             }
-          },
+          ],
           "outputs": {
             "postgresName": {
               "type": "string",
@@ -446,8 +426,8 @@
         }
       },
       "dependsOn": [
-        "rg"
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroup'))]"
       ]
     }
-  }
+  ]
 }

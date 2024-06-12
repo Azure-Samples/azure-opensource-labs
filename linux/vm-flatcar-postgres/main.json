@@ -1,16 +1,11 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
-  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-    "_EXPERIMENTAL_FEATURES_ENABLED": [
-      "Extensibility"
-    ],
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "15726306524749913574"
+      "templateHash": "16546506825093351762"
     }
   },
   "parameters": {
@@ -30,14 +25,14 @@
       "type": "string"
     }
   },
-  "resources": {
-    "rg": {
+  "resources": [
+    {
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2021-04-01",
       "name": "[parameters('resourceGroup')]",
       "location": "[parameters('location')]"
     },
-    "vm": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-vm', parameters('resourceGroup'))]",
@@ -60,17 +55,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "8672863443761731528"
+              "templateHash": "5008762517955484404"
             }
           },
           "parameters": {
@@ -291,14 +281,14 @@
             ],
             "nsgSecurityRules": "[variables('nsgSecurityRulesBase')]"
           },
-          "resources": {
-            "identityName": {
+          "resources": [
+            {
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
               "apiVersion": "2018-11-30",
               "name": "[format('{0}-identity', resourceGroup().name)]",
               "location": "[parameters('location')]"
             },
-            "nic": {
+            {
               "type": "Microsoft.Network/networkInterfaces",
               "apiVersion": "2021-05-01",
               "name": "[variables('networkInterfaceName')]",
@@ -323,11 +313,11 @@
                 }
               },
               "dependsOn": [
-                "nsg",
-                "publicIP"
+                "[resourceId('Microsoft.Network/networkSecurityGroups', format('{0}-nsg', resourceGroup().name))]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
               ]
             },
-            "nsg": {
+            {
               "type": "Microsoft.Network/networkSecurityGroups",
               "apiVersion": "2021-05-01",
               "name": "[format('{0}-nsg', resourceGroup().name)]",
@@ -336,7 +326,7 @@
                 "securityRules": "[variables('nsgSecurityRules')]"
               }
             },
-            "vnet": {
+            {
               "condition": "[equals(parameters('virtualNetworkName'), '')]",
               "type": "Microsoft.Network/virtualNetworks",
               "apiVersion": "2021-05-01",
@@ -368,7 +358,7 @@
                 ]
               }
             },
-            "publicIP": {
+            {
               "type": "Microsoft.Network/publicIPAddresses",
               "apiVersion": "2021-05-01",
               "name": "[variables('publicIPAddressName')]",
@@ -383,7 +373,7 @@
                 }
               }
             },
-            "vm": {
+            {
               "type": "Microsoft.Compute/virtualMachines",
               "apiVersion": "2021-11-01",
               "name": "[parameters('vmName')]",
@@ -440,11 +430,11 @@
                 }
               },
               "dependsOn": [
-                "identityName",
-                "nic"
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]",
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
               ]
             }
-          },
+          ],
           "outputs": {
             "adminUsername": {
               "type": "string",
@@ -452,20 +442,20 @@
             },
             "hostname": {
               "type": "string",
-              "value": "[reference('publicIP').dnsSettings.fqdn]"
+              "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn]"
             },
             "sshCommand": {
               "type": "string",
-              "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference('publicIP').dnsSettings.fqdn)]"
+              "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn)]"
             }
           }
         }
       },
       "dependsOn": [
-        "rg"
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroup'))]"
       ]
     },
-    "postgres": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-postgres', parameters('resourceGroup'))]",
@@ -485,17 +475,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "12068170888148918260"
+              "templateHash": "17782720627283437608"
             }
           },
           "parameters": {
@@ -539,14 +524,14 @@
               }
             }
           },
-          "resources": {
-            "identityName": {
+          "resources": [
+            {
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
               "apiVersion": "2018-11-30",
               "name": "[format('{0}-identity', resourceGroup().name)]",
               "location": "[parameters('location')]"
             },
-            "postgres": {
+            {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers",
               "apiVersion": "2022-12-01",
               "name": "[variables('postgresName')]",
@@ -571,7 +556,7 @@
                 }
               }
             },
-            "postgresFirewallRule": {
+            {
               "type": "Microsoft.DBforPostgreSQL/flexibleServers/firewallRules",
               "apiVersion": "2021-06-01",
               "name": "[format('{0}/{1}', variables('postgresName'), 'DefaultAllowRule')]",
@@ -580,10 +565,10 @@
                 "startIpAddress": "[parameters('firewallRuleIp')]"
               },
               "dependsOn": [
-                "postgres"
+                "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('postgresName'))]"
               ]
             },
-            "postgresAdministrator": {
+            {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "postgres-admin",
@@ -597,7 +582,7 @@
                     "value": "[variables('postgresName')]"
                   },
                   "principalId": {
-                    "value": "[reference('identityName').principalId]"
+                    "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name)), '2018-11-30').principalId]"
                   },
                   "principalName": {
                     "value": "[format('{0}-identity', resourceGroup().name)]"
@@ -605,17 +590,12 @@
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.1-experimental",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
-                    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-                    "_EXPERIMENTAL_FEATURES_ENABLED": [
-                      "Extensibility"
-                    ],
                     "_generator": {
                       "name": "bicep",
                       "version": "0.28.1.47646",
-                      "templateHash": "943850222660475686"
+                      "templateHash": "9620970338207014434"
                     }
                   },
                   "parameters": {
@@ -629,8 +609,8 @@
                       "type": "string"
                     }
                   },
-                  "resources": {
-                    "postgresAdministrator": {
+                  "resources": [
+                    {
                       "type": "Microsoft.DBforPostgreSQL/flexibleServers/administrators",
                       "apiVersion": "2022-12-01",
                       "name": "[format('{0}/{1}', parameters('postgresName'), parameters('principalId'))]",
@@ -640,15 +620,15 @@
                         "tenantId": "[subscription().tenantId]"
                       }
                     }
-                  }
+                  ]
                 }
               },
               "dependsOn": [
-                "identityName",
-                "postgres"
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]",
+                "[resourceId('Microsoft.DBforPostgreSQL/flexibleServers', variables('postgresName'))]"
               ]
             }
-          },
+          ],
           "outputs": {
             "postgresName": {
               "type": "string",
@@ -662,8 +642,8 @@
         }
       },
       "dependsOn": [
-        "rg"
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroup'))]"
       ]
     }
-  }
+  ]
 }

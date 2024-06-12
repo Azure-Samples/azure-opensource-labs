@@ -1,16 +1,11 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-    "_EXPERIMENTAL_FEATURES_ENABLED": [
-      "Extensibility"
-    ],
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "11021242083234696637"
+      "templateHash": "3859452481311857536"
     }
   },
   "parameters": {
@@ -250,14 +245,14 @@
     ],
     "nsgSecurityRules": "[if(equals(parameters('cloudInit'), 'tailscale-private'), createArray(last(variables('nsgSecurityRulesBase'))), variables('nsgSecurityRulesBase'))]"
   },
-  "resources": {
-    "identityName": {
+  "resources": [
+    {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2018-11-30",
       "name": "[format('{0}-identity', resourceGroup().name)]",
       "location": "[parameters('location')]"
     },
-    "nic": {
+    {
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2021-05-01",
       "name": "[variables('networkInterfaceName')]",
@@ -280,11 +275,11 @@
         }
       },
       "dependsOn": [
-        "nsg",
-        "publicIP"
+        "[resourceId('Microsoft.Network/networkSecurityGroups', format('{0}-nsg', resourceGroup().name))]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
       ]
     },
-    "nsg": {
+    {
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2021-05-01",
       "name": "[format('{0}-nsg', resourceGroup().name)]",
@@ -293,7 +288,7 @@
         "securityRules": "[variables('nsgSecurityRules')]"
       }
     },
-    "vnet": {
+    {
       "condition": "[equals(parameters('virtualNetworkName'), '')]",
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2021-05-01",
@@ -325,7 +320,7 @@
         ]
       }
     },
-    "publicIP": {
+    {
       "condition": "[not(equals(parameters('cloudInit'), 'tailscale-private'))]",
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2021-05-01",
@@ -341,7 +336,7 @@
         }
       }
     },
-    "vm": {
+    {
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2021-11-01",
       "name": "[parameters('vmName')]",
@@ -392,11 +387,11 @@
         }
       },
       "dependsOn": [
-        "identityName",
-        "nic"
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
       ]
     }
-  },
+  ],
   "outputs": {
     "adminUsername": {
       "type": "string",
@@ -404,11 +399,11 @@
     },
     "hostname": {
       "type": "string",
-      "value": "[if(not(equals(parameters('cloudInit'), 'tailscale-private')), reference('publicIP').dnsSettings.fqdn, parameters('vmName'))]"
+      "value": "[if(not(equals(parameters('cloudInit'), 'tailscale-private')), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn, parameters('vmName'))]"
     },
     "sshCommand": {
       "type": "string",
-      "value": "[format('ssh {0}@{1}', parameters('adminUsername'), if(not(equals(parameters('cloudInit'), 'tailscale-private')), reference('publicIP').dnsSettings.fqdn, parameters('vmName')))]"
+      "value": "[format('ssh {0}@{1}', parameters('adminUsername'), if(not(equals(parameters('cloudInit'), 'tailscale-private')), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn, parameters('vmName')))]"
     }
   }
 }

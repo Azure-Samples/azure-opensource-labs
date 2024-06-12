@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "340324198540276277"
+      "templateHash": "17685315886462117336"
     }
   },
   "parameters": {
@@ -67,17 +67,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "8907892757566697100"
+              "templateHash": "17364936891097374484"
             }
           },
           "parameters": {
@@ -136,8 +131,8 @@
               }
             }
           },
-          "resources": {
-            "registry": {
+          "resources": [
+            {
               "type": "Microsoft.ContainerRegistry/registries",
               "apiVersion": "2022-02-01-preview",
               "name": "[parameters('name')]",
@@ -156,7 +151,7 @@
                 "publicNetworkAccess": "[if(parameters('publicNetworkAccess'), 'Enabled', 'Disabled')]"
               }
             }
-          },
+          ],
           "outputs": {
             "name": {
               "type": "string",
@@ -193,17 +188,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "440219626579871467"
+              "templateHash": "5609067551621364305"
             }
           },
           "parameters": {
@@ -217,8 +207,8 @@
               "type": "string"
             }
           },
-          "resources": {
-            "networkSecurityGroup": {
+          "resources": [
+            {
               "type": "Microsoft.Network/networkSecurityGroups",
               "apiVersion": "2022-01-01",
               "name": "[parameters('name')]",
@@ -228,7 +218,7 @@
               },
               "tags": "[parameters('tags')]"
             }
-          },
+          ],
           "outputs": {
             "id": {
               "type": "string",
@@ -278,17 +268,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "10816370974268673897"
+              "templateHash": "3087759273833726789"
             }
           },
           "parameters": {
@@ -317,8 +302,8 @@
               "type": "string"
             }
           },
-          "resources": {
-            "virtualNetwork": {
+          "resources": [
+            {
               "type": "Microsoft.Network/virtualNetworks",
               "apiVersion": "2022-01-01",
               "name": "[parameters('name')]",
@@ -344,7 +329,7 @@
                 ]
               }
             }
-          },
+          ],
           "outputs": {
             "id": {
               "type": "string",
@@ -356,7 +341,7 @@
             },
             "subnetId": {
               "type": "string",
-              "value": "[reference('virtualNetwork').subnets[0].id]"
+              "value": "[reference(resourceId('Microsoft.Network/virtualNetworks', parameters('name')), '2022-01-01').subnets[0].id]"
             }
           }
         }
@@ -389,17 +374,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "16203762567601252199"
+              "templateHash": "4630854867665059244"
             }
           },
           "parameters": {
@@ -413,8 +393,8 @@
               "type": "object"
             }
           },
-          "resources": {
-            "workspace": {
+          "resources": [
+            {
               "type": "Microsoft.OperationalInsights/workspaces",
               "apiVersion": "2021-12-01-preview",
               "name": "[parameters('name')]",
@@ -427,7 +407,7 @@
                 }
               }
             }
-          },
+          ],
           "outputs": {
             "id": {
               "type": "string",
@@ -526,17 +506,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "13854219033481035729"
+              "templateHash": "5599997474738078815"
             }
           },
           "parameters": {
@@ -745,8 +720,8 @@
               "defaultValue": ""
             }
           },
-          "resources": {
-            "managedCluster": {
+          "resources": [
+            {
               "type": "Microsoft.ContainerService/managedClusters",
               "apiVersion": "2022-08-03-preview",
               "name": "[parameters('name')]",
@@ -799,58 +774,33 @@
                 "addonProfiles": "[parameters('addonProfiles')]"
               }
             },
-            "registry": {
-              "condition": "[not(equals(parameters('registryName'), ''))]",
-              "existing": true,
-              "type": "Microsoft.ContainerRegistry/registries",
-              "apiVersion": "2022-02-01-preview",
-              "name": "[parameters('registryName')]"
-            },
-            "acrPullRoleDefinition": {
-              "condition": "[not(equals(parameters('registryName'), ''))]",
-              "existing": true,
-              "type": "Microsoft.Authorization/roleDefinitions",
-              "apiVersion": "2022-04-01",
-              "subscriptionId": "[subscription().subscriptionId]",
-              "name": "7f951dda-4ed3-4680-a7ca-43fe172d538d"
-            },
-            "acrPullRoleAssignments": {
+            {
               "condition": "[not(equals(parameters('registryName'), ''))]",
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('registryName'))]",
               "name": "[guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), parameters('registryName'))]",
               "properties": {
-                "principalId": "[reference('managedCluster').identityProfile.kubeletidentity.objectId]",
+                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2022-08-03-preview').identityProfile.kubeletidentity.objectId]",
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]"
               },
               "dependsOn": [
-                "acrPullRoleDefinition",
-                "managedCluster",
-                "registry"
+                "[resourceId('Microsoft.ContainerService/managedClusters', parameters('name'))]"
               ]
             },
-            "contributorRoleDefinition": {
-              "existing": true,
-              "type": "Microsoft.Authorization/roleDefinitions",
-              "apiVersion": "2022-04-01",
-              "subscriptionId": "[subscription().subscriptionId]",
-              "name": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-            },
-            "contribtorRoleAssignments": {
+            {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "name": "[guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), resourceGroup().id)]",
               "properties": {
-                "principalId": "[reference('managedCluster', '2022-08-03-preview', 'full').identity.principalId]",
+                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2022-08-03-preview', 'full').identity.principalId]",
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]"
               },
               "dependsOn": [
-                "contributorRoleDefinition",
-                "managedCluster"
+                "[resourceId('Microsoft.ContainerService/managedClusters', parameters('name'))]"
               ]
             }
-          },
+          ],
           "outputs": {
             "name": {
               "type": "string",
@@ -862,11 +812,11 @@
             },
             "kubeletIdentityObjectId": {
               "type": "string",
-              "value": "[reference('managedCluster').identityProfile.kubeletidentity.objectId]"
+              "value": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2022-08-03-preview').identityProfile.kubeletidentity.objectId]"
             },
             "nodeResourceGroupName": {
               "type": "string",
-              "value": "[reference('managedCluster').nodeResourceGroup]"
+              "value": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2022-08-03-preview').nodeResourceGroup]"
             }
           }
         }
@@ -912,17 +862,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "6451072459099891180"
+              "templateHash": "18243559256984356460"
             }
           },
           "parameters": {
@@ -933,14 +878,8 @@
               "type": "array"
             }
           },
-          "resources": {
-            "managedCluster": {
-              "existing": true,
-              "type": "Microsoft.ContainerService/managedClusters",
-              "apiVersion": "2022-08-03-preview",
-              "name": "[parameters('managedClusterName')]"
-            },
-            "userNodePools": {
+          "resources": [
+            {
               "copy": {
                 "name": "userNodePools",
                 "count": "[length(range(0, length(parameters('userNodes'))))]"
@@ -960,12 +899,9 @@
                 "type": "[parameters('userNodes')[range(0, length(parameters('userNodes')))[copyIndex()]].type]",
                 "osDiskType": "[parameters('userNodes')[range(0, length(parameters('userNodes')))[copyIndex()]].osDiskType]",
                 "vnetSubnetID": "[if(empty(parameters('userNodes')[range(0, length(parameters('userNodes')))[copyIndex()]].vnetSubnetID), null(), parameters('userNodes')[range(0, length(parameters('userNodes')))[copyIndex()]].vnetSubnetID)]"
-              },
-              "dependsOn": [
-                "managedCluster"
-              ]
+              }
             }
-          }
+          ]
         }
       },
       "dependsOn": [

@@ -1,16 +1,11 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-    "_EXPERIMENTAL_FEATURES_ENABLED": [
-      "Extensibility"
-    ],
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10356932199478213103"
+      "templateHash": "9575926172091705339"
     }
   },
   "parameters": {
@@ -310,14 +305,14 @@
     ],
     "nsgSecurityRules": "[variables('nsgSecurityRulesBase')]"
   },
-  "resources": {
-    "identityName": {
+  "resources": [
+    {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2018-11-30",
       "name": "[format('{0}-identity', resourceGroup().name)]",
       "location": "[parameters('location')]"
     },
-    "publicIP": {
+    {
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2020-05-01",
       "name": "[variables('publicIPAddressName')]",
@@ -332,7 +327,7 @@
         }
       }
     },
-    "vnet": {
+    {
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2021-05-01",
       "name": "[variables('vnetName')]",
@@ -366,10 +361,10 @@
         ]
       },
       "dependsOn": [
-        "nsg"
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
       ]
     },
-    "nsg": {
+    {
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2018-12-01",
       "name": "[variables('nsgName')]",
@@ -378,7 +373,7 @@
         "securityRules": "[variables('nsgSecurityRules')]"
       }
     },
-    "loadBalancer": {
+    {
       "type": "Microsoft.Network/loadBalancers",
       "apiVersion": "2020-05-01",
       "name": "[variables('loadBalancerName')]",
@@ -480,10 +475,10 @@
         ]
       },
       "dependsOn": [
-        "publicIP"
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
       ]
     },
-    "vmssName_resource": {
+    {
       "type": "Microsoft.Compute/virtualMachineScaleSets",
       "apiVersion": "2019-12-01",
       "name": "[parameters('vmssName')]",
@@ -567,12 +562,12 @@
         }
       },
       "dependsOn": [
-        "identityName",
-        "loadBalancer",
-        "vnet"
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]",
+        "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
       ]
     }
-  },
+  ],
   "outputs": {
     "adminUsername": {
       "type": "string",
@@ -580,7 +575,7 @@
     },
     "fqdn": {
       "type": "string",
-      "value": "[reference('publicIP').dnsSettings.fqdn]"
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2020-05-01').dnsSettings.fqdn]"
     }
   }
 }

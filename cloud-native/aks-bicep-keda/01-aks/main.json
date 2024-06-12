@@ -1,16 +1,11 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
-  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-    "_EXPERIMENTAL_FEATURES_ENABLED": [
-      "Extensibility"
-    ],
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "8040276166279904010"
+      "version": "0.28.1.47646",
+      "templateHash": "13880393450087692482"
     }
   },
   "parameters": {
@@ -31,14 +26,14 @@
       "defaultValue": "https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/main/cloud-native/aks-bicep-keda/01-aks/deploy-script-keda.sh"
     }
   },
-  "resources": {
-    "rg": {
+  "resources": [
+    {
       "type": "Microsoft.Resources/resourceGroups",
       "apiVersion": "2021-04-01",
       "name": "[parameters('resourceGroup')]",
       "location": "[parameters('location')]"
     },
-    "aks": {
+    {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-aks', parameters('resourceGroup'))]",
@@ -55,17 +50,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "11504127675108260401"
+              "version": "0.28.1.47646",
+              "templateHash": "11135182876775765879"
             }
           },
           "parameters": {
@@ -107,14 +97,14 @@
             "roleAssignmentServiceBusDefinition": "ServiceBusDataOwner",
             "roleAssignmentDeploymentContributorDefinition": "Contributor"
           },
-          "resources": {
-            "managedIdentity": {
+          "resources": [
+            {
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
               "apiVersion": "2018-11-30",
               "name": "[format('{0}-identity', resourceGroup().name)]",
               "location": "[parameters('location')]"
             },
-            "aks": {
+            {
               "type": "Microsoft.ContainerService/managedClusters",
               "apiVersion": "2021-05-01",
               "name": "[variables('clusterName_var')]",
@@ -139,10 +129,10 @@
                 ]
               },
               "dependsOn": [
-                "managedIdentity"
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]"
               ]
             },
-            "containerRegistry": {
+            {
               "type": "Microsoft.ContainerRegistry/registries",
               "apiVersion": "2019-05-01",
               "name": "[format('acr{0}', variables('rand'))]",
@@ -154,7 +144,7 @@
                 "adminUserEnabled": true
               }
             },
-            "storageAccount": {
+            {
               "type": "Microsoft.Storage/storageAccounts",
               "apiVersion": "2021-02-01",
               "name": "[format('storage{0}', variables('rand'))]",
@@ -164,7 +154,7 @@
                 "name": "Premium_LRS"
               }
             },
-            "serviceBus": {
+            {
               "type": "Microsoft.ServiceBus/namespaces",
               "apiVersion": "2021-06-01-preview",
               "name": "[format('servicebus{0}', variables('rand'))]",
@@ -178,77 +168,77 @@
                 "disableLocalAuth": false
               }
             },
-            "roleAssignmentAcr": {
+            {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2020-08-01-preview",
               "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', format('acr{0}', variables('rand')))]",
               "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', format('acr{0}', variables('rand'))), variables('roleAssignmentAcrDefinition'))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentAcrDefinition')])]",
-                "principalId": "[reference('aks').identityProfile.kubeletidentity.objectId]"
+                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName_var')), '2021-05-01').identityProfile.kubeletidentity.objectId]"
               },
               "dependsOn": [
-                "aks",
-                "containerRegistry"
+                "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName_var'))]",
+                "[resourceId('Microsoft.ContainerRegistry/registries', format('acr{0}', variables('rand')))]"
               ]
             },
-            "roleAssignmentStorageAccount": {
+            {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2020-08-01-preview",
               "scope": "[format('Microsoft.Storage/storageAccounts/{0}', format('storage{0}', variables('rand')))]",
               "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', format('storage{0}', variables('rand'))), variables('roleAssignmentStorageAccountDefinition'))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentStorageAccountDefinition')])]",
-                "principalId": "[reference('managedIdentity').principalId]"
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name)), '2018-11-30').principalId]"
               },
               "dependsOn": [
-                "aks",
-                "managedIdentity",
-                "storageAccount"
+                "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName_var'))]",
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', format('storage{0}', variables('rand')))]"
               ]
             },
-            "roleAssignmentServiceBus": {
+            {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2020-08-01-preview",
               "scope": "[format('Microsoft.ServiceBus/namespaces/{0}', format('servicebus{0}', variables('rand')))]",
               "name": "[guid(resourceId('Microsoft.ServiceBus/namespaces', format('servicebus{0}', variables('rand'))), variables('roleAssignmentServiceBusDefinition'))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentServiceBusDefinition')])]",
-                "principalId": "[reference('managedIdentity').principalId]"
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name)), '2018-11-30').principalId]"
               },
               "dependsOn": [
-                "aks",
-                "managedIdentity",
-                "serviceBus"
+                "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName_var'))]",
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]",
+                "[resourceId('Microsoft.ServiceBus/namespaces', format('servicebus{0}', variables('rand')))]"
               ]
             },
-            "managedIdentityDeploy": {
+            {
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
               "apiVersion": "2018-11-30",
               "name": "[format('{0}-identity-deploy', resourceGroup().name)]",
               "location": "[parameters('location')]"
             },
-            "roleAssignmentDeploymentContributor": {
+            {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2020-08-01-preview",
               "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name)), variables('roleAssignmentDeploymentContributorDefinition'))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentDeploymentContributorDefinition')])]",
-                "principalId": "[reference('managedIdentityDeploy').principalId]"
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name)), '2018-11-30').principalId]"
               },
               "dependsOn": [
-                "aks",
-                "managedIdentityDeploy"
+                "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName_var'))]",
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name))]"
               ]
             }
-          }
+          ]
         }
       },
       "dependsOn": [
-        "rg"
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroup'))]"
       ]
     },
-    "script": {
+    {
       "condition": "[parameters('deployScript')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -269,17 +259,12 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
-            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-            "_EXPERIMENTAL_FEATURES_ENABLED": [
-              "Extensibility"
-            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "1449158909457016325"
+              "version": "0.28.1.47646",
+              "templateHash": "9861108784878104103"
             }
           },
           "parameters": {
@@ -308,26 +293,26 @@
             },
             "roleAssignmentDeploymentContributorDefinition": "Contributor"
           },
-          "resources": {
-            "managedIdentityDeploy": {
+          "resources": [
+            {
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
               "apiVersion": "2018-11-30",
               "name": "[format('{0}-identity-deploy', resourceGroup().name)]",
               "location": "[parameters('location')]"
             },
-            "roleAssignmentDeploymentContributor": {
+            {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2020-08-01-preview",
               "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name)), variables('roleAssignmentDeploymentContributorDefinition'))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentDeploymentContributorDefinition')])]",
-                "principalId": "[reference('managedIdentityDeploy').principalId]"
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name)), '2018-11-30').principalId]"
               },
               "dependsOn": [
-                "managedIdentityDeploy"
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name))]"
               ]
             },
-            "deploymentScript": {
+            {
               "type": "Microsoft.Resources/deploymentScripts",
               "apiVersion": "2020-10-01",
               "name": "deploy-script",
@@ -362,16 +347,16 @@
                 "retentionInterval": "P1D"
               },
               "dependsOn": [
-                "managedIdentityDeploy"
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name))]"
               ]
             }
-          }
+          ]
         }
       },
       "dependsOn": [
-        "aks",
-        "rg"
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('resourceGroup')), 'Microsoft.Resources/deployments', format('{0}-aks', parameters('resourceGroup')))]",
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('resourceGroup'))]"
       ]
     }
-  }
+  ]
 }

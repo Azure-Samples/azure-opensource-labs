@@ -1,16 +1,11 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
-    "_EXPERIMENTAL_FEATURES_ENABLED": [
-      "Extensibility"
-    ],
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "11736871852214449772"
+      "templateHash": "11984102350276104342"
     }
   },
   "parameters": {
@@ -261,14 +256,14 @@
     },
     "roleAssignmentStorageAccountDefinition": "StorageBlobDataContributor"
   },
-  "resources": {
-    "identityName": {
+  "resources": [
+    {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2018-11-30",
       "name": "[format('{0}-identity', resourceGroup().name)]",
       "location": "[parameters('location')]"
     },
-    "nic": {
+    {
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2021-05-01",
       "name": "[variables('networkInterfaceName')]",
@@ -293,11 +288,11 @@
         }
       },
       "dependsOn": [
-        "nsg",
-        "publicIP"
+        "[resourceId('Microsoft.Network/networkSecurityGroups', format('{0}-nsg', resourceGroup().name))]",
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
       ]
     },
-    "nsg": {
+    {
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2021-05-01",
       "name": "[format('{0}-nsg', resourceGroup().name)]",
@@ -306,7 +301,7 @@
         "securityRules": "[variables('nsgSecurityRules')]"
       }
     },
-    "vnet": {
+    {
       "condition": "[equals(parameters('virtualNetworkName'), '')]",
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2021-05-01",
@@ -338,7 +333,7 @@
         ]
       }
     },
-    "publicIP": {
+    {
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2021-05-01",
       "name": "[variables('publicIPAddressName')]",
@@ -353,7 +348,7 @@
         }
       }
     },
-    "vm": {
+    {
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2021-11-01",
       "name": "[parameters('vmName')]",
@@ -405,11 +400,11 @@
         }
       },
       "dependsOn": [
-        "identityName",
-        "nic"
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]",
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
       ]
     },
-    "storageAccount": {
+    {
       "type": "Microsoft.Storage/storageAccounts",
       "apiVersion": "2021-02-01",
       "name": "[format('storage{0}', variables('rand'))]",
@@ -419,21 +414,21 @@
         "name": "Premium_LRS"
       }
     },
-    "roleAssignmentStorageAccount": {
+    {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2020-08-01-preview",
       "scope": "[format('Microsoft.Storage/storageAccounts/{0}', format('storage{0}', variables('rand')))]",
       "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', format('storage{0}', variables('rand'))), variables('roleAssignmentStorageAccountDefinition'))]",
       "properties": {
         "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentStorageAccountDefinition')])]",
-        "principalId": "[reference('identityName').principalId]"
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name)), '2018-11-30').principalId]"
       },
       "dependsOn": [
-        "identityName",
-        "storageAccount"
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]",
+        "[resourceId('Microsoft.Storage/storageAccounts', format('storage{0}', variables('rand')))]"
       ]
     }
-  },
+  ],
   "outputs": {
     "adminUsername": {
       "type": "string",
@@ -441,11 +436,11 @@
     },
     "hostname": {
       "type": "string",
-      "value": "[reference('publicIP').dnsSettings.fqdn]"
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn]"
     },
     "sshCommand": {
       "type": "string",
-      "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference('publicIP').dnsSettings.fqdn)]"
+      "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn)]"
     }
   }
 }
