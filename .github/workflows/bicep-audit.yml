@@ -32,7 +32,7 @@ jobs:
         continue-on-error: true
         env:
           PSRULE_CONFIGURATION_AZURE_BICEP_FILE_EXPANSION: 'true'
-          PSRULE_CONFIGURATION_AZURE_BICEP_FILE_EXPANSION_TIMEOUT: '30'
+          PSRULE_CONFIGURATION_AZURE_BICEP_FILE_EXPANSION_TIMEOUT: '60'
       - name: Upload results to security tab
         uses: github/codeql-action/upload-sarif@v3
         if: github.repository_owner == 'Azure-Samples'
