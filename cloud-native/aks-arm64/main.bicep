@@ -77,7 +77,7 @@ module aks 'br/oss-labs:bicep/modules/azure-kubernetes-service:v0.1' = {
     tags: tags
     slaTier: 'Free'
     managedIdentityType: 'SystemAssigned'
-    kubernetesVersion: '1.24.3'
+    kubernetesVersion: '1.29'
     networkPlugin: networkPlugin
     networkPolicy: networkPolicy
     loadBalancerSku: 'Standard'

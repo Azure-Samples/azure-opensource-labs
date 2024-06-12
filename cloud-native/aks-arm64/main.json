@@ -443,7 +443,7 @@
             "value": "SystemAssigned"
           },
           "kubernetesVersion": {
-            "value": "1.24.3"
+            "value": "1.29"
           },
           "networkPlugin": {
             "value": "[variables('networkPlugin')]"
@@ -551,9 +551,9 @@
             },
             "kubernetesVersion": {
               "type": "string",
-              "defaultValue": "1.24.3",
+              "defaultValue": "1.29",
               "metadata": {
-                "description": "Default is 1.24.3"
+                "description": "Default is 1.29"
               }
             },
             "defenderEnabled": {

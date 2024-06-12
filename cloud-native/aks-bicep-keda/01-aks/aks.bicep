@@ -2,7 +2,7 @@ param location string = resourceGroup().location
 param clusterName string = ''
 param nodeCount int = 1
 param vmSize string = 'standard_d2s_v3'
-param kubernetesVersion string = '1.23.5'
+param kubernetesVersion string = '1.29'
 
 var rand = substring(uniqueString(resourceGroup().id), 0, 6)
 var clusterName_var = clusterName != '' ? clusterName : 'aks1'

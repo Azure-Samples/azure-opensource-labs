@@ -19,8 +19,8 @@ param managedIdentityType string = 'SystemAssigned'
 @description('Required when managed identity type is set to UserAssigned')
 param userAssignedIdentities object = {}
 
-@description('Default is 1.24.3')
-param kubernetesVersion string = '1.24.3'
+@description('Default is 1.29')
+param kubernetesVersion string = '1.29'
 
 param defenderEnabled bool = false
 

@@ -12,7 +12,7 @@ This module deploys a [Microsoft.ContainerService/managedClusters](https://learn
 | `slaTier` | Defaults to Free tier | `'Free'` <br/> 'Paid' |
 | `managedIdentityType` | Two options are available: SystemAssigned or UserAssigned | `'SystemAssigned'` <br/> `'UserAssigned'` |
 | `userAssignedIdentities` | Required when managed identity type is set to UserAssigned | |
-| `kubernetesVersion` | Default is `1.24.3` | `'1.24.3'` |
+| `kubernetesVersion` | Default is `1.29` | `'1.29'` |
 | `defenderEnabled` | Enables Defender on AKS cluster | `true` or `false` |
 | `imageCleanerEnabled` | Enables ImageCleaner on AKS cluster. | `true` or `false` |
 | `imageCleanerIntervalHours` | ImageCleaner scanning interval in hours | Number |
