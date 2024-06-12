@@ -21,7 +21,7 @@
     },
     "kubernetesVersion": {
       "type": "string",
-      "defaultValue": "1.24.3"
+      "defaultValue": "1.29"
     },
     "systemNodeCount": {
       "type": "int",
@@ -378,9 +378,9 @@
             },
             "kubernetesVersion": {
               "type": "string",
-              "defaultValue": "1.24.3",
+              "defaultValue": "1.29",
               "metadata": {
-                "description": "Default is 1.24.3"
+                "description": "Default is 1.29"
               }
             },
             "defenderEnabled": {
