@@ -440,7 +440,7 @@ resource vmssName_resource 'Microsoft.Compute/virtualMachineScaleSets@2019-12-01
     }
     virtualMachineProfile: {
       priority: vmssPriority
-      evictionPolicy: ((vmssPriority == 'Regular') ? json('null') : vmssEvictionPolicy)
+      evictionPolicy: ((vmssPriority == 'Regular') ? null : vmssEvictionPolicy)
       storageProfile: {
         osDisk: {
           managedDisk: {

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
@@ -10,39 +10,39 @@
     "_generator": {
       "name": "bicep",
       "version": "0.26.170.59819",
-      "templateHash": "8040276166279904010"
+      "templateHash": "8744504821534446077"
     }
   },
   "parameters": {
-    "resourceGroup": {
-      "type": "string",
-      "defaultValue": "220600-keda"
-    },
     "location": {
       "type": "string",
-      "defaultValue": "[deployment().location]"
+      "defaultValue": "[resourceGroup().location]"
     },
-    "deployScript": {
-      "type": "bool",
-      "defaultValue": false
-    },
-    "scriptUri": {
+    "clusterName": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/main/cloud-native/aks-bicep-keda/01-aks/deploy-script-keda.sh"
+      "defaultValue": "aks1"
+    },
+    "namespace": {
+      "type": "string",
+      "defaultValue": "default"
+    },
+    "deployCluster": {
+      "type": "bool",
+      "defaultValue": true
     }
   },
   "resources": {
-    "rg": {
-      "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2021-04-01",
-      "name": "[parameters('resourceGroup')]",
-      "location": "[parameters('location')]"
+    "aksCluster": {
+      "existing": true,
+      "type": "Microsoft.ContainerService/managedClusters",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('clusterName')]"
     },
     "aks": {
+      "condition": "[parameters('deployCluster')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-aks', parameters('resourceGroup'))]",
-      "resourceGroup": "[parameters('resourceGroup')]",
+      "name": "[format('{0}-aks', resourceGroup().name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -51,6 +51,9 @@
         "parameters": {
           "location": {
             "value": "[parameters('location')]"
+          },
+          "clusterName": {
+            "value": "[parameters('clusterName')]"
           }
         },
         "template": {
@@ -65,7 +68,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "11504127675108260401"
+              "templateHash": "187541002047123827"
             }
           },
           "parameters": {
@@ -75,7 +78,7 @@
             },
             "clusterName": {
               "type": "string",
-              "defaultValue": ""
+              "defaultValue": "aks1"
             },
             "nodeCount": {
               "type": "int",
@@ -83,7 +86,7 @@
             },
             "vmSize": {
               "type": "string",
-              "defaultValue": "standard_d2s_v3"
+              "defaultValue": "standard_d2s_v5"
             },
             "kubernetesVersion": {
               "type": "string",
@@ -92,20 +95,16 @@
           },
           "variables": {
             "rand": "[substring(uniqueString(resourceGroup().id), 0, 6)]",
-            "clusterName_var": "[if(not(equals(parameters('clusterName'), '')), parameters('clusterName'), 'aks1')]",
             "roleDefinitionId": {
               "Owner": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
               "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
               "Reader": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
               "AcrPull": "7f951dda-4ed3-4680-a7ca-43fe172d538d",
               "StorageBlobDataContributor": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
-              "ServiceBusDataOwner": "090c5cfd-751d-490a-894a-3ce6f1109419",
               "KubernetesServiceClusterUserRole": "4abbcc35-e782-43d8-92c5-2d3f1bd2253f"
             },
             "roleAssignmentAcrDefinition": "AcrPull",
-            "roleAssignmentStorageAccountDefinition": "StorageBlobDataContributor",
-            "roleAssignmentServiceBusDefinition": "ServiceBusDataOwner",
-            "roleAssignmentDeploymentContributorDefinition": "Contributor"
+            "roleAssignmentStorageAccountDefinition": "StorageBlobDataContributor"
           },
           "resources": {
             "managedIdentity": {
@@ -117,7 +116,7 @@
             "aks": {
               "type": "Microsoft.ContainerService/managedClusters",
               "apiVersion": "2021-05-01",
-              "name": "[variables('clusterName_var')]",
+              "name": "[parameters('clusterName')]",
               "location": "[parameters('location')]",
               "identity": {
                 "type": "UserAssigned",
@@ -127,11 +126,11 @@
               },
               "properties": {
                 "kubernetesVersion": "[parameters('kubernetesVersion')]",
-                "dnsPrefix": "[variables('clusterName_var')]",
+                "dnsPrefix": "[parameters('clusterName')]",
                 "enableRBAC": true,
                 "agentPoolProfiles": [
                   {
-                    "name": "pool0",
+                    "name": "nodepool1",
                     "count": "[parameters('nodeCount')]",
                     "vmSize": "[parameters('vmSize')]",
                     "mode": "System"
@@ -164,20 +163,6 @@
                 "name": "Premium_LRS"
               }
             },
-            "serviceBus": {
-              "type": "Microsoft.ServiceBus/namespaces",
-              "apiVersion": "2021-06-01-preview",
-              "name": "[format('servicebus{0}', variables('rand'))]",
-              "location": "[parameters('location')]",
-              "sku": {
-                "capacity": 1,
-                "name": "Standard",
-                "tier": "Standard"
-              },
-              "properties": {
-                "disableLocalAuth": false
-              }
-            },
             "roleAssignmentAcr": {
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2020-08-01-preview",
@@ -206,65 +191,26 @@
                 "managedIdentity",
                 "storageAccount"
               ]
-            },
-            "roleAssignmentServiceBus": {
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2020-08-01-preview",
-              "scope": "[format('Microsoft.ServiceBus/namespaces/{0}', format('servicebus{0}', variables('rand')))]",
-              "name": "[guid(resourceId('Microsoft.ServiceBus/namespaces', format('servicebus{0}', variables('rand'))), variables('roleAssignmentServiceBusDefinition'))]",
-              "properties": {
-                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentServiceBusDefinition')])]",
-                "principalId": "[reference('managedIdentity').principalId]"
-              },
-              "dependsOn": [
-                "aks",
-                "managedIdentity",
-                "serviceBus"
-              ]
-            },
-            "managedIdentityDeploy": {
-              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-              "apiVersion": "2018-11-30",
-              "name": "[format('{0}-identity-deploy', resourceGroup().name)]",
-              "location": "[parameters('location')]"
-            },
-            "roleAssignmentDeploymentContributor": {
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2020-08-01-preview",
-              "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name)), variables('roleAssignmentDeploymentContributorDefinition'))]",
-              "properties": {
-                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentDeploymentContributorDefinition')])]",
-                "principalId": "[reference('managedIdentityDeploy').principalId]"
-              },
-              "dependsOn": [
-                "aks",
-                "managedIdentityDeploy"
-              ]
             }
           }
         }
-      },
-      "dependsOn": [
-        "rg"
-      ]
+      }
     },
-    "script": {
-      "condition": "[parameters('deployScript')]",
+    "app": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-deployscript', parameters('resourceGroup'))]",
-      "resourceGroup": "[parameters('resourceGroup')]",
+      "name": "[format('{0}-app', resourceGroup().name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
+          "kubeConfig": {
+            "value": "[listClusterAdminCredential(resourceId('Microsoft.ContainerService/managedClusters', parameters('clusterName')), '2023-05-01').kubeconfigs[0].value]"
           },
-          "scriptUri": {
-            "value": "[parameters('scriptUri')]"
+          "namespace": {
+            "value": "[parameters('namespace')]"
           }
         },
         "template": {
@@ -279,99 +225,200 @@
             "_generator": {
               "name": "bicep",
               "version": "0.26.170.59819",
-              "templateHash": "1449158909457016325"
+              "templateHash": "1578784578022569032"
             }
           },
           "parameters": {
-            "location": {
-              "type": "string",
-              "defaultValue": "[resourceGroup().location]"
+            "kubeConfig": {
+              "type": "securestring"
             },
-            "utcValue": {
+            "namespace": {
               "type": "string",
-              "defaultValue": "[utcNow()]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "defaultValue": "[resourceGroup().name]"
-            },
-            "scriptUri": {
-              "type": "string",
-              "defaultValue": ""
+              "defaultValue": "default"
             }
           },
-          "variables": {
-            "roleDefinitionId": {
-              "Owner": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
-              "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
-              "Reader": "acdd72a7-3385-48ef-bd42-f606fba81ae7"
-            },
-            "roleAssignmentDeploymentContributorDefinition": "Contributor"
+          "imports": {
+            "kubernetes": {
+              "provider": "Kubernetes",
+              "version": "1.0.0",
+              "config": {
+                "namespace": "[parameters('namespace')]",
+                "kubeConfig": "[parameters('kubeConfig')]"
+              }
+            }
           },
           "resources": {
-            "managedIdentityDeploy": {
-              "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-              "apiVersion": "2018-11-30",
-              "name": "[format('{0}-identity-deploy', resourceGroup().name)]",
-              "location": "[parameters('location')]"
-            },
-            "roleAssignmentDeploymentContributor": {
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2020-08-01-preview",
-              "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name)), variables('roleAssignmentDeploymentContributorDefinition'))]",
+            "appsDeployment_azureVoteBack": {
+              "import": "kubernetes",
+              "type": "apps/Deployment@v1",
               "properties": {
-                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentDeploymentContributorDefinition')])]",
-                "principalId": "[reference('managedIdentityDeploy').principalId]"
-              },
-              "dependsOn": [
-                "managedIdentityDeploy"
-              ]
-            },
-            "deploymentScript": {
-              "type": "Microsoft.Resources/deploymentScripts",
-              "apiVersion": "2020-10-01",
-              "name": "deploy-script",
-              "location": "[parameters('location')]",
-              "kind": "AzureCLI",
-              "identity": {
-                "type": "UserAssigned",
-                "userAssignedIdentities": {
-                  "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name)))]": {}
-                }
-              },
-              "properties": {
-                "environmentVariables": [
-                  {
-                    "name": "RESOURCE_GROUP",
-                    "value": "[parameters('resourceGroupName')]"
+                "metadata": {
+                  "name": "azure-vote-back"
+                },
+                "spec": {
+                  "replicas": 1,
+                  "selector": {
+                    "matchLabels": {
+                      "app": "azure-vote-back"
+                    }
                   },
-                  {
-                    "name": "AKS_NAME",
-                    "value": "aks1"
-                  },
-                  {
-                    "name": "NAMESPACE",
-                    "value": "keda-http"
+                  "template": {
+                    "metadata": {
+                      "labels": {
+                        "app": "azure-vote-back"
+                      }
+                    },
+                    "spec": {
+                      "nodeSelector": {
+                        "kubernetes.io/os": "linux"
+                      },
+                      "containers": [
+                        {
+                          "name": "azure-vote-back",
+                          "image": "mcr.microsoft.com/oss/bitnami/redis:6.0.8",
+                          "env": [
+                            {
+                              "name": "ALLOW_EMPTY_PASSWORD",
+                              "value": "yes"
+                            }
+                          ],
+                          "resources": {
+                            "requests": {
+                              "cpu": "100m",
+                              "memory": "128Mi"
+                            },
+                            "limits": {
+                              "cpu": "250m",
+                              "memory": "256Mi"
+                            }
+                          },
+                          "ports": [
+                            {
+                              "containerPort": 6379,
+                              "name": "redis"
+                            }
+                          ]
+                        }
+                      ]
+                    }
                   }
-                ],
-                "forceUpdateTag": "[parameters('utcValue')]",
-                "azCliVersion": "2.28.0",
-                "timeout": "PT30M",
-                "primaryScriptUri": "[parameters('scriptUri')]",
-                "cleanupPreference": "OnSuccess",
-                "retentionInterval": "P1D"
-              },
-              "dependsOn": [
-                "managedIdentityDeploy"
-              ]
+                }
+              }
+            },
+            "coreService_azureVoteBack": {
+              "import": "kubernetes",
+              "type": "core/Service@v1",
+              "properties": {
+                "metadata": {
+                  "name": "azure-vote-back"
+                },
+                "spec": {
+                  "ports": [
+                    {
+                      "port": 6379
+                    }
+                  ],
+                  "selector": {
+                    "app": "azure-vote-back"
+                  }
+                }
+              }
+            },
+            "appsDeployment_azureVoteFront": {
+              "import": "kubernetes",
+              "type": "apps/Deployment@v1",
+              "properties": {
+                "metadata": {
+                  "name": "azure-vote-front"
+                },
+                "spec": {
+                  "replicas": 1,
+                  "selector": {
+                    "matchLabels": {
+                      "app": "azure-vote-front"
+                    }
+                  },
+                  "template": {
+                    "metadata": {
+                      "labels": {
+                        "app": "azure-vote-front"
+                      }
+                    },
+                    "spec": {
+                      "nodeSelector": {
+                        "kubernetes.io/os": "linux"
+                      },
+                      "containers": [
+                        {
+                          "name": "azure-vote-front",
+                          "image": "mcr.microsoft.com/azuredocs/azure-vote-front:v1",
+                          "resources": {
+                            "requests": {
+                              "cpu": "100m",
+                              "memory": "128Mi"
+                            },
+                            "limits": {
+                              "cpu": "250m",
+                              "memory": "256Mi"
+                            }
+                          },
+                          "ports": [
+                            {
+                              "containerPort": 80
+                            }
+                          ],
+                          "env": [
+                            {
+                              "name": "REDIS",
+                              "value": "azure-vote-back"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            "coreService_azureVoteFront": {
+              "import": "kubernetes",
+              "type": "core/Service@v1",
+              "properties": {
+                "metadata": {
+                  "name": "azure-vote-front"
+                },
+                "spec": {
+                  "type": "LoadBalancer",
+                  "ports": [
+                    {
+                      "port": 80
+                    }
+                  ],
+                  "selector": {
+                    "app": "azure-vote-front"
+                  }
+                }
+              }
+            }
+          },
+          "outputs": {
+            "frontendIp": {
+              "type": "string",
+              "value": "[reference('coreService_azureVoteFront').status.loadBalancer.ingress[0].ip]"
             }
           }
         }
       },
       "dependsOn": [
         "aks",
-        "rg"
+        "aksCluster"
       ]
+    }
+  },
+  "outputs": {
+    "lbPublicIp": {
+      "type": "string",
+      "value": "[reference('app').outputs.frontendIp.value]"
     }
   }
 }

@@ -21,7 +21,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2022-01-01' = {
       dnsServers: [
         dnsServer
       ]
-    } : json('null'))
+    } : null)
     subnets: [
       {
         name: snetName

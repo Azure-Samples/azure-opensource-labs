@@ -6,7 +6,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-08-03-p
   name: managedClusterName
 }
 
-resource userNodePools 'Microsoft.ContainerService/managedClusters/agentPools@2022-07-02-preview' = [for i in range(0, length(userNodes)): {
+resource userNodePools 'Microsoft.ContainerService/managedClusters/agentPools@2024-02-01' = [for i in range(0, length(userNodes)): {
   name: userNodes[i].name
   parent: managedCluster
   properties: {

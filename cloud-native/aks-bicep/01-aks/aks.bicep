@@ -89,9 +89,6 @@ resource roleAssignmentAcr 'Microsoft.Authorization/roleAssignments@2020-08-01-p
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId[roleAssignmentAcrDefinition])
     principalId: aks.properties.identityProfile.kubeletidentity.objectId
   }
-  dependsOn: [
-    aks
-  ]
 }
 
 var roleAssignmentStorageAccountDefinition = 'StorageBlobDataContributor'

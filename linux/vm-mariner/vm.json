@@ -1,11 +1,16 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+    "_EXPERIMENTAL_FEATURES_ENABLED": [
+      "Extensibility"
+    ],
     "_generator": {
       "name": "bicep",
-      "version": "0.17.1.54307",
-      "templateHash": "7571588913296600338"
+      "version": "0.28.1.47646",
+      "templateHash": "11736871852214449772"
     }
   },
   "parameters": {
@@ -36,7 +41,10 @@
         "Standard_D2s_v5",
         "Standard_D4s_v5",
         "Standard_D2ps_v5",
-        "Standard_D4ps_v5"
+        "Standard_D4ps_v5",
+        "Standard_NC4as_T4_v3",
+        "Standard_NC6s_v3",
+        "Standard_NC24ads_A100_v4"
       ],
       "metadata": {
         "description": "The Virtual Machine size."
@@ -243,16 +251,24 @@
         }
       }
     ],
-    "nsgSecurityRules": "[variables('nsgSecurityRulesBase')]"
+    "nsgSecurityRules": "[variables('nsgSecurityRulesBase')]",
+    "roleDefinitionId": {
+      "Owner": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635",
+      "Contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+      "Reader": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+      "AcrPull": "7f951dda-4ed3-4680-a7ca-43fe172d538d",
+      "StorageBlobDataContributor": "ba92f5b4-2d11-453d-a403-e96b0029c9fe"
+    },
+    "roleAssignmentStorageAccountDefinition": "StorageBlobDataContributor"
   },
-  "resources": [
-    {
+  "resources": {
+    "identityName": {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2018-11-30",
       "name": "[format('{0}-identity', resourceGroup().name)]",
       "location": "[parameters('location')]"
     },
-    {
+    "nic": {
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "2021-05-01",
       "name": "[variables('networkInterfaceName')]",
@@ -277,11 +293,11 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkSecurityGroups', format('{0}-nsg', resourceGroup().name))]",
-        "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName'))]"
+        "nsg",
+        "publicIP"
       ]
     },
-    {
+    "nsg": {
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "2021-05-01",
       "name": "[format('{0}-nsg', resourceGroup().name)]",
@@ -290,7 +306,7 @@
         "securityRules": "[variables('nsgSecurityRules')]"
       }
     },
-    {
+    "vnet": {
       "condition": "[equals(parameters('virtualNetworkName'), '')]",
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "2021-05-01",
@@ -322,7 +338,7 @@
         ]
       }
     },
-    {
+    "publicIP": {
       "type": "Microsoft.Network/publicIPAddresses",
       "apiVersion": "2021-05-01",
       "name": "[variables('publicIPAddressName')]",
@@ -337,7 +353,7 @@
         }
       }
     },
-    {
+    "vm": {
       "type": "Microsoft.Compute/virtualMachines",
       "apiVersion": "2021-11-01",
       "name": "[parameters('vmName')]",
@@ -389,11 +405,35 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]",
-        "[resourceId('Microsoft.Network/networkInterfaces', variables('networkInterfaceName'))]"
+        "identityName",
+        "nic"
+      ]
+    },
+    "storageAccount": {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2021-02-01",
+      "name": "[format('storage{0}', variables('rand'))]",
+      "location": "[parameters('location')]",
+      "kind": "BlockBlobStorage",
+      "sku": {
+        "name": "Premium_LRS"
+      }
+    },
+    "roleAssignmentStorageAccount": {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-08-01-preview",
+      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', format('storage{0}', variables('rand')))]",
+      "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', format('storage{0}', variables('rand'))), variables('roleAssignmentStorageAccountDefinition'))]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentStorageAccountDefinition')])]",
+        "principalId": "[reference('identityName').principalId]"
+      },
+      "dependsOn": [
+        "identityName",
+        "storageAccount"
       ]
     }
-  ],
+  },
   "outputs": {
     "adminUsername": {
       "type": "string",
@@ -401,11 +441,11 @@
     },
     "hostname": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn]"
+      "value": "[reference('publicIP').dnsSettings.fqdn]"
     },
     "sshCommand": {
       "type": "string",
-      "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference(resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPAddressName')), '2021-05-01').dnsSettings.fqdn)]"
+      "value": "[format('ssh {0}@{1}', parameters('adminUsername'), reference('publicIP').dnsSettings.fqdn)]"
     }
   }
 }
