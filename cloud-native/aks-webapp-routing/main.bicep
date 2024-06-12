@@ -20,7 +20,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 }
 
 // Deploy the Kubernetes cluster
-module aks 'br/oss-labs:bicep/modules/azure-kubernetes-service:v0.2' = {
+module aks '../../bicep/modules/azure-kubernetes-service/main.bicep' = {
   scope: rg
   name: 'aksDeploy'
   params: {
@@ -36,7 +36,7 @@ module aks 'br/oss-labs:bicep/modules/azure-kubernetes-service:v0.2' = {
 }
 
 // Deploy the key vault
-module kv 'br/oss-labs:bicep/modules/azure-key-vault:v0.1' = {
+module kv '../../bicep/modules/azure-key-vault/main.bicep' = {
   scope: rg
   name: 'kvDeploy'
   params: {
@@ -68,7 +68,7 @@ module kv 'br/oss-labs:bicep/modules/azure-key-vault:v0.1' = {
 }
 
 // Deploy the public DNS zone
-module dns 'br/oss-labs:bicep/modules/azure-dns:v0.1' = {
+module dns '../../bicep/modules/azure-dns/main.bicep' = {
   scope: rg
   name: 'dnsDeploy'
   params: {
@@ -85,7 +85,7 @@ module dns 'br/oss-labs:bicep/modules/azure-dns:v0.1' = {
 }
 
 // Deploy the key vault secrets provider add-on
-module aksAddonKv 'br/oss-labs:bicep/modules/azure-kubernetes-service-addons:v0.1' = {
+module aksAddonKv '../../bicep/modules/azure-kubernetes-service-addons/main.bicep' = {
   scope: rg
   name: 'aksAddonKvDeploy'
   params: {
@@ -108,7 +108,7 @@ module aksAddonKv 'br/oss-labs:bicep/modules/azure-kubernetes-service-addons:v0.
 }
 
 // Deploy the web app routing add-on
-module aksAddonIng 'br/oss-labs:bicep/modules/azure-kubernetes-service-ingress:v0.1' = {
+module aksAddonIng '../../bicep/modules/azure-kubernetes-service-ingress/main.bicep' = {
   scope: rg
   name: 'aksAddonIngDeploy'
   params: {
@@ -128,7 +128,7 @@ module aksAddonIng 'br/oss-labs:bicep/modules/azure-kubernetes-service-ingress:v
 //   scope: mcResourceGroup
 // }
 
-// module aksAddonIngDns 'br/oss-labs:bicep/modules/azure-kubernetes-service-ingress-dns:v0.1' = {
+// module aksAddonIngDns '../../bicep/modules/azure-kubernetes-service-ingress-dns/main.bicep' = {
 //   scope: rg
 //   name: 'aksAddonIngDnsDeploy'
 //   params: {

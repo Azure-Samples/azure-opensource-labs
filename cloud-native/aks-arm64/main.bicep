@@ -15,7 +15,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 }
 
 // Set up the container registry
-module acr 'br/oss-labs:bicep/modules/azure-container-registry:v0.1' = {
+module acr '../../bicep/modules/azure-container-registry/main.bicep' = {
   scope: rg
   name: 'acrDeploy'
   params: {
@@ -30,7 +30,7 @@ module acr 'br/oss-labs:bicep/modules/azure-container-registry:v0.1' = {
 }
 
 // Set up the network security group
-module nsg 'br/oss-labs:bicep/modules/azure-network-security-group:v0.1' = if (networkPlugin != 'kubenet') {
+module nsg '../../bicep/modules/azure-network-security-group/main.bicep' = if (networkPlugin != 'kubenet') {
   scope: rg
   name: 'nsgDeploy'
   params: {
@@ -41,7 +41,7 @@ module nsg 'br/oss-labs:bicep/modules/azure-network-security-group:v0.1' = if (n
 }
 
 // Setup the virtual network and subnet
-module vnet 'br/oss-labs:bicep/modules/azure-virtual-network:v0.1' = if (networkPlugin != 'kubenet') {
+module vnet '../../bicep/modules/azure-virtual-network/main.bicep' = if (networkPlugin != 'kubenet') {
   scope: rg
   name: 'vnetDeploy'
   params: {
@@ -57,7 +57,7 @@ module vnet 'br/oss-labs:bicep/modules/azure-virtual-network:v0.1' = if (network
 }
 
 // Setup the log analytics workspace
-module law 'br/oss-labs:bicep/modules/azure-log-analytics-workspace:v0.1' = {
+module law '../../bicep/modules/azure-log-analytics-workspace/main.bicep' = {
   scope: rg
   name: 'lawDeploy'
   params: {
@@ -68,7 +68,7 @@ module law 'br/oss-labs:bicep/modules/azure-log-analytics-workspace:v0.1' = {
 }
 
 // Setup the Kubernetes cluster
-module aks 'br/oss-labs:bicep/modules/azure-kubernetes-service:v0.1' = {
+module aks '../../bicep/modules/azure-kubernetes-service/main.bicep' = {
   scope: rg
   name: 'aksDeploy'
   params: {
@@ -98,13 +98,13 @@ module aks 'br/oss-labs:bicep/modules/azure-kubernetes-service:v0.1' = {
     systemNodeVmSize: 'Standard_D2s_v5'
     registryName: acr.outputs.name
     vnetSubnetID: networkPlugin != 'kubenet' ? vnet.outputs.subnetId : ''
-    logAnalyticsWorkspaceResourceID: law.outputs.id
+    logAnalyticsWorkspaceResourceId: law.outputs.id
     nodeTaints: [ 'CriticalAddonsOnly=true:NoSchedule' ] // If deploying a user node pool too, you can taint the system node pool to prevent application pods from being scheduled on it; otherwise, leave empty
   }
 }
 
 // Setup the user node pools and deploy into a subnet
-module aksPools 'br/oss-labs:bicep/modules/azure-kubernetes-service-nodepools:v0.1' = {
+module aksPools '../../bicep/modules/azure-kubernetes-service-nodepools/main.bicep' = {
   scope: rg
   name: 'armNodePoolsDeploy'
   params: {

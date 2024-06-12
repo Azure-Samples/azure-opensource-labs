@@ -21,7 +21,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   tags: tags
 }
 
-module kv 'br/oss-labs:bicep/modules/azure-key-vault:v0.1' = {
+module kv '../../bicep/modules/azure-key-vault/main.bicep' = {
   scope: rg
   name: 'akvDeploy'
   params: {
@@ -35,7 +35,7 @@ module kv 'br/oss-labs:bicep/modules/azure-key-vault:v0.1' = {
 }
 
 // Setup the log analytics workspace
-module law 'br/oss-labs:bicep/modules/azure-log-analytics-workspace:v0.1' = {
+module law '../../bicep/modules/azure-log-analytics-workspace/main.bicep' = {
   scope: rg
   name: 'lawDeploy'
   params: {
@@ -46,7 +46,7 @@ module law 'br/oss-labs:bicep/modules/azure-log-analytics-workspace:v0.1' = {
 }
 
 // Setup the Kubernetes cluster
-module aks 'br/oss-labs:bicep/modules/azure-kubernetes-service:v0.2' = {
+module aks '../../bicep/modules/azure-kubernetes-service/main.bicep' = {
   scope: rg
   name: 'aksDeploy'
   params: {
@@ -87,7 +87,7 @@ module aks 'br/oss-labs:bicep/modules/azure-kubernetes-service:v0.2' = {
 }
 
 // Deploy the key vault secrets provider add-on
-module aksAddonKv 'br/oss-labs:bicep/modules/azure-kubernetes-service-addons:v0.1' = {
+module aksAddonKv '../../bicep/modules/azure-kubernetes-service-addons/main.bicep' = {
   scope: rg
   name: 'aksAddonKvDeploy'
   params: {
@@ -110,7 +110,7 @@ module aksAddonKv 'br/oss-labs:bicep/modules/azure-kubernetes-service-addons:v0.
 }
 
 // Deploy the web app routing add-on
-module aksAddonIng 'br/oss-labs:bicep/modules/azure-kubernetes-service-ingress:v0.1' = {
+module aksAddonIng '../../bicep/modules/azure-kubernetes-service-ingress/main.bicep' = {
   scope: rg
   name: 'aksAddonIngDeploy'
   params: {
@@ -123,7 +123,7 @@ module aksAddonIng 'br/oss-labs:bicep/modules/azure-kubernetes-service-ingress:v
 }
 
 // Deploy the open service mesh add-on
-module aksAddonOsm 'br/oss-labs:bicep/modules/azure-kubernetes-service-addons:v0.1' = {
+module aksAddonOsm '../../bicep/modules/azure-kubernetes-service-addons/main.bicep' = {
   scope: rg
   name: 'aksAddonOsmDeploy'
   params: {

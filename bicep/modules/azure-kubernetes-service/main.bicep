@@ -63,6 +63,9 @@ param dnsServiceIP string = '10.0.0.10'
 @description('A CIDR notation IP range assigned to the Docker bridge network. It must not overlap with any Subnet IP ranges or the Kubernetes service address range.')
 param dockerBridgeCidr string = '172.17.0.1/16'
 
+@description('Resource ID of log analytics workspace for auditing')
+param logAnalyticsWorkspaceResourceId string = ''
+
 @allowed([
   'loadBalancer'
   'managedNATGateway'
