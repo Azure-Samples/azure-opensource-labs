@@ -10,7 +10,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "16389862669895635430"
+      "templateHash": "10356932199478213103"
     }
   },
   "parameters": {
@@ -506,7 +506,7 @@
         },
         "virtualMachineProfile": {
           "priority": "[parameters('vmssPriority')]",
-          "evictionPolicy": "[if(equals(parameters('vmssPriority'), 'Regular'), json('null'), parameters('vmssEvictionPolicy'))]",
+          "evictionPolicy": "[if(equals(parameters('vmssPriority'), 'Regular'), null(), parameters('vmssEvictionPolicy'))]",
           "storageProfile": {
             "osDisk": {
               "managedDisk": {
