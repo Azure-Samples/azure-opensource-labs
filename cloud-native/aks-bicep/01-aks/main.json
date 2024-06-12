@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "6858857061675794421"
+      "templateHash": "9190321452261239824"
     }
   },
   "parameters": {
@@ -55,7 +55,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.28.1.47646",
-              "templateHash": "11135182876775765879"
+              "templateHash": "7703729210362399507"
             }
           },
           "parameters": {
@@ -152,6 +152,9 @@
               "kind": "BlockBlobStorage",
               "sku": {
                 "name": "Premium_LRS"
+              },
+              "properties": {
+                "minimumTlsVersion": "TLS1_2"
               }
             },
             {
