@@ -14,6 +14,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   sku: {
     name: 'Premium_LRS'
   }
+  properties: {
+    minimumTlsVersion: 'TLS1_2'
+  }
 }
 
 var roleDefinitionId = {

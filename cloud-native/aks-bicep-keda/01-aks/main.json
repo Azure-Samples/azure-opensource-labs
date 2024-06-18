@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.6.18.56646",
-      "templateHash": "2425950444497852506"
+      "version": "0.28.1.47646",
+      "templateHash": "16764085829659056086"
     }
   },
   "parameters": {
@@ -35,7 +35,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-aks', parameters('resourceGroup'))]",
       "resourceGroup": "[parameters('resourceGroup')]",
       "properties": {
@@ -54,8 +54,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "18144758763544616596"
+              "version": "0.28.1.47646",
+              "templateHash": "7703729210362399507"
             }
           },
           "parameters": {
@@ -152,6 +152,9 @@
               "kind": "BlockBlobStorage",
               "sku": {
                 "name": "Premium_LRS"
+              },
+              "properties": {
+                "minimumTlsVersion": "TLS1_2"
               }
             },
             {
@@ -175,7 +178,7 @@
               "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', format('acr{0}', variables('rand'))), variables('roleAssignmentAcrDefinition'))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentAcrDefinition')])]",
-                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName_var'))).identityProfile.kubeletidentity.objectId]"
+                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName_var')), '2021-05-01').identityProfile.kubeletidentity.objectId]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName_var'))]",
@@ -189,7 +192,7 @@
               "name": "[guid(resourceId('Microsoft.Storage/storageAccounts', format('storage{0}', variables('rand'))), variables('roleAssignmentStorageAccountDefinition'))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentStorageAccountDefinition')])]",
-                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))).principalId]"
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name)), '2018-11-30').principalId]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName_var'))]",
@@ -204,7 +207,7 @@
               "name": "[guid(resourceId('Microsoft.ServiceBus/namespaces', format('servicebus{0}', variables('rand'))), variables('roleAssignmentServiceBusDefinition'))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentServiceBusDefinition')])]",
-                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))).principalId]"
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name)), '2018-11-30').principalId]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName_var'))]",
@@ -224,7 +227,7 @@
               "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name)), variables('roleAssignmentDeploymentContributorDefinition'))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentDeploymentContributorDefinition')])]",
-                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name))).principalId]"
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name)), '2018-11-30').principalId]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.ContainerService/managedClusters', variables('clusterName_var'))]",
@@ -241,7 +244,7 @@
     {
       "condition": "[parameters('deployScript')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-deployscript', parameters('resourceGroup'))]",
       "resourceGroup": "[parameters('resourceGroup')]",
       "properties": {
@@ -263,8 +266,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "3319430997479182691"
+              "version": "0.28.1.47646",
+              "templateHash": "9861108784878104103"
             }
           },
           "parameters": {
@@ -306,7 +309,7 @@
               "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name)), variables('roleAssignmentDeploymentContributorDefinition'))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleDefinitionId')[variables('roleAssignmentDeploymentContributorDefinition')])]",
-                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name))).principalId]"
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name)), '2018-11-30').principalId]"
               },
               "dependsOn": [
                 "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity-deploy', resourceGroup().name))]"

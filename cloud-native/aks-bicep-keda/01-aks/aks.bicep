@@ -54,6 +54,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   sku: {
     name: 'Premium_LRS'
   }
+  properties: {
+    minimumTlsVersion: 'TLS1_2'
+  }
 }
 
 resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-06-01-preview' = {
@@ -89,9 +92,6 @@ resource roleAssignmentAcr 'Microsoft.Authorization/roleAssignments@2020-08-01-p
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitionId[roleAssignmentAcrDefinition])
     principalId: aks.properties.identityProfile.kubeletidentity.objectId
   }
-  dependsOn: [
-    aks
-  ]
 }
 
 var roleAssignmentStorageAccountDefinition = 'StorageBlobDataContributor'

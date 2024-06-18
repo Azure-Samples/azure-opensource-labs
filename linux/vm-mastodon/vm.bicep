@@ -165,7 +165,7 @@ runcmd:
 var cloudInitTailscaleMastodonFormat = format(cloudInitTailscaleMastodon, base64(string(env)))
 
 var kvCloudInit = {
-  none: json('null')
+  none: null
   'tailscale-mastodon': base64(cloudInitTailscaleMastodonFormat)
 }
 

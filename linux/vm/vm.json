@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.8.9.13224",
-      "templateHash": "2854259398100923345"
+      "version": "0.28.1.47646",
+      "templateHash": "3859452481311857536"
     }
   },
   "parameters": {
@@ -103,7 +103,7 @@
       }
     },
     "adminPasswordOrKey": {
-      "type": "secureString",
+      "type": "securestring",
       "defaultValue": "",
       "metadata": {
         "description": "SSH Key for the Virtual Machine."
@@ -149,7 +149,7 @@
     "cloudInitTailscalePostgresFormat": "[format(variables('cloudInitTailscalePostgres'), base64(string(parameters('env'))))]",
     "cloudInitUrl": "#include\nhttps://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/main/linux/vm/cloud-init/cloud-init.sh\n",
     "kvCloudInit": {
-      "none": "[json('null')]",
+      "none": null,
       "docker": "[base64(variables('cloudInitDocker'))]",
       "tailscale": "[base64(variables('cloudInitTailscaleFormat'))]",
       "tailscale-private": "[base64(variables('cloudInitTailscaleFormat'))]",

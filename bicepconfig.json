@@ -11,6 +11,6 @@
     }
   },
   "experimentalFeaturesEnabled": {
-    "extensibility": true
+    // "extensibility": true
   }
 }

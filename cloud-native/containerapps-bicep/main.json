@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.6.18.56646",
-      "templateHash": "14388416519825223250"
+      "version": "0.28.1.47646",
+      "templateHash": "2090419013866571888"
     }
   },
   "parameters": {
@@ -27,7 +27,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-containerapp', parameters('resourceGroup'))]",
       "resourceGroup": "[parameters('resourceGroup')]",
       "properties": {
@@ -46,8 +46,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "6042856511240542995"
+              "version": "0.28.1.47646",
+              "templateHash": "6306022001052933983"
             }
           },
           "parameters": {
@@ -69,6 +69,8 @@
             }
           },
           "variables": {
+            "rand": "[substring(uniqueString(resourceGroup().id), 0, 6)]",
+            "roleAssignmentAcrPull": "7f951dda-4ed3-4680-a7ca-43fe172d538d",
             "logAnalyticsWorkspaceName": "[format('{0}-logs', parameters('env_name'))]"
           },
           "resources": [
@@ -77,6 +79,32 @@
               "apiVersion": "2018-11-30",
               "name": "[format('{0}-identity', resourceGroup().name)]",
               "location": "[parameters('location')]"
+            },
+            {
+              "type": "Microsoft.ContainerRegistry/registries",
+              "apiVersion": "2019-05-01",
+              "name": "[format('acr{0}', variables('rand'))]",
+              "location": "[parameters('location')]",
+              "sku": {
+                "name": "Standard"
+              },
+              "properties": {
+                "adminUserEnabled": true
+              }
+            },
+            {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2020-08-01-preview",
+              "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', format('acr{0}', variables('rand')))]",
+              "name": "[guid(resourceId('Microsoft.ContainerRegistry/registries', format('acr{0}', variables('rand'))), variables('roleAssignmentAcrPull'))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', variables('roleAssignmentAcrPull'))]",
+                "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name)), '2018-11-30').principalId]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.ContainerRegistry/registries', format('acr{0}', variables('rand')))]",
+                "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]"
+              ]
             },
             {
               "type": "Microsoft.OperationalInsights/workspaces",
@@ -95,7 +123,7 @@
             },
             {
               "type": "Microsoft.App/managedEnvironments",
-              "apiVersion": "2022-03-01",
+              "apiVersion": "2022-06-01-preview",
               "name": "[parameters('env_name')]",
               "location": "[parameters('location')]",
               "properties": {
@@ -113,7 +141,7 @@
             },
             {
               "type": "Microsoft.App/containerApps",
-              "apiVersion": "2022-03-01",
+              "apiVersion": "2022-06-01-preview",
               "name": "my-container-app",
               "location": "[parameters('location')]",
               "identity": {
@@ -128,7 +156,13 @@
                   "ingress": {
                     "external": true,
                     "targetPort": 80
-                  }
+                  },
+                  "registries": [
+                    {
+                      "server": "[format('acr{0}.azurecr.io', variables('rand'))]",
+                      "identity": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))]"
+                    }
+                  ]
                 },
                 "template": {
                   "containers": [
@@ -161,7 +195,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "[format('{0}-postgres-keyvault', parameters('resourceGroup'))]",
       "resourceGroup": "[parameters('resourceGroup')]",
       "properties": {
@@ -180,8 +214,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.6.18.56646",
-              "templateHash": "13249023425299502937"
+              "version": "0.28.1.47646",
+              "templateHash": "9894607090252028122"
             }
           },
           "parameters": {
@@ -190,7 +224,7 @@
               "defaultValue": "username"
             },
             "administratorLoginPassword": {
-              "type": "secureString",
+              "type": "securestring",
               "defaultValue": "[newGuid()]"
             },
             "firewallRuleIp": {
@@ -239,7 +273,7 @@
                 },
                 "accessPolicies": [
                   {
-                    "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name))).principalId]",
+                    "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-identity', resourceGroup().name)), '2018-11-30').principalId]",
                     "permissions": {
                       "secrets": [
                         "all"
@@ -266,7 +300,7 @@
             },
             {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2020-10-01",
+              "apiVersion": "2022-09-01",
               "name": "[variables('postgresName')]",
               "properties": {
                 "expressionEvaluationOptions": {
@@ -296,8 +330,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.6.18.56646",
-                      "templateHash": "5442595254889511367"
+                      "version": "0.28.1.47646",
+                      "templateHash": "15148922178248312493"
                     }
                   },
                   "parameters": {
@@ -306,7 +340,7 @@
                       "defaultValue": "username"
                     },
                     "administratorLoginPassword": {
-                      "type": "secureString",
+                      "type": "securestring",
                       "defaultValue": "[newGuid()]"
                     },
                     "firewallRuleIp": {

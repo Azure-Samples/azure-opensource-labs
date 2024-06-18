@@ -189,7 +189,7 @@ https://raw.githubusercontent.com/Azure-Samples/azure-opensource-labs/main/linux
 '''
 
 var kvCloudInit = {
-  none: json('null')
+  none: null
   docker: base64(cloudInitDocker)
   tailscale: base64(cloudInitTailscaleFormat)
   'tailscale-private': base64(cloudInitTailscaleFormat)

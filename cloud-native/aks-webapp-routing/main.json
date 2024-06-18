@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "10734555654774304097"
+      "templateHash": "13040540872661234588"
     }
   },
   "parameters": {
@@ -33,6 +33,9 @@
     },
     "userObjectId": {
       "type": "string"
+    },
+    "dnsName": {
+      "type": "string"
     }
   },
   "variables": {
@@ -46,204 +49,6 @@
       "name": "[format('rg-{0}', parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]"
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "akvDeploy",
-      "resourceGroup": "[format('rg-{0}', parameters('name'))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "name": {
-            "value": "[format('akv-{0}', parameters('name'))]"
-          },
-          "sku": {
-            "value": "standard"
-          },
-          "tags": {
-            "value": "[parameters('tags')]"
-          },
-          "userObjectId": {
-            "value": "[parameters('userObjectId')]"
-          },
-          "tenantId": {
-            "value": "[tenant().tenantId]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "6723983789050081110"
-            }
-          },
-          "parameters": {
-            "name": {
-              "type": "string"
-            },
-            "location": {
-              "type": "string"
-            },
-            "tags": {
-              "type": "object"
-            },
-            "sku": {
-              "type": "string",
-              "defaultValue": "standard",
-              "allowedValues": [
-                "premium",
-                "standard"
-              ]
-            },
-            "userObjectId": {
-              "type": "string",
-              "metadata": {
-                "description": "The object ID of a user, service principal or security group in AAD tenant."
-              }
-            },
-            "tenantId": {
-              "type": "string"
-            },
-            "accessPolicies": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "List of AccessPolicyEntry which is used when granting additional permissions for other users or managed identities"
-              }
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-07-01",
-              "name": "[parameters('name')]",
-              "location": "[parameters('location')]",
-              "tags": "[parameters('tags')]",
-              "properties": {
-                "accessPolicies": [
-                  {
-                    "objectId": "[parameters('userObjectId')]",
-                    "permissions": {
-                      "certificates": [
-                        "all"
-                      ],
-                      "keys": [
-                        "all"
-                      ],
-                      "secrets": [
-                        "all"
-                      ],
-                      "storage": [
-                        "all"
-                      ]
-                    },
-                    "tenantId": "[parameters('tenantId')]"
-                  }
-                ],
-                "sku": {
-                  "family": "A",
-                  "name": "[parameters('sku')]"
-                },
-                "tenantId": "[parameters('tenantId')]"
-              }
-            },
-            {
-              "condition": "[not(empty(parameters('accessPolicies')))]",
-              "type": "Microsoft.KeyVault/vaults/accessPolicies",
-              "apiVersion": "2022-07-01",
-              "name": "[format('{0}/{1}', parameters('name'), 'add')]",
-              "properties": {
-                "accessPolicies": "[parameters('accessPolicies')]"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.KeyVault/vaults', parameters('name'))]"
-              ]
-            }
-          ]
-        }
-      },
-      "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "lawDeploy",
-      "resourceGroup": "[format('rg-{0}', parameters('name'))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "name": {
-            "value": "[format('law-{0}', parameters('name'))]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "tags": {
-            "value": "[parameters('tags')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "4630854867665059244"
-            }
-          },
-          "parameters": {
-            "name": {
-              "type": "string"
-            },
-            "location": {
-              "type": "string"
-            },
-            "tags": {
-              "type": "object"
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2021-12-01-preview",
-              "name": "[parameters('name')]",
-              "location": "[parameters('location')]",
-              "tags": "[parameters('tags')]",
-              "properties": {
-                "retentionInDays": 30,
-                "sku": {
-                  "name": "PerGB2018"
-                }
-              }
-            }
-          ],
-          "outputs": {
-            "id": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('name'))]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
-      ]
     },
     {
       "type": "Microsoft.Resources/deployments",
@@ -265,12 +70,6 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
-          "slaTier": {
-            "value": "Free"
-          },
-          "managedIdentityType": {
-            "value": "SystemAssigned"
-          },
           "kubernetesVersion": {
             "value": "[parameters('kubernetesVersion')]"
           },
@@ -280,51 +79,11 @@
           "networkPolicy": {
             "value": "[variables('networkPolicy')]"
           },
-          "loadBalancerSku": {
-            "value": "Standard"
-          },
-          "outboundType": {
-            "value": "loadBalancer"
-          },
-          "dnsServiceIP": {
-            "value": "10.0.0.10"
-          },
-          "podCidrs": {
-            "value": [
-              "10.244.0.0/16"
-            ]
-          },
-          "serviceCidrs": {
-            "value": [
-              "10.0.0.0/16"
-            ]
-          },
-          "ipFamilies": {
-            "value": [
-              "IPv4"
-            ]
-          },
-          "defenderEnabled": {
-            "value": false
-          },
-          "imageCleanerEnabled": {
-            "value": false
-          },
           "systemNodeCount": {
             "value": "[parameters('systemNodeCount')]"
           },
           "systemNodeVmSize": {
             "value": "[parameters('systemNodeSize')]"
-          },
-          "addonProfiles": {
-            "value": {
-              "omsagent": {
-                "config": {
-                  "logAnalyticsWorkspaceResourceID": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'lawDeploy'), '2022-09-01').outputs.id.value]"
-                },
-                "enabled": true
-              }
-            }
           }
         },
         "template": {
@@ -645,7 +404,229 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'lawDeploy')]",
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "kvDeploy",
+      "resourceGroup": "[format('rg-{0}', parameters('name'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "name": {
+            "value": "[format('akv-{0}', parameters('name'))]"
+          },
+          "sku": {
+            "value": "standard"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "userObjectId": {
+            "value": "[parameters('userObjectId')]"
+          },
+          "tenantId": {
+            "value": "[tenant().tenantId]"
+          },
+          "accessPolicies": {
+            "value": [
+              {
+                "objectId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy'), '2022-09-01').outputs.kubeletIdentityObjectId.value]",
+                "permissions": {
+                  "certificates": [
+                    "get"
+                  ],
+                  "secrets": [
+                    "get"
+                  ]
+                },
+                "tenantId": "[tenant().tenantId]"
+              }
+            ]
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "6723983789050081110"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "sku": {
+              "type": "string",
+              "defaultValue": "standard",
+              "allowedValues": [
+                "premium",
+                "standard"
+              ]
+            },
+            "userObjectId": {
+              "type": "string",
+              "metadata": {
+                "description": "The object ID of a user, service principal or security group in AAD tenant."
+              }
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "accessPolicies": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "List of AccessPolicyEntry which is used when granting additional permissions for other users or managed identities"
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "accessPolicies": [
+                  {
+                    "objectId": "[parameters('userObjectId')]",
+                    "permissions": {
+                      "certificates": [
+                        "all"
+                      ],
+                      "keys": [
+                        "all"
+                      ],
+                      "secrets": [
+                        "all"
+                      ],
+                      "storage": [
+                        "all"
+                      ]
+                    },
+                    "tenantId": "[parameters('tenantId')]"
+                  }
+                ],
+                "sku": {
+                  "family": "A",
+                  "name": "[parameters('sku')]"
+                },
+                "tenantId": "[parameters('tenantId')]"
+              }
+            },
+            {
+              "condition": "[not(empty(parameters('accessPolicies')))]",
+              "type": "Microsoft.KeyVault/vaults/accessPolicies",
+              "apiVersion": "2022-07-01",
+              "name": "[format('{0}/{1}', parameters('name'), 'add')]",
+              "properties": {
+                "accessPolicies": "[parameters('accessPolicies')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('name'))]"
+              ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy')]",
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "dnsDeploy",
+      "resourceGroup": "[format('rg-{0}', parameters('name'))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": {
+            "value": "Global"
+          },
+          "name": {
+            "value": "[parameters('dnsName')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "zoneType": {
+            "value": "Public"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.28.1.47646",
+              "templateHash": "5462253216366678906"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string"
+            },
+            "location": {
+              "type": "string"
+            },
+            "tags": {
+              "type": "object"
+            },
+            "zoneType": {
+              "type": "string",
+              "allowedValues": [
+                "Public",
+                "Private"
+              ]
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/dnsZones",
+              "apiVersion": "2018-05-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "zoneType": "[parameters('zoneType')]"
+              }
+            }
+          ],
+          "outputs": {
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/dnsZones', parameters('name'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy')]",
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
       ]
     },
@@ -722,7 +703,7 @@
       },
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy')]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'akvDeploy')]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'kvDeploy')]",
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
       ]
     },
@@ -742,6 +723,9 @@
           },
           "clusterId": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy'), '2022-09-01').outputs.id.value]"
+          },
+          "dnsZoneResourceId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'dnsDeploy'), '2022-09-01').outputs.id.value]"
           }
         },
         "template": {
@@ -793,80 +777,7 @@
       "dependsOn": [
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy')]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksAddonKvDeploy')]",
-        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "aksAddonOsmDeploy",
-      "resourceGroup": "[format('rg-{0}', parameters('name'))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "clusterId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy'), '2022-09-01').outputs.id.value]"
-          },
-          "addonProfiles": {
-            "value": {
-              "openServiceMesh": {
-                "config": {},
-                "enabled": true
-              }
-            }
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.28.1.47646",
-              "templateHash": "15950648950143392136"
-            }
-          },
-          "parameters": {
-            "location": {
-              "type": "string"
-            },
-            "clusterId": {
-              "type": "string"
-            },
-            "addonProfiles": {
-              "type": "object",
-              "metadata": {
-                "description": "AKS addons to enable"
-              }
-            }
-          },
-          "variables": {
-            "clusterName": "[split(parameters('clusterId'), '/')[8]]"
-          },
-          "resources": [
-            {
-              "type": "Microsoft.ContainerService/managedClusters",
-              "apiVersion": "2022-08-03-preview",
-              "name": "[variables('clusterName')]",
-              "location": "[parameters('location')]",
-              "properties": {
-                "mode": "Incremental",
-                "id": "[parameters('clusterId')]",
-                "addonProfiles": "[parameters('addonProfiles')]"
-              }
-            }
-          ]
-        }
-      },
-      "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy')]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksAddonIngDeploy')]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'dnsDeploy')]",
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', format('rg-{0}', parameters('name')))]"
       ]
     }

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.13.1.58284",
-      "templateHash": "13047252956749146466"
+      "version": "0.28.1.47646",
+      "templateHash": "17685315886462117336"
     }
   },
   "parameters": {
@@ -34,7 +34,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "acrDeploy",
       "resourceGroup": "[format('rg-{0}', parameters('name'))]",
       "properties": {
@@ -71,8 +71,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "7705023819657141328"
+              "version": "0.28.1.47646",
+              "templateHash": "17364936891097374484"
             }
           },
           "parameters": {
@@ -88,24 +88,25 @@
             "sku": {
               "type": "string",
               "defaultValue": "Standard",
-              "metadata": {
-                "description": "Defaults to Standard"
-              },
               "allowedValues": [
                 "Basic",
                 "Standard",
                 "Premium"
-              ]
+              ],
+              "metadata": {
+                "description": "Defaults to Standard"
+              }
             },
             "managedIdentityType": {
               "type": "string",
-              "metadata": {
-                "description": "Two options are available: SystemAssigned or UserAssigned"
-              },
+              "defaultValue": "SystemAssigned",
               "allowedValues": [
                 "SystemAssigned",
                 "UserAssigned"
-              ]
+              ],
+              "metadata": {
+                "description": "Two options are available: SystemAssigned or UserAssigned"
+              }
             },
             "userAssignedIdentities": {
               "type": "object",
@@ -124,7 +125,10 @@
             },
             "publicNetworkAccess": {
               "type": "bool",
-              "defaultValue": false
+              "defaultValue": "[if(equals(parameters('sku'), 'Premium'), false(), true())]",
+              "metadata": {
+                "description": "Disableing public network access is not supported for Basic and Standard SKUs"
+              }
             }
           },
           "resources": [
@@ -163,7 +167,7 @@
     {
       "condition": "[not(equals(variables('networkPlugin'), 'kubenet'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "nsgDeploy",
       "resourceGroup": "[format('rg-{0}', parameters('name'))]",
       "properties": {
@@ -188,8 +192,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "1999590623990495398"
+              "version": "0.28.1.47646",
+              "templateHash": "5609067551621364305"
             }
           },
           "parameters": {
@@ -230,7 +234,7 @@
     {
       "condition": "[not(equals(variables('networkPlugin'), 'kubenet'))]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "vnetDeploy",
       "resourceGroup": "[format('rg-{0}', parameters('name'))]",
       "properties": {
@@ -257,7 +261,7 @@
           "snetAddressPrefix": {
             "value": "10.21.0.0/24"
           },
-          "networkSecurityGroupId": "[if(not(equals(variables('networkPlugin'), 'kubenet')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'nsgDeploy'), '2020-10-01').outputs.id.value), createObject('value', ''))]",
+          "networkSecurityGroupId": "[if(not(equals(variables('networkPlugin'), 'kubenet')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'nsgDeploy'), '2022-09-01').outputs.id.value), createObject('value', ''))]",
           "dnsServer": {
             "value": ""
           }
@@ -268,8 +272,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "15425725799144943157"
+              "version": "0.28.1.47646",
+              "templateHash": "3087759273833726789"
             }
           },
           "parameters": {
@@ -311,7 +315,7 @@
                     "[parameters('vnetAddressPrefix')]"
                   ]
                 },
-                "dhcpOptions": "[if(not(empty(parameters('dnsServer'))), createObject('dnsServers', createArray(parameters('dnsServer'))), json('null'))]",
+                "dhcpOptions": "[if(not(empty(parameters('dnsServer'))), createObject('dnsServers', createArray(parameters('dnsServer'))), null())]",
                 "subnets": [
                   {
                     "name": "[parameters('snetName')]",
@@ -337,7 +341,7 @@
             },
             "subnetId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Network/virtualNetworks', parameters('name'))).subnets[0].id]"
+              "value": "[reference(resourceId('Microsoft.Network/virtualNetworks', parameters('name')), '2022-01-01').subnets[0].id]"
             }
           }
         }
@@ -349,7 +353,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "lawDeploy",
       "resourceGroup": "[format('rg-{0}', parameters('name'))]",
       "properties": {
@@ -374,8 +378,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "13952838326740707361"
+              "version": "0.28.1.47646",
+              "templateHash": "4630854867665059244"
             }
           },
           "parameters": {
@@ -418,7 +422,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "aksDeploy",
       "resourceGroup": "[format('rg-{0}', parameters('name'))]",
       "properties": {
@@ -488,11 +492,11 @@
             "value": "Standard_D2s_v5"
           },
           "registryName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'acrDeploy'), '2020-10-01').outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'acrDeploy'), '2022-09-01').outputs.name.value]"
           },
-          "vnetSubnetID": "[if(not(equals(variables('networkPlugin'), 'kubenet')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'vnetDeploy'), '2020-10-01').outputs.subnetId.value), createObject('value', ''))]",
-          "logAnalyticsWorkspaceResourceID": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'lawDeploy'), '2020-10-01').outputs.id.value]"
+          "vnetSubnetID": "[if(not(equals(variables('networkPlugin'), 'kubenet')), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'vnetDeploy'), '2022-09-01').outputs.subnetId.value), createObject('value', ''))]",
+          "logAnalyticsWorkspaceResourceId": {
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'lawDeploy'), '2022-09-01').outputs.id.value]"
           },
           "nodeTaints": {
             "value": [
@@ -506,8 +510,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "1971024003376138648"
+              "version": "0.28.1.47646",
+              "templateHash": "5599997474738078815"
             }
           },
           "parameters": {
@@ -523,24 +527,24 @@
             "slaTier": {
               "type": "string",
               "defaultValue": "Free",
-              "metadata": {
-                "description": "Defaults to Free tier"
-              },
               "allowedValues": [
                 "Free",
                 "Paid"
-              ]
+              ],
+              "metadata": {
+                "description": "Defaults to Free tier"
+              }
             },
             "managedIdentityType": {
               "type": "string",
               "defaultValue": "SystemAssigned",
-              "metadata": {
-                "description": "Two options are available: SystemAssigned or UserAssigned"
-              },
               "allowedValues": [
                 "SystemAssigned",
                 "UserAssigned"
-              ]
+              ],
+              "metadata": {
+                "description": "Two options are available: SystemAssigned or UserAssigned"
+              }
             },
             "userAssignedIdentities": {
               "type": "object",
@@ -557,10 +561,12 @@
               }
             },
             "defenderEnabled": {
-              "type": "bool"
+              "type": "bool",
+              "defaultValue": false
             },
             "imageCleanerEnabled": {
-              "type": "bool"
+              "type": "bool",
+              "defaultValue": false
             },
             "imageCleanerIntervalHours": {
               "type": "int",
@@ -587,36 +593,36 @@
             "networkPlugin": {
               "type": "string",
               "defaultValue": "kubenet",
-              "metadata": {
-                "description": "Network plugin used for building the Kubernetes network."
-              },
               "allowedValues": [
                 "kubenet",
                 "azure",
                 "none"
-              ]
+              ],
+              "metadata": {
+                "description": "Network plugin used for building the Kubernetes network."
+              }
             },
             "networkPolicy": {
               "type": "string",
               "defaultValue": "calico",
-              "metadata": {
-                "description": "Network policy used for building the Kubernetes network."
-              },
               "allowedValues": [
                 "calico",
                 "azure"
-              ]
+              ],
+              "metadata": {
+                "description": "Network policy used for building the Kubernetes network."
+              }
             },
             "loadBalancerSku": {
               "type": "string",
               "defaultValue": "Standard",
-              "metadata": {
-                "description": "The default is standard."
-              },
               "allowedValues": [
                 "Standard",
                 "Basic"
-              ]
+              ],
+              "metadata": {
+                "description": "The default is standard."
+              }
             },
             "dnsServiceIP": {
               "type": "string",
@@ -632,18 +638,25 @@
                 "description": "A CIDR notation IP range assigned to the Docker bridge network. It must not overlap with any Subnet IP ranges or the Kubernetes service address range."
               }
             },
+            "logAnalyticsWorkspaceResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Resource ID of log analytics workspace for auditing"
+              }
+            },
             "outboundType": {
               "type": "string",
               "defaultValue": "loadBalancer",
-              "metadata": {
-                "description": "This can only be set at cluster creation time and cannot be changed later."
-              },
               "allowedValues": [
                 "loadBalancer",
                 "managedNATGateway",
                 "userAssignedNATGateway",
                 "userDefinedRouting"
-              ]
+              ],
+              "metadata": {
+                "description": "This can only be set at cluster creation time and cannot be changed later."
+              }
             },
             "podCidrs": {
               "type": "array",
@@ -680,25 +693,37 @@
                 "description": "If the cluster is using azure network plugin, then you can pass in the subnet resource ID like this `vnet.outputs.subnetId`; otherwise, leave it empty"
               }
             },
-            "logAnalyticsWorkspaceResourceID": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Enable container insights"
-              }
-            },
             "nodeTaints": {
               "type": "array",
               "defaultValue": [],
               "metadata": {
                 "description": "Enable nodeTaints on the system node pool (e.g., ['CriticalAddonsOnly=true:NoSchedule'])"
               }
+            },
+            "addonProfiles": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "AKS addons to enable"
+              }
+            },
+            "enablePrometheusMetrics": {
+              "type": "bool",
+              "defaultValue": false
+            },
+            "prometheusMetricLabelsAllowlist": {
+              "type": "string",
+              "defaultValue": ""
+            },
+            "prometheusMetricAnnotationsAllowList": {
+              "type": "string",
+              "defaultValue": ""
             }
           },
           "resources": [
             {
               "type": "Microsoft.ContainerService/managedClusters",
-              "apiVersion": "2022-07-02-preview",
+              "apiVersion": "2022-08-03-preview",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -713,6 +738,7 @@
               "properties": {
                 "kubernetesVersion": "[parameters('kubernetesVersion')]",
                 "dnsPrefix": "[parameters('name')]",
+                "azureMonitorProfile": "[if(parameters('enablePrometheusMetrics'), createObject('metrics', createObject('enabled', true(), 'kubeStateMetrics', createObject('metricLabelsAllowlist', parameters('prometheusMetricLabelsAllowlist'), 'metricAnnotationsAllowList', parameters('prometheusMetricAnnotationsAllowList')))), null())]",
                 "networkProfile": {
                   "networkPlugin": "[parameters('networkPlugin')]",
                   "networkPolicy": "[parameters('networkPolicy')]",
@@ -745,7 +771,7 @@
                     "intervalHours": "[parameters('imageCleanerIntervalHours')]"
                   }
                 },
-                "addonProfiles": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceID'))), createObject('omsagent', createObject('config', createObject('logAnalyticsWorkspaceResourceID', parameters('logAnalyticsWorkspaceResourceID')), 'enabled', true())), json('null'))]"
+                "addonProfiles": "[parameters('addonProfiles')]"
               }
             },
             {
@@ -755,7 +781,7 @@
               "scope": "[format('Microsoft.ContainerRegistry/registries/{0}', parameters('registryName'))]",
               "name": "[guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), parameters('registryName'))]",
               "properties": {
-                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name'))).identityProfile.kubeletidentity.objectId]",
+                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2022-08-03-preview').identityProfile.kubeletidentity.objectId]",
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]"
               },
               "dependsOn": [
@@ -767,7 +793,7 @@
               "apiVersion": "2022-04-01",
               "name": "[guid(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), resourceGroup().id)]",
               "properties": {
-                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2022-07-02-preview', 'full').identity.principalId]",
+                "principalId": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2022-08-03-preview', 'full').identity.principalId]",
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]"
               },
               "dependsOn": [
@@ -779,6 +805,18 @@
             "name": {
               "type": "string",
               "value": "[parameters('name')]"
+            },
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.ContainerService/managedClusters', parameters('name'))]"
+            },
+            "kubeletIdentityObjectId": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2022-08-03-preview').identityProfile.kubeletidentity.objectId]"
+            },
+            "nodeResourceGroupName": {
+              "type": "string",
+              "value": "[reference(resourceId('Microsoft.ContainerService/managedClusters', parameters('name')), '2022-08-03-preview').nodeResourceGroup]"
             }
           }
         }
@@ -792,7 +830,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-10-01",
+      "apiVersion": "2022-09-01",
       "name": "armNodePoolsDeploy",
       "resourceGroup": "[format('rg-{0}', parameters('name'))]",
       "properties": {
@@ -802,7 +840,7 @@
         "mode": "Incremental",
         "parameters": {
           "managedClusterName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy'), '2020-10-01').outputs.name.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'aksDeploy'), '2022-09-01').outputs.name.value]"
           },
           "userNodes": {
             "value": [
@@ -817,7 +855,7 @@
                 "type": "VirtualMachineScaleSets",
                 "osDiskType": "Ephemeral",
                 "nodeTaints": "",
-                "vnetSubnetID": "[if(not(equals(variables('networkPlugin'), 'kubenet')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'vnetDeploy'), '2020-10-01').outputs.subnetId.value, '')]"
+                "vnetSubnetID": "[if(not(equals(variables('networkPlugin'), 'kubenet')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, format('rg-{0}', parameters('name'))), 'Microsoft.Resources/deployments', 'vnetDeploy'), '2022-09-01').outputs.subnetId.value, '')]"
               }
             ]
           }
@@ -828,8 +866,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.10.61.36676",
-              "templateHash": "8932975478892682483"
+              "version": "0.28.1.47646",
+              "templateHash": "18243559256984356460"
             }
           },
           "parameters": {
@@ -847,7 +885,7 @@
                 "count": "[length(range(0, length(parameters('userNodes'))))]"
               },
               "type": "Microsoft.ContainerService/managedClusters/agentPools",
-              "apiVersion": "2022-07-02-preview",
+              "apiVersion": "2024-02-01",
               "name": "[format('{0}/{1}', parameters('managedClusterName'), parameters('userNodes')[range(0, length(parameters('userNodes')))[copyIndex()]].name)]",
               "properties": {
                 "vmSize": "[parameters('userNodes')[range(0, length(parameters('userNodes')))[copyIndex()]].vmSize]",
