@@ -15,7 +15,7 @@
 
 - [Lab: Explore KEDA (Kubernetes Event-driven Autoscaling) and the KEDA HTTP Add-on with Azure Kubernetes Service (AKS) and Bicep](aks-bicep-keda/)
 - [Lab: Deploy a Scalable and Secure Azure Kubernetes Service cluster using the Azure CLI](aks-https/)
-- [Lab: Azure Kubernetes Service with ARM64 node pools](aks-arm64/)
+- Lab: Azure Kubernetes Service with ARM64 node pools (returning soon)
 - [Lab: Azure Kubernetes Service with ARM64 node pools and Terraform](aks-arm64-terraform/)
 - [Lab: Web Application Routing with Azure Kubernetes Service](aks-webapp-routing/)
 - [Lab: Azure Kubernetes Service with Open Service Mesh](./aks-open-service-mesh/)
