@@ -61,7 +61,7 @@ func Aks() error {
 	}
 	kubernetesVersion := os.Getenv("AKS_KUBERNETES_VERSION")
 	if kubernetesVersion == "" {
-		kubernetesVersion = "1.24.9"
+		kubernetesVersion = "1.29"
 	}
 	cmd := []string{
 		"az",

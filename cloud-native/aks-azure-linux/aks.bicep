@@ -6,7 +6,7 @@ param gpu1VmSize string = 'Standard_NC4as_T4_v3'
 param gpu2VmSize string = 'Standard_NC6s_v3'
 //param gpu3VmSize string = 'Standard_NC24ads_A100_v4'
 
-param kubernetesVersion string = '1.27.3'
+param kubernetesVersion string = '1.29'
 
 var rand = substring(uniqueString(resourceGroup().id), 0, 6)
 
@@ -86,6 +86,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   kind: 'BlockBlobStorage'
   sku: {
     name: 'Premium_LRS'
+  }
+  properties: {
+    minimumTlsVersion: 'TLS1_2'
   }
 }
 

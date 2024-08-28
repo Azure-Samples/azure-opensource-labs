@@ -350,6 +350,9 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
   sku: {
     name: 'Premium_LRS'
   }
+  properties: {
+    minimumTlsVersion: 'TLS1_2'
+  }
 }
 
 // via: https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-functions-resource#subscriptionresourceid-example
