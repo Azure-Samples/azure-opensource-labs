@@ -351,6 +351,13 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
     name: 'Premium_LRS'
   }
   properties: {
+    allowBlobPublicAccess: false
+    networkAcls: {
+      defaultAction: 'Deny'
+      bypass: 'AzureServices'
+      virtualNetworkRules: []
+      ipRules: []
+    }
     minimumTlsVersion: 'TLS1_2'
   }
 }

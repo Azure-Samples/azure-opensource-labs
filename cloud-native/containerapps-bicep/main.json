@@ -89,7 +89,7 @@
                 "name": "Standard"
               },
               "properties": {
-                "adminUserEnabled": true
+                "adminUserEnabled": false
               }
             },
             {
@@ -268,7 +268,7 @@
                   "family": "A"
                 },
                 "networkAcls": {
-                  "defaultAction": "Allow",
+                  "defaultAction": "Deny",
                   "bypass": "AzureServices"
                 },
                 "accessPolicies": [

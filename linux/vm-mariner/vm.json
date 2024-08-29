@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.28.1.47646",
-      "templateHash": "15024671018336532028"
+      "version": "0.29.47.4906",
+      "templateHash": "4772838773161597591"
     }
   },
   "parameters": {
@@ -414,6 +414,13 @@
         "name": "Premium_LRS"
       },
       "properties": {
+        "allowBlobPublicAccess": false,
+        "networkAcls": {
+          "defaultAction": "Deny",
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": []
+        },
         "minimumTlsVersion": "TLS1_2"
       }
     },

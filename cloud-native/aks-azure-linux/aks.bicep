@@ -76,7 +76,7 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2019-05-01' =
     name: 'Standard'
   }
   properties: {
-    adminUserEnabled: true
+    adminUserEnabled: false
   }
 }
 
@@ -88,6 +88,13 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-02-01' = {
     name: 'Premium_LRS'
   }
   properties: {
+    allowBlobPublicAccess: false
+    networkAcls: {
+      defaultAction: 'Deny'
+      bypass: 'AzureServices'
+      virtualNetworkRules: []
+      ipRules: []
+    }
     minimumTlsVersion: 'TLS1_2'
   }
 }

@@ -18,7 +18,7 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2019-05-01' =
     name: 'Standard'
   }
   properties: {
-    adminUserEnabled: true
+    adminUserEnabled: false
   }
 }
 

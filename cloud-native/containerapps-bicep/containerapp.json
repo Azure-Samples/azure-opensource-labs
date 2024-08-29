@@ -47,7 +47,7 @@
           "name": "Standard"
         },
         "properties": {
-          "adminUserEnabled": true
+          "adminUserEnabled": false
         }
       },
       {
