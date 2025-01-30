@@ -7,7 +7,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.5.0' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.6.2' = {
   name: 'managedClusterDeployment'
   params: {
     // Required parameters
@@ -18,7 +18,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.5.0
         count: 1
         mode: 'System'
         name: 'systempool'
-        osSku: 'AzureLinux'
+        osSKU: 'AzureLinux'
         vmSize: 'Standard_D2pds_v6'
         orchestratorVersion: '1.31.2'
       }
@@ -26,15 +26,20 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.5.0
         count: 1
         mode: 'User'
         name: 'pool1'
-        osSku: 'AzureLinux'
+        osSKU: 'AzureLinux'
         vmSize: 'Standard_D2pds_v6'
         orchestratorVersion: '1.31.2'
       }
     ]
     // Non-required parameters
     location: location
+    aadProfile: {
+      aadProfileEnableAzureRBAC: true
+      aadProfileManaged: true
+    }
+    disableLocalAccounts: true
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         managedIdentity.id
       ]
     }
