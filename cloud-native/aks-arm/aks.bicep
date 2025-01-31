@@ -17,7 +17,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.6.2
       {
         count: 1
         mode: 'System'
-        name: 'systempool'
+        name: 'system1'
         osSKU: 'AzureLinux'
         vmSize: 'Standard_D2pds_v6'
         orchestratorVersion: '1.31.2'
@@ -25,7 +25,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.6.2
       {
         count: 1
         mode: 'User'
-        name: 'pool1'
+        name: 'user1'
         osSKU: 'AzureLinux'
         vmSize: 'Standard_D2pds_v6'
         orchestratorVersion: '1.31.2'
