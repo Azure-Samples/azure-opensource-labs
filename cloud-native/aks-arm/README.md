@@ -53,3 +53,7 @@ az deployment group create \
     --mode Complete \
     --template-file cloud-native/aks-arm/empty.bicep
 ```
+
+## Deploy via Azure Portal
+
+[Deploy to Azure](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure-Samples%2Fazure-opensource-labs%2Fmain%2Fcloud-native%2Faks-arm%2Faks.json)
