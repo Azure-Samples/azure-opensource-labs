@@ -21,6 +21,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.6.2
         osSKU: 'AzureLinux'
         vmSize: 'Standard_D2pds_v6'
         orchestratorVersion: '1.31.2'
+        availabilityZones: [1]
       }
       {
         count: 1
@@ -29,6 +30,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.6.2
         osSKU: 'AzureLinux'
         vmSize: 'Standard_D2pds_v6'
         orchestratorVersion: '1.31.2'
+        availabilityZones: [1]
       }
     ]
     // Non-required parameters
@@ -38,6 +40,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.6.2
       aadProfileManaged: true
     }
     disableLocalAccounts: true
+    publicNetworkAccess: 'Enabled'
     managedIdentities: {
       userAssignedResourceIds: [
         managedIdentity.id
