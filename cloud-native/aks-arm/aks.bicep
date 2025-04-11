@@ -1,6 +1,9 @@
 param location string = resourceGroup().location
+param userPrincipalId string = ''
 
 var managedIdentityName = '${resourceGroup().name}-identity'
+
+var roleAssignmentName = guid(subscription().id, resourceGroup().id, 'Azure Kubernetes Service RBAC Cluster Admin', userPrincipalId)
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
   name: managedIdentityName
@@ -46,5 +49,15 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.6.2
         managedIdentity.id
       ]
     }
+  }
+}
+
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-01-preview' = if (!empty(userPrincipalId)) {
+  name: roleAssignmentName
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b1ff04bb-8a4e-4dc4-8eb5-8693973ce19b') // Azure Kubernetes Service RBAC Cluster Admin role
+    principalId: userPrincipalId
+    principalType: 'User'
+    scope: resourceGroup().id
   }
 }
