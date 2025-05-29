@@ -41,7 +41,7 @@ In this workshop, "**BYO**" can mean "**Bring Your Own**" model or "**Build Your
 
 ## Getting started
 
-> [!IMPORTANT]
+> [!CAUTION]
 > Before you begin, ensure you have an Azure subscription with sufficient quota to provision an Azure Kubernetes Service (AKS) cluster and GPU nodes. The following GPU SKU families are supported for KAITO on AKS:
 >
 > - Standard NCSv3 (NVIDIA V100 GPU)
@@ -252,7 +252,7 @@ cd ../../
 
 Let's run and test the application on the Azure infrastructure we provisioned using Terraform.
 
-> [!IMPORTANT]
+> [!WARNING]
 > Make sure you have environment variables set for the Azure resources before proceeding.
 
 ### Push Cog container to ACR
@@ -415,7 +415,7 @@ kind: Workspace
 metadata:
   name: mysmollm2app-workspace
 resource:
-  instanceType: Standard_NC24ads_A100_v4    # Ensure you have GPU quota or change to a different VM size
+  instanceType: Standard_NC24ads_A100_v4  # Change this to a different GPU VM size if needed
   labelSelector:
     matchLabels:
       apps: mysmollm2app
@@ -461,7 +461,7 @@ inference:
 EOF
 ```
 
-> [!IMPORTANT]
+> [!CAUTION]
 > Ensure you have GPU quota in your Azure subscription for the `Standard_NC24ads_A100_v4` VM size. If you do not have GPU quota, you can change the `instanceType` to a different VM size that is available in your subscription.
 
 Once KAITO processes this custom resource, it will begin provisioning a new GPU node, attaching it to the cluster and deploying a new Pod. As the new Pod is being rolled out, the initContainer will be responsible for downloading the model to a local directory and making it available for the Cog inference server.
