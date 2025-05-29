@@ -26,7 +26,7 @@ Before you begin, you will need the following tools installed.
 - [jq](https://jqlang.org/) for parsing JSON.
 - [curl](https://curl.se/) for making HTTP requests.
 
-> [!tip]
+> [!TIP]
 > This workshop can be run on any local machine with the above tools installed. However, if you are facing challenges with local compute power or network bandwidth limitations, you can run this workshop on an Azure Virtual Machine. Check out this [README](./workstation/README.md) for instructions on how to set up a VM with all the tools pre-installed. With the VM in place, SSH into the node and proceed with the rest of this walk-through.
 
 ## More tools?
@@ -41,7 +41,7 @@ In this workshop, "**BYO**" can mean "**Bring Your Own**" model or "**Build Your
 
 ## Getting started
 
-> [!alert]
+> [!IMPORTANT]
 > Before you begin, ensure you have an Azure subscription with sufficient quota to provision an Azure Kubernetes Service (AKS) cluster and GPU nodes. The following GPU SKU families are supported for KAITO on AKS:
 >
 > - Standard NCSv3 (NVIDIA V100 GPU)
@@ -237,7 +237,7 @@ The application is ready to be packaged into a container. Run the following comm
 cog build
 ```
 
-> [!note]
+> [!NOTE]
 > To view the Dockerfile that Cog generates, you can run the `cog debug` command.
 
 At this point, we could test this locally using cog predict or docker run commands, but we'll sidestep that and go straight to AKS.
@@ -252,7 +252,7 @@ cd ../../
 
 Let's run and test the application on the Azure infrastructure we provisioned using Terraform.
 
-> [!alert]
+> [!IMPORTANT]
 > Make sure you have environment variables set for the Azure resources before proceeding.
 
 ### Push Cog container to ACR
@@ -303,7 +303,7 @@ code:                                                       # Add code spec
     description: Source code to run AI model predictions
 ```
 
-> [!note]
+> [!NOTE]
 > See [Kitfile reference](https://kitops.org/docs/kitfile/format/#example) for more details on the Kitfile format.
 
 Now we can [pack up the ModelKit](https://kitops.org/docs/cli/cli-reference/#kit-pack) and label it so that it can be pushed to the Azure Container Registry (ACR). Run the following command to pack up the ModelKit. This will pack up everything defined in the Kitfile.
@@ -330,7 +330,7 @@ ACR_TOKEN_PASSWORD=$(az acr token create \
 echo $ACR_TOKEN_PASSWORD | kit login $ACR_LOGIN_SERVER -u $ACR_TOKEN_NAME --password-stdin
 ```
 
-> [!note]
+> [!NOTE]
 > At the time of this writing, the Kit CLI does not support bearer token authentication, so it is unable to use the same token that was retrieved when we logged in to ACR with the Azure CLI. So we will need to create a token in ACR that can be used for pushing the ModelKit.
 
 Now we can push the ModelKit to ACR using the Kit CLI.
@@ -461,7 +461,7 @@ inference:
 EOF
 ```
 
-> [!important]
+> [!IMPORTANT]
 > Ensure you have GPU quota in your Azure subscription for the `Standard_NC24ads_A100_v4` VM size. If you do not have GPU quota, you can change the `instanceType` to a different VM size that is available in your subscription.
 
 Once KAITO processes this custom resource, it will begin provisioning a new GPU node, attaching it to the cluster and deploying a new Pod. As the new Pod is being rolled out, the initContainer will be responsible for downloading the model to a local directory and making it available for the Cog inference server.
