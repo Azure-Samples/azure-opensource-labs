@@ -394,7 +394,7 @@ kind: Workspace
 metadata:
   name: mysmollm2app-workspace
 resource:
-  instanceType: Standard_NC24ads_A100_v4
+  instanceType: Standard_NC24ads_A100_v4    # Ensure you have GPU quota or change to a different VM size
   labelSelector:
     matchLabels:
       apps: mysmollm2app
@@ -439,6 +439,9 @@ inference:
             medium: Memory
 EOF
 ```
+
+> [!important]
+> Ensure you have GPU quota in your Azure subscription for the `Standard_NC24ads_A100_v4` VM size. If you do not have GPU quota, you can change the `instanceType` to a different VM size that is available in your subscription.
 
 Once KAITO processes this custom resource, it will begin provisioning a new GPU node, attaching it to the cluster and deploying a new Pod. As the new Pod is being rolled out, the initContainer will be responsible for downloading the model to a local directory and making it available for the Cog inference server.
 
