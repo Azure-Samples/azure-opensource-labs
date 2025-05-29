@@ -13,7 +13,7 @@ variable "vm_size" {
 variable "vm_image_offer" {
   type        = string
   default     = "ubuntu-24_04-lts"
-  description = "publisher of the virtual machine image - look up additional offers with `# az vm image list-offers -l <your_location> -p canonical --query \"[].name\" -o tsv`"
+  description = "publisher of the virtual machine image - look up additional offers with `az vm image list-offers -l <your_location> -p canonical --query \"[].name\" -o tsv`"
 }
 
 variable "vm_username" {
