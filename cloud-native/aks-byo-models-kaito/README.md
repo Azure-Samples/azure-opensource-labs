@@ -31,7 +31,7 @@ Before you begin, you will need the following tools installed.
 
 ## More tools?
 
-In this workshop, "**BYO**" can mean "**Bring Your Own**" model or "**Build Your Own**" model. Whatever the case, the goal here is to show how you can leverage open-source tool as part of your development lifecycle. In the cloud-native ecosystem, there are many tools available for managing AI/ML workloads. Each tool has its own areas of focus, and they often complement each other. Here's how I view the three tools (KitOps, Cog, and KAITO) complement each other in the context of a complete AI/ML workflow:
+In this workshop, "**BYO**" can mean "**Bring Your Own**" model or "**Build Your Own**" model. Whatever the case, the goal here is to show how you can leverage open-source tools as part of your development lifecycle. In the cloud-native ecosystem, there are many tools available for managing AI/ML workloads. Each tool has its own areas of focus, and they often complement each other. Here's how I view the this tool stack (KitOps, Cog, and KAITO) and how they complement each other in the context of a complete AI/ML workflow:
 
 ![KitOps, Cog, and KAITO fitment](./kitops+cog+kaito.png)
 
@@ -40,6 +40,17 @@ In this workshop, "**BYO**" can mean "**Bring Your Own**" model or "**Build Your
 - **KAITO**: Once the code is ready for production, AKS with KAITO can be used to deploy the model inference application on Kubernetes. With Kubernetes comes the ability to orchestrate the deployment of the model inference application, scale it up or down based on demand, and manage the resources needed to run the application. All the things that Kubernetes does best.
 
 ## Getting started
+
+> [!alert]
+> Before you begin, ensure you have an Azure subscription with sufficient quota to provision an Azure Kubernetes Service (AKS) cluster and GPU nodes. The following GPU SKU families are supported for KAITO on AKS:
+>
+> - Standard NCSv3 (NVIDIA V100 GPU)
+> - Standard NCASv3_T4 (NVIDIA T4 GPU)
+> - Standard NCADS_A100_v4 (NVIDIA A100 GPU)
+> - Standard NCadsH100v5 (NVIDIA H100 GPU)
+> - StandardNDISRH200V5 (NVIDIA H200 GPU)
+> - Standard NV (NVIDIA M60 GPU)
+> - Standard NVSv3 (NVIDIA M60 GPU)
 
 To run this solution on AKS, use the Terraform script found in the KAITO repository which will provision the following services.
 
