@@ -178,10 +178,10 @@ Open the cog.yaml file and replace the YAML with the following config to define 
 
 ```yaml
 build:
-  gpu: true
-  cuda: "12.4"
-  python_version: 3.12
-  python_requirements: requirements.txt
+  gpu: true
+  cuda: "12.4"
+  python_version: 3.12
+  python_requirements: requirements.txt
 predict: "predict.py:Predictor"
 image: "mysmollm2app"
 ```
@@ -243,12 +243,6 @@ cog build
 
 At this point, we could test this locally using cog predict or docker run commands, but we'll sidestep that and go straight to AKS.
 
-Return to the root directory.
-
-```sh
-cd ../../
-```
-
 ## Deploy the app to AKS
 
 Let's run and test the application on the Azure infrastructure we provisioned using Terraform.
@@ -271,6 +265,12 @@ cog push $ACR_LOGIN_SERVER/mysmollm2app:latest
 Recall that when we imported and unpacked the model using the Kit CLI, a ModelKit was created. The Cog container will not have the model included in the image, so we need to pack up the ModelKit and push it to an OCI-compliant registry as well.
 
 But first, with a new **src/cog** folder in place for our Cog code, we need to update the ModelKit project to make it aware of the code.
+
+Return to the root directory.
+
+```sh
+cd ../../
+```
 
 Open the Kitfile and add a new code spec at the end. Your YAML manifest should look something like this.
 
@@ -353,7 +353,13 @@ mkdir src/kitops
 cd src/kitops
 ```
 
-Create a Dockerfile file and add the following code.
+Next run the following command to create a new file called **Dockerfile**.
+
+```sh
+touch Dockerfile
+```
+
+Open the Dockerfile and add the following code.
 
 ```Dockerfile
 FROM alpine:latest
@@ -416,7 +422,7 @@ kind: Workspace
 metadata:
   name: mysmollm2app-workspace
 resource:
-  instanceType: Standard_NC24ads_A100_v4  # Change this to a different GPU VM size if needed
+  instanceType: Standard_NC4as_T4_v3  # Change this to a different GPU VM size if needed
   labelSelector:
     matchLabels:
       apps: mysmollm2app
