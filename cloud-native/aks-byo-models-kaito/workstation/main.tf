@@ -155,10 +155,20 @@ resource "azurerm_linux_virtual_machine" "example" {
 
   source_image_reference {
     publisher = "canonical"
-    offer     = "ubuntu-24_04-lts"
+    offer     = var.vm_image_offer
     sku       = "server"
     version   = "latest"
   }
 
   custom_data = data.cloudinit_config.example.rendered
 }
+
+# resource "azurerm_virtual_machine_extension" "example" {
+#   count                      = startswith(lower(var.vm_size), "standard_n") ? 1 : 0
+#   virtual_machine_id         = azurerm_linux_virtual_machine.example.id
+#   name                       = "vm-${local.random_name}-nvidia-gpu-driver-extension"
+#   publisher                  = "Microsoft.HpcCompute"
+#   type                       = "NvidiaGpuDriverLinux"
+#   type_handler_version       = "1.6"
+#   auto_upgrade_minor_version = true
+# }

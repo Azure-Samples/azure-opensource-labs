@@ -1,22 +1,19 @@
 # BYO model on AKS with KAITO and open-source tools
 
+Being able to self-host open-source models on Kubernetes is a powerful way to leverage the latest advancements in AI/ML while maintaining control over your data and infrastructure. With Kubernetes comes the flexibility to leverage a wide range of tools and frameworks within the cloud-native ecosystem. In this workshop, we will explore how to deploy open-source models on [Azure Kubernetes Service (AKS)](https://learn.microsoft.com/azure/aks/what-is-aks) using [KAITO](https://github.com/kaito-project/kaito), a CNCF Sandbox project that simplifies the deployment of AI applications on Kubernetes. We'll also look at other open-source tools like [KitOps](https://kitops.org/docs/overview/), another CNCF Sandbox project that standardizes how AI/ML projects are organized, versioned, and stored within OCI-compliant registries, and [Cog](https://cog.run/) to build production-ready containers for model inference.
+
 This guide will walk you through the process of running any open-source model on Azure Kubernetes Service (AKS) with KAITO.
 
 By the end of this walkthrough, you will be able to:
 
-1. Deploy AKS cluster with KAITO installed and Azure Container Registry (ACR) using Terraform CLI
-1. Import and unpack a ModelKit from HuggingFace using the Kit CLI
-1. Create a Cog project and build an endpoint to test model predictions
-1. Build Cog app container using Cog CLI and push container image to ACR
-1. Pack ModelKit (model and code) to ACR
-1. Build init container to download model at Pod startup
-1. Deploy Cog container to AKS via KAITO workspace
+1. Deploy an AKS cluster with KAITO installed and attach Azure Container Registry (ACR) with Terraform CLI
+1. Bootstrap a new ModelKit project by downloading an open-source model from HuggingFace with Kit CLI
+1. Create a model inferencing project with Cog CLI
+1. Build and push Cog app container image to ACR with Cog CLI
+1. Pack and push ModelKit (model and inference code) to ACR with Kit CLI
+1. Self-host Cog model inferencing application on AKS with KAITO
 
-### Why?
-
-todo
-
-### Pre-requisites
+## Pre-requisites
 
 Before you begin, you will need the following tools installed.
 
@@ -30,17 +27,15 @@ Before you begin, you will need the following tools installed.
 - [curl](https://curl.se/) for making HTTP requests.
 
 > [!tip]
-> This workshop can be run on any local machine with the above tools installed. However, if you are facing challenges with local compute power or network bandwidth, you can run this workshop on a cloud-based virtual machine. Check out this [README](./workstation/README.md) to run a Terraform template to deploy the a VM in Azure with all the tools pre-installed.
-
-With the VM in place, SSH into the node and proceed with the rest of this walk-through.
+> This workshop can be run on any local machine with the above tools installed. However, if you are facing challenges with local compute power or network bandwidth limitations, you can run this workshop on an Azure Virtual Machine. Check out this [README](./workstation/README.md) for instructions on how to set up a VM with all the tools pre-installed. With the VM in place, SSH into the node and proceed with the rest of this walk-through.
 
 ## Getting started
 
 To run this solution on AKS, use the Terraform script found in the KAITO repository which will provision the following services.
 
-- Azure Kubernetes Service (AKS)
-- [Azure Container Registry](https://learn.microsoft.com/en-us/azure/aks/cluster-container-registry-integration?tabs=azure-cli) (ACR)
-- [Azure User-Assigned Managed Identity](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities?pivots=identity-mi-methods-azp)
+- [Azure Kubernetes Service (AKS)](https://learn.microsoft.com/azure/aks/what-is-aks)
+- [Azure Container Registry (ACR)](https://learn.microsoft.com/azure/aks/cluster-container-registry-integration?tabs=azure-cli)
+- [Azure User-Assigned Managed Identity](https://learn.microsoft.com/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities?pivots=identity-mi-methods-azp)
 
 ### Provision AKS and install KAITO
 
@@ -55,7 +50,12 @@ terraform init
 In order to deploy to Azure you must be logged in to the Azure CLI.
 
 ```sh
-az login
+az login --use-device-code
+```
+
+Export the Azure subscription ID to an environment variable.
+
+```sh
 export ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
 ```
 
@@ -70,8 +70,8 @@ This deployment will provision the cluster and install the KAITO Workspace and G
 Run the following command to export the outputs.
 
 ```sh
-RG_NAME=$(terraform output -raw rg_name)
-AKS_NAME=$(terraform output -raw aks_name)
+export RG_NAME=$(terraform output -raw rg_name)
+export AKS_NAME=$(terraform output -raw aks_name)
 ```
 
 Log in to AKS cluster:
@@ -84,10 +84,10 @@ Log in to ACR:
 
 ```sh
 # get the acr name
-ACR_NAME=$(az acr list -g $RG_NAME --query "[0].name" -o tsv)
+export ACR_NAME=$(az acr list -g $RG_NAME --query "[0].name" -o tsv)
 
 # get the acr login server url
-ACR_LOGIN_SERVER=$(az acr show -g $RG_NAME -n $ACR_NAME --query loginServer -o tsv)
+export ACR_LOGIN_SERVER=$(az acr show -g $RG_NAME -n $ACR_NAME --query loginServer -o tsv)
 
 # login to acr
 az acr login -n $ACR_NAME
@@ -95,7 +95,7 @@ az acr login -n $ACR_NAME
 
 ## Organize with KitOps
 
-KitOps is an open-source project within the CNCF Sandbox that aims to standardize how AI projects are organized, versioned, and stored within OCI-compliant registries. We'll use the Kit CLI developed by friends at [jozu.ml](http://jozu.ml) to bootstrap our ModelKit project.
+As mentioned above, [KitOps](https://kitops.org/) is an open-source project within the CNCF Sandbox that aims to standardize how AI projects are organized, versioned, and stored within OCI-compliant registries. We'll use the Kit CLI developed by friends at [jozu.ml](http://jozu.ml) to bootstrap our ModelKit project. The [ModelKit](https://kitops.org/docs/modelkit/intro/) is an emerging standard for packaging AI models, code, datasets, documentation and associated metadata, making it easier to share and deploy models across different platforms.
 
 Navigate back to your home directory.
 
@@ -116,7 +116,13 @@ Initialize a ModelKit by [importing a model](https://kitops.org/docs/cli/cli-ref
 kit import https://huggingface.co/HuggingFaceTB/SmolLM2-1.7B-Instruct-16k
 ```
 
-[Unpack](https://kitops.org/docs/cli/cli-reference/#kit-unpack) the ModelKit to the current directory.
+The ModelKit is now initialized and the model files are stored in a local directory. You can view ModelKits in the local registry by running the following command.
+
+```sh
+kit list
+```
+
+To start working with the model files and build a model inference application, we need to [unpack](https://kitops.org/docs/cli/cli-reference/#kit-unpack) the ModelKit to the current directory.
 
 ```sh
 kit unpack huggingfacetb/smollm2-1.7b-instruct-16k:latest
@@ -124,11 +130,11 @@ kit unpack huggingfacetb/smollm2-1.7b-instruct-16k:latest
 
 ## Predict with Cog
 
-Cog is another open-source project developed by friends at Replicate which aims to standardize how AI/ML projects are packaged into production-ready containers. It provides a CLI that allows you to initialize Cog projects, which provides base images for Docker containers and includes boilerplate code to write inferencing calls against local models.
+[Cog](https://cog.run/) is another open-source project developed by friends at [Replicate](https://replicate.com/) and this project aims to standardize how AI/ML projects are packaged into production-ready containers. It provides a CLI that allows you to initialize Cog projects, which provides base images for Docker containers and includes boilerplate code to write inferencing calls against local models.
 
 ### Cog setup
 
-Let's code the AI model prediction code using Cog and place the code within our KitOps ModelKit project. Run the following code to create a directory for the source code and initialize a new Cog project.
+Let's code the AI model prediction code using Cog and place the code within our KitOps ModelKit project. Run the following code to create a directory for the source code and [initialize a new Cog project](https://cog.run/getting-started-own-model/#initialization).
 
 ```sh
 mkdir -p src/cog
@@ -136,9 +142,7 @@ cd src/cog
 cog init
 ```
 
-Reference: [https://cog.run/getting-started-own-model/#initialization](https://cog.run/getting-started-own-model/#initialization)
-
-Open the requirements.txt file and replace the contents with the following packages.
+Next we need to add Python dependencies to the project. [Cog uses a requirements.txt file to define the Python packages needed for the project](https://cog.run/yaml/#python_requirements). Open the requirements.txt file and replace the contents with the following packages.
 
 ```txt
 torch==2.6.0
@@ -146,25 +150,27 @@ transformers==4.49.0
 accelerate==1.5.2
 ```
 
-Reference: [https://cog.run/yaml/#python_requirements](https://cog.run/yaml/#python_requirements)
+To [define how the container image will be built](https://cog.run/getting-started-own-model/#define-the-docker-environment), [Cog uses a YAML file called cog.yaml](https://cog.run/yaml/) which contains configuration for the build process, the prediction code, and the container image name.
 
 Open the cog.yaml file and replace the YAML with the following config to define the Docker environment.
 
 ```yaml
 build:
   gpu: true
-  cuda: "12.6"
+  cuda: "12.4"
   python_version: 3.12
   python_requirements: requirements.txt
 predict: "predict.py:Predictor"
 image: "mysmollm2app"
 ```
 
-Reference: [https://cog.run/yaml/#build](https://cog.run/yaml/#build) and [https://cog.run/getting-started-own-model/#define-the-docker-environment](https://cog.run/getting-started-own-model/#define-the-docker-environment) and [https://cog.run/yaml/#gpu](https://cog.run/yaml/#gpu)
+You can see that we are defining the [build environment](https://cog.run/yaml/#build) to use [GPU](https://cog.run/yaml/#gpu) with CUDA 12.4, Python 3.12, and the [requirements.txt file](https://cog.run/yaml/#python_requirements) we just created. The predict key defines the entry point for the prediction code, which will be defined in the next step. Finally, we define the image name that will be used when building the container.
 
 ### Cog predictions
 
-Open the predict.py file and replace the code with the following.
+Now, we can start writing the [prediction code in Python](https://cog.run/python/). The [prediction code](https://cog.run/getting-started-own-model/#define-how-to-run-predictions) will be responsible for loading the model from a local directory and running predictions against it. It uses the [Hugging Face Transformers library](https://huggingface.co/docs/transformers/index) to load the model and run predictions. The code will be written in a Python class that inherits from `BasePredictor` provided by Cog.
+
+Open the predict.py file, replace the code with the following, and save the file.
 
 ```python
 from cog import BasePredictor, Input
@@ -202,17 +208,16 @@ class Predictor(BasePredictor):
         return response
 ```
 
-Reference: [https://cog.run/python/](https://cog.run/python/) and [https://cog.run/getting-started-own-model/#define-how-to-run-predictions](https://cog.run/getting-started-own-model/#define-how-to-run-predictions)
-
 ### Cog containers
 
-Build the container image using the Cog CLI.
+The application is ready to be packaged into a container. Run the following command to [build the container image](https://cog.run/getting-started/#build-an-image) with the Cog CLI.
 
 ```sh
 cog build
 ```
 
-Reference: [https://cog.run/getting-started/#build-an-image](https://cog.run/getting-started/#build-an-image)
+> [!note]
+> To view the Dockerfile that Cog generates, you can run the `cog debug` command.
 
 At this point, we could test this locally using cog predict or docker run commands, but we'll sidestep that and go straight to AKS.
 
@@ -224,26 +229,28 @@ cd ../../
 
 ## Deploy the app to AKS
 
-Let's run and test the application on the Azure infrastructure we provisioned using Terraform. Make sure you have environment variables set for the Azure resources before proceeding.
+Let's run and test the application on the Azure infrastructure we provisioned using Terraform.
+
+> [!alert]
+> Make sure you have environment variables set for the Azure resources before proceeding.
 
 ### Push Cog container to ACR
 
-The cog build command created a container image. So we can simply run docker commands to tag and push the prediction code.
+The [cog build command](https://cog.run/getting-started/#build-an-image) created a container image. This container image is now in the local Docker registry, so we can simply run docker commands to tag and push the Cog application. But you can also use the `cog push` command to push the image to an OCI-compliant registry as long as you are logged in to the registry and tag the image with the registry URL.
+
+Run the following command to push the image to ACR using the Cog CLI.
 
 ```sh
-docker tag mysmollm2app:latest $ACR_LOGIN_SERVER/mysmollm2app:0.1.0
-docker push $ACR_LOGIN_SERVER/mysmollm2app:0.1.0
+cog push $ACR_LOGIN_SERVER/mysmollm2app:latest
 ```
-
-Reference: [https://cog.run/getting-started/#build-an-image](https://cog.run/getting-started/#build-an-image)
 
 ### Push ModelKit to ACR
 
-When we imported and unpacked the model using the Kit CLI, a ModelKit was created. The Cog container will not have the model included in the image build so we need to pack up the ModelKit and push it to an OCI-compliant registry.
+Recall that when we imported and unpacked the model using the Kit CLI, a ModelKit was created. The Cog container will not have the model included in the image, so we need to pack up the ModelKit and push it to an OCI-compliant registry as well.
 
-But first, with a new src/cog folder in place for our Cog code, we need to update the ModelKit project to make it aware of the source code.
+But first, with a new **src/cog** folder in place for our Cog code, we need to update the ModelKit project to make it aware of the code.
 
-Open the Kitfile and add a new code spec at the end. Make sure the YAML looks like this.
+Open the Kitfile and add a new code spec at the end. Your YAML manifest should look something like this.
 
 ```yaml
 manifestVersion: 1.0.0
@@ -270,23 +277,23 @@ model:
 docs:
   - path: README.md
     description: Readme file
-code:
+code:                                                       # Add code spec
   - path: src/cog/
     description: Source code to run AI model predictions
-
 ```
 
-Reference: [https://kitops.org/docs/kitfile/format/#example](https://kitops.org/docs/kitfile/format/#example)
+> [!note]
+> See [Kitfile reference](https://kitops.org/docs/kitfile/format/#example) for more details on the Kitfile format.
 
-Run the following command to pack up the ModelKit. This will pack up everything defined in the Kitfile.
+Now we can [pack up the ModelKit](https://kitops.org/docs/cli/cli-reference/#kit-pack) and label it so that it can be pushed to the Azure Container Registry (ACR). Run the following command to pack up the ModelKit. This will pack up everything defined in the Kitfile.
 
 ```sh
-kit pack . -t $ACR_LOGIN_SERVER/modelkits/mysmollm2:0.1.0
+kit pack . -t $ACR_LOGIN_SERVER/modelkits/mysmollm2:latest
 ```
 
-Reference: [https://kitops.org/docs/cli/cli-reference/#kit-pack](https://kitops.org/docs/cli/cli-reference/#kit-pack)
+The ModelKit will be stored in the ACR under the **modelkits/mysmollm2** repository, and we will tag it with a version number.
 
-Run the following commands to create an ACR token to use for Kit CLI authentication and push the ModelKit to ACR.
+To push the ModelKit to ACR, we need to log in to the ACR with the Kit CLI. Run the following commands to create an ACR token to use for Kit CLI authentication and push the ModelKit to ACR.
 
 ```sh
 # create token for push
@@ -300,14 +307,22 @@ ACR_TOKEN_PASSWORD=$(az acr token create \
 
 # login to acr
 echo $ACR_TOKEN_PASSWORD | kit login $ACR_LOGIN_SERVER -u $ACR_TOKEN_NAME --password-stdin
-kit push $ACR_LOGIN_SERVER/modelkits/mysmollm2:0.1.0
 ```
 
-Reference: [https://kitops.org/docs/cli/cli-reference/#kit-push](https://kitops.org/docs/cli/cli-reference/#kit-push)
+> [!note]
+> At the time of this writing, the Kit CLI does not support bearer token authentication, so it is unable to use the same token that was retrieved when we logged in to ACR with the Azure CLI. So we will need to create a token in ACR that can be used for pushing the ModelKit.
+
+Now we can push the ModelKit to ACR using the Kit CLI.
+
+```sh
+kit push $ACR_LOGIN_SERVER/modelkits/mysmollm2:latest
+```
 
 ### Build a KitOps container for pulling ModelKits
 
-When you deploy a Cog application, the model will need to be locally available. The model is stored within the ModelKit so we'll need a way to pull it out and save it to a place where the app can access it. In Kubernetes, we can implement this functionality via an initContainer which is the first thing that will run at deployment time to unpack our model in the Pod.
+As mentioned above, the Cog container will not have the model files included in the image. It just expects the model to be locally available. So we need to ensure that the model files are available in the Pod before the Cog application starts. One solution to this is to use an initContainer that will run before the main application container starts. The initContainer will be responsible for pulling the ModelKit from the ACR and unpacking it to a local directory in the Pod.
+
+With the model being stored in the ModelKit, we can use the KitOps CLI to pull and unpack the ModelKit from the ACR. The KitOps supports this sort of workflow; however, they don't publish a container image that can be used to authenticate to a private registry and pull the ModelKit. So we will need to create a custom container image that can be used as an initContainer in the Pod.
 
 Create a custom container image to pull and unpack ModelKits from private registries. We'll be taking inspiration from [this example](https://github.com/kitops-ml/kitops/tree/main/build/dockerfiles/init).
 
@@ -332,20 +347,22 @@ CMD echo $PASSWORD | kit login $REGISTRY_URL -u $USERNAME --password-stdin && \
   kit unpack "$MODELKIT_REF" --dir "$UNPACK_PATH" --filter="$UNPACK_FILTER"
 ```
 
-Reference: [https://github.com/kitops-ml/kitops/blob/main/build/dockerfiles/init/Dockerfile](https://github.com/kitops-ml/kitops/blob/main/build/dockerfiles/init/Dockerfile)
+This Dockerfile takes inspiration from the one found in the [KitOps repository](https://github.com/kitops-ml/kitops/blob/main/build/dockerfiles/release.Dockerfile), but includes additional steps to log in to the ACR using the environment variables that will be set in the Pod and unpack the ModelKit to a local directory in the Pod. The environment variables `MODELKIT_REF`, `UNPACK_PATH`, and `UNPACK_FILTER` will be set in the Pod spec when we create the Workspace resource.
 
 Build and push the init container.
 
 ```sh
-docker build -t $ACR_LOGIN_SERVER/kitunpacker:0.1.0 .
-docker push $ACR_LOGIN_SERVER/kitunpacker:0.1.0
+docker build -t $ACR_LOGIN_SERVER/kitunpacker:latest .
+docker push $ACR_LOGIN_SERVER/kitunpacker:latest
 ```
 
 ### Deploy custom model workspace
 
-With KAITO workspace CRD deployed in the cluster, we just need to create a custom resource called a Workspace and KAITO will take care of provisioning a GPU-based node, deploying the application in a Pod and exposing it with a Service.
+Recall that KAITO was installed in the AKS cluster and it provides a custom resource definition (CRD) for managing Workspaces. A Workspace is a custom resource that defines the resources needed to run an AI application, including the instance type, label selector, and inference template.
 
-The Pod deployment in the workspace will leverage the KitOps init container to pull and unpack the model from the ModelKit; however, it will need to authenticate against the ACR.
+With KAITO workspace CRD deployed in the cluster, all we need to do is create a custom resource called a Workspace and KAITO will take care of provisioning a GPU-based node, deploying the application in a Pod and exposing it with a Service.
+
+The Pod deployment in the workspace will leverage the KitOps initContainer to pull and unpack the model from the ModelKit. But we haven't created an ACR token yet that will be used by the initContainer to pull the ModelKit from the ACR. So we need to create a Kubernetes secret that will be used in the initContainer configuration.
 
 Run the following commands to create a separate ACR token to pull ModelKits from ACR.
 
@@ -366,6 +383,8 @@ kubectl create secret generic kitops-init-token \
 --from-literal=PASSWORD=$ACR_TOKEN_PASSWORD
 ```
 
+Now we can create a Workspace resource with a custom Pod template that will use the KitOps initContainer to pull and unpack the ModelKit from ACR. The Pod template will also include the Cog application container that will run the inference server.
+
 Run the following command to create a Workspace.
 
 ```yaml
@@ -375,7 +394,7 @@ kind: Workspace
 metadata:
   name: mysmollm2app-workspace
 resource:
-  instanceType: Standard_NC6s_v3
+  instanceType: Standard_NC24ads_A100_v4
   labelSelector:
     matchLabels:
       apps: mysmollm2app
@@ -384,13 +403,13 @@ inference:
     spec:
       initContainers:
         - name: kitops-init
-          image: $ACR_LOGIN_SERVER/kitunpacker:0.1.0
+          image: $ACR_LOGIN_SERVER/kitunpacker:latest
           envFrom:
             - secretRef:
                 name: kitops-init-token
           env:
             - name: MODELKIT_REF
-              value: "$ACR_LOGIN_SERVER/modelkits/mysmollm2:0.1.0"
+              value: "$ACR_LOGIN_SERVER/modelkits/mysmollm2:latest"
             - name: UNPACK_PATH
               value: /tmp/mymodelkit
             - name: UNPACK_FILTER
@@ -400,7 +419,7 @@ inference:
               mountPath: /tmp/mymodelkit    
       containers:
         - name: mysmollm2app
-          image: $ACR_LOGIN_SERVER/mysmollm2app:0.1.0
+          image: $ACR_LOGIN_SERVER/mysmollm2app:latest
           env:
             - name: MODEL_PATH
               value: "/mymodel"
@@ -429,8 +448,8 @@ Watch the Workspace roll out and wait for the RESOURCEREADY status to show True.
 
 ```sh
 $ kubectl get workspace -w
-NAME                     INSTANCE           RESOURCEREADY   INFERENCEREADY   JOBSTARTED   WORKSPACESUCCEEDED   AGE
-mysmollm2app-workspace   Standard_NC6s_v3   True            True                          True                 8m6s
+NAME                     INSTANCE                   RESOURCEREADY   INFERENCEREADY   JOBSTARTED   WORKSPACESUCCEEDED   AGE
+mysmollm2app-workspace   Standard_NC24ads_A100_v4   True            True                          True                 8m6s
 ```
 
 Once the Workspace resource is ready, the Pod will begin to roll out.
@@ -512,18 +531,38 @@ You should see output similar to the following.
 }
 ```
 
-Press fg to move the port-forward process back to the foreground then press ctrl+c to stop the port-forward.
+Press `fg` to move the port-forward process back to the foreground then press `Ctrl+c` to stop the port-forward.
 
 ## Summary
 
-Congratulations! You just used the Kit and Cog open-source tools to deploy an open-source model to Azure Kubernetes Service using KAITO.
+Congratulations! You've successfully implemented a complete, production-ready workflow for deploying open-source AI models on Azure Kubernetes Service using cloud-native tools:
 
-Maybe add some suggestions for next steps here…
+1. **Infrastructure**: Provisioned a fully-managed AKS cluster with KAITO operators for AI workload orchestration and integrated ACR for container management
+1. **Model Management**: Used KitOps to standardize your AI asset organization, packaging SmolLM2-1.7B into a versioned ModelKit with clear separation of model weights and inference code
+1. **Inference Application**: Built a containerized inference service with Cog that leverages GPU acceleration for optimal performance while maintaining a clean separation between model and application code
+1. **Deployment**: Orchestrated Kubernetes resource deployments through KAITO's custom Workspace resource, which handled GPU node provisioning, deployment sequencing with the KitOps initContainer pattern, and service exposure
+
+This architecture demonstrates how Azure's managed Kubernetes offering combines with open-source tools to create a flexible, scalable AI deployment solution where you maintain full control over your data, models, and infrastructure. The approach allows teams to standardize their ML operations while leveraging Kubernetes' built-in capabilities for high availability, scaling, and resource optimization.
+
+## Next steps
+
+To learn more about the tools used in this workshop, check out the following resources.
+
+- [Azure Kubernetes Service (AKS)](https://learn.microsoft.com/azure/aks/)
+- [KAITO](https://github.com/kaito-project/kaito)
+- [KitOps](https://kitops.org/)
+- [Cog](https://cog.run/)
 
 ## Cleanup
 
-When you are done testing, either go back to the directory where you ran the Terraform from, or run the following command.
+When you are done testing, return to the **kaito/terraform** directory and run the following command to destroy the resources.
 
 ```sh
-az group delete -n $RG_NAME -y --no-wait
+terraform destroy
+```
+
+If you created a workstation VM, exit the SSH session, return to the directory where you created the workstation VM, then run the following command to delete the resources.
+
+```sh
+terraform destroy
 ```
