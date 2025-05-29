@@ -23,6 +23,7 @@ Before you begin, you will need the following tools installed.
 - [KitOps CLI](https://kitops.org/docs/cli/installation/) for managing ModelKits.
 - [Cog CLI](https://cog.run/getting-started/#install-cog) for building and running containerized inference applications.
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) for managing Kubernetes resources.
+- [Python](https://www.python.org/downloads/) for developing the model inference code.
 - [jq](https://jqlang.org/) for parsing JSON.
 - [curl](https://curl.se/) for making HTTP requests.
 
