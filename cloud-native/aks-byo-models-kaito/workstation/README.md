@@ -10,6 +10,7 @@ This particular VM will include the following software:
 - [kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 - [KitOps CLI](https://kitops.org/docs/cli/installation/)
 - [Cog CLI](https://cog.run/getting-started/#install-cog)
+- [Python](https://www.python.org/downloads/)
 
 ## Prerequisites
 
