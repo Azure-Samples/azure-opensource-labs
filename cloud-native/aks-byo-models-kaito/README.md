@@ -29,6 +29,16 @@ Before you begin, you will need the following tools installed.
 > [!tip]
 > This workshop can be run on any local machine with the above tools installed. However, if you are facing challenges with local compute power or network bandwidth limitations, you can run this workshop on an Azure Virtual Machine. Check out this [README](./workstation/README.md) for instructions on how to set up a VM with all the tools pre-installed. With the VM in place, SSH into the node and proceed with the rest of this walk-through.
 
+## More tools?
+
+In this workshop, "**BYO**" can mean "**Bring Your Own**" model or "**Build Your Own**" model. Whatever the case, the goal here is to show how you can leverage open-source tool as part of your development lifecycle. In the cloud-native ecosystem, there are many tools available for managing AI/ML workloads. Each tool has its own areas of focus, and they often complement each other. Here's how I view the three tools (KitOps, Cog, and KAITO) complement each other in the context of a complete AI/ML workflow:
+
+![KitOps, Cog, and KAITO fitment](./kitops+cog+kaito.png)
+
+- **KitOps**: Used to organize, version, sign, and store AI/ML projects in OCI-compliant registries. Every step of the model lifecycle can be captured in a ModelKit and can be used to track the model's lineage then shared with others.
+- **Cog**: Used to build production-ready containers for model inference. It provides a simple way to define the model inference code and dependencies, and it can be used to build and push the container image to a registry. Cog also provides a CLI for running predictions against the model locally creating a fast and efficient developer feedback loop. This code can also be stored in the ModelKit, allowing you to version the inference code alongside the model.
+- **KAITO**: Once the code is ready for production, AKS with KAITO can be used to deploy the model inference application on Kubernetes. With Kubernetes comes the ability to orchestrate the deployment of the model inference application, scale it up or down based on demand, and manage the resources needed to run the application. All the things that Kubernetes does best.
+
 ## Getting started
 
 To run this solution on AKS, use the Terraform script found in the KAITO repository which will provision the following services.
