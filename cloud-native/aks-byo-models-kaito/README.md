@@ -584,6 +584,13 @@ To learn more about the tools used in this workshop, check out the following res
 - [KitOps](https://kitops.org/)
 - [Cog](https://cog.run/)
 
+## Let's connect
+
+If you have any questions or feedback about managing open-source models on Azure, feel free to join the Azure AI Foundry community and connect with other developers and Azure AI experts.
+
+- [https://aka.ms/azureaifoundrygh](https://aka.ms/azureaifoundrygh) - GitHub Discussions for the Azure AI Foundry community
+- [https://aka.ms/azureaifoundry/discord](https://aka.ms/azureaifoundry/discord) - Discord server for the Azure AI Foundry community
+
 ## Cleanup
 
 When you are done testing, return to the **kaito/terraform** directory and run the following command to destroy the resources.
