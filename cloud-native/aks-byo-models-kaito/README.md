@@ -342,7 +342,7 @@ kit push $ACR_LOGIN_SERVER/modelkits/mysmollm2:latest
 
 ### Build a KitOps container for pulling ModelKits
 
-As mentioned above, the Cog container will not have the model files included in the image. It just expects the model to be locally available. So we need to ensure that the model files are available in the Pod before the Cog application starts. One solution to this is to use an initContainer that will run before the main application container starts. The initContainer will be responsible for pulling the ModelKit from the ACR and unpacking it to a local directory in the Pod.
+As mentioned above, the Cog container will not have the model files included in the image. It just expects the model to be locally available. So we need to ensure that the model files are available in the Pod before the Cog application starts. One solution to this is to use an initContainer that will run before the main application container starts. The initContainer will be responsible for pulling the ModelKit from the ACR and unpacking it to a local directory in the Pod. This is similar to the [ModelCar approach used in the OpenShift AI project](https://developers.redhat.com/articles/2025/01/30/build-and-deploy-modelcar-container-openshift-ai).
 
 With the model being stored in the ModelKit, we can use the KitOps CLI to pull and unpack the ModelKit from the ACR. The KitOps supports this sort of workflow; however, they don't publish a container image that can be used to authenticate to a private registry and pull the ModelKit. So we will need to create a custom container image that can be used as an initContainer in the Pod.
 
