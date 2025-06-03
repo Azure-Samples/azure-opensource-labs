@@ -24,7 +24,7 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 # install kubelogin
 wget https://github.com/Azure/kubelogin/releases/download/v0.2.7/kubelogin-linux-amd64.zip
 unzip kubelogin-linux-amd64.zip
-sudo mv /bin/linux_amd64/kubelogin /usr/local/bin/kubelogin
+sudo mv ./linux_amd64/kubelogin /usr/local/bin/kubelogin
 
 # install docker
 sudo install -m 0755 -d /etc/apt/keyrings
