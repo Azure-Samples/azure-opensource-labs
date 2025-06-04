@@ -584,12 +584,12 @@ To learn more about the tools used in this workshop, check out the following res
 - [KitOps](https://kitops.org/)
 - [Cog](https://cog.run/)
 
-## Let's connect
+## Join the Community
 
-If you have any questions or feedback about managing open-source models on Azure, feel free to join the Azure AI Foundry community and connect with other developers and Azure AI experts.
+We encourage you to join our Azure AI Foundry Developer Community​ to share your experiences, ask questions, and get support:
 
-- [https://aka.ms/azureaifoundrygh](https://aka.ms/azureaifoundrygh) - GitHub Discussions for the Azure AI Foundry community
-- [https://aka.ms/azureaifoundry/discord](https://aka.ms/azureaifoundry/discord) - Discord server for the Azure AI Foundry community
+- [aka.ms/foundry/discord​](https://aka.ms/foundry/discord​) - Join our Discord community for real-time discussions and support.
+- [aka.ms/foundry/forum](https://aka.ms/foundry/forum) - Visit our Azure AI Foundry Developer Forum to ask questions and share your knowledge.
 
 ## Cleanup
 
