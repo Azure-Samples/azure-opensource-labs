@@ -1,0 +1,17 @@
+#cloud-config
+# See documentation for more configuration examples
+# https://cloudinit.readthedocs.io/en/latest/reference/examples.html 
+
+# Install arbitrary packages
+# https://cloudinit.readthedocs.io/en/latest/reference/examples.html#install-arbitrary-packages
+packages:
+  - python
+  - ca-certificates
+  - unzip
+# Run commands on first boot
+# https://cloudinit.readthedocs.io/en/latest/reference/examples.html#run-commands-on-first-boot
+runcmd:
+ - [ ls, -l, / ]
+ - [ sh, -xc, "echo $(date) ': hello world!'" ]
+ - [ sh, -c, echo "=========hello world=========" ]
+ - ls -l /root
