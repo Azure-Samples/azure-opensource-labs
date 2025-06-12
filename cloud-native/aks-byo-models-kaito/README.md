@@ -45,13 +45,13 @@ In this workshop, "**BYO**" can mean "**Bring Your Own**" model or "**Build Your
 > [!CAUTION]
 > Before you begin, ensure you have an Azure subscription with sufficient quota to provision an Azure Kubernetes Service (AKS) cluster and GPU nodes. The following GPU SKU families are supported for KAITO on AKS:
 >
-> - Standard NCSv3 (NVIDIA V100 GPU)
-> - Standard NCASv3_T4 (NVIDIA T4 GPU)
-> - Standard NCADS_A100_v4 (NVIDIA A100 GPU)
-> - Standard NCadsH100v5 (NVIDIA H100 GPU)
-> - StandardNDISRH200V5 (NVIDIA H200 GPU)
-> - Standard NV (NVIDIA M60 GPU)
-> - Standard NVSv3 (NVIDIA M60 GPU)
+> - Standard [NCv3](https://learn.microsoft.com/azure/virtual-machines/sizes/gpu-accelerated/ncv3-series?tabs=sizebasic) (NVIDIA V100 GPU)
+> - Standard [NCasT4_v3](https://learn.microsoft.com/azure/virtual-machines/sizes/gpu-accelerated/nc-family#ncast4_v3-series) (NVIDIA T4 GPU)
+> - Standard [NC_A100_v4](https://learn.microsoft.com/azure/virtual-machines/sizes/gpu-accelerated/nca100v4-series?tabs=sizebasic) (NVIDIA A100 GPU)
+> - Standard [NCads H100 v5](https://learn.microsoft.com/azure/virtual-machines/ncads-h100-v5) (NVIDIA H100 GPU)
+> - Standard [NC_A100_v4](https://learn.microsoft.com/azure/virtual-machines/sizes/gpu-accelerated/nca100v4-series?tabs=sizebasic) (NVIDIA A100 GPU)
+> - Standard [NV](https://learn.microsoft.com/azure/virtual-machines/sizes/gpu-accelerated/nv-series?tabs=sizebasic) (NVIDIA M60 GPU)
+> - Standard [NvV3](https://learn.microsoft.com/azure/virtual-machines/sizes/gpu-accelerated/nvv3-series?tabs=sizebasic) (NVIDIA M60 GPU)
 
 To run this solution on AKS, use the Terraform script found in the KAITO repository which will provision the following services.
 
