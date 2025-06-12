@@ -608,8 +608,8 @@ To learn more about the tools used in this workshop, check out the following res
 
 We encourage you to join our Azure AI Foundry Developer Community​ to share your experiences, ask questions, and get support:
 
-- [aka.ms/foundry/discord​](https://aka.ms/foundry/discord​) - Join our Discord community for real-time discussions and support.
-- [aka.ms/foundry/forum](https://aka.ms/foundry/forum) - Visit our Azure AI Foundry Developer Forum to ask questions and share your knowledge.
+- [aka.ms/azureaifoundry/discord​](https://aka.ms/azureaifoundry/discord​) - Join our Discord community for real-time discussions and support.
+- [aka.ms/azureaifoundry/forum](https://aka.ms/azureaifoundry/forum) - Visit our Azure AI Foundry Developer Forum to ask questions and share your knowledge.
 
 ## Cleanup
 
