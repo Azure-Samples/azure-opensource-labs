@@ -65,7 +65,13 @@ Head over to the [KAITO repo](https://github.com/kaito-project/kaito), clone the
 
 ```sh
 git clone https://github.com/kaito-project/kaito.git
+```
+
+```sh
 cd kaito/terraform
+```
+
+```sh
 terraform init
 ```
 
@@ -160,7 +166,13 @@ Let's code the AI model prediction code using Cog and place the code within our 
 
 ```sh
 mkdir -p src/cog
+```
+
+```sh
 cd src/cog
+```
+
+```sh
 cog init
 ```
 
@@ -321,11 +333,11 @@ To push the ModelKit to ACR, we need to log in to the ACR with the Kit CLI. Run 
 # create token for push
 ACR_TOKEN_NAME=kitpush
 ACR_TOKEN_PASSWORD=$(az acr token create \
--n $ACR_TOKEN_NAME \
--r $ACR_NAME \
---scope-map _repositories_push \
---query "credentials.passwords[0].value" \
--otsv)
+  -n $ACR_TOKEN_NAME \
+  -r $ACR_NAME \
+  --scope-map _repositories_push \
+  --query "credentials.passwords[0].value" \
+  -o tsv)
 
 # login to acr
 echo $ACR_TOKEN_PASSWORD | kit login $ACR_LOGIN_SERVER -u $ACR_TOKEN_NAME --password-stdin
@@ -350,6 +362,9 @@ Create a custom container image to pull and unpack ModelKits from private regist
 
 ```sh
 mkdir src/kitops
+```
+
+```sh
 cd src/kitops
 ```
 
@@ -381,6 +396,9 @@ Build and push the init container.
 
 ```sh
 docker build -t $ACR_LOGIN_SERVER/kitunpacker:latest .
+```
+
+```sh
 docker push $ACR_LOGIN_SERVER/kitunpacker:latest
 ```
 
@@ -398,17 +416,19 @@ Run the following commands to create a separate ACR token to pull ModelKits from
 # create token for pull
 ACR_TOKEN_NAME=kitpull
 ACR_TOKEN_PASSWORD=$(az acr token create \
--n $ACR_TOKEN_NAME \
--r $ACR_NAME \
---scope-map _repositories_pull \
---query "credentials.passwords[0].value" \
--otsv)
+  -n $ACR_TOKEN_NAME \
+  -r $ACR_NAME \
+  --scope-map _repositories_pull \
+  --query "credentials.passwords[0].value" \
+  -o tsv)
+```
 
+```sh
 # create kubernetes secret which will be used in the initContainer config
 kubectl create secret generic kitops-init-token \
---from-literal=REGISTRY_URL=$ACR_LOGIN_SERVER \
---from-literal=USERNAME=$ACR_TOKEN_NAME \
---from-literal=PASSWORD=$ACR_TOKEN_PASSWORD
+  --from-literal=REGISTRY_URL=$ACR_LOGIN_SERVER \
+  --from-literal=USERNAME=$ACR_TOKEN_NAME \
+  --from-literal=PASSWORD=$ACR_TOKEN_PASSWORD
 ```
 
 Now we can create a Workspace resource with a custom Pod template that will use the KitOps initContainer to pull and unpack the ModelKit from ACR. The Pod template will also include the Cog application container that will run the inference server.
@@ -536,8 +556,8 @@ Once you see the status is READY, you can call the prediction endpoint and ask t
 
 ```sh
 curl -s http://localhost:8393/predictions -X POST \
- -H 'Content-Type: application/json' \
- -d '{"input": {"prompt": "what is kubernetes?"}}' | jq
+    -H 'Content-Type: application/json' \
+    -d '{"input": {"prompt": "what is kubernetes?"}}' | jq
 ```
 
 You should see output similar to the following.
