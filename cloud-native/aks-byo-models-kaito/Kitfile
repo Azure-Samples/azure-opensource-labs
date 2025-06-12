@@ -1,0 +1,27 @@
+manifestVersion: 1.0.0
+package:
+  name: mysmollm2app
+  authors:
+    - Paul Yu
+  description: My project working with HuggingFaceTB/SmolLM2-1.7B-Instruct-16k model
+model:
+  name: model
+  path: model.safetensors
+  parts:
+    - path: training_args.bin
+    - path: all_results.json
+    - path: config.json
+    - path: generation_config.json
+    - path: merges.txt
+    - path: special_tokens_map.json
+    - path: tokenizer.json
+    - path: tokenizer_config.json
+    - path: train_results.json
+    - path: trainer_state.json
+    - path: vocab.json
+docs:
+  - path: README.md
+    description: Readme file
+code:                                                       # Add code spec
+  - path: src/cog/
+    description: Source code to run AI model predictions
