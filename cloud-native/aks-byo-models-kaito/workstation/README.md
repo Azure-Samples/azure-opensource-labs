@@ -1,4 +1,4 @@
-# Ubuntu Workstation
+# Ubuntu Workstation (for BYO model on AKS with KAITO and open-source tools)
 
 This Terraform script provisions an Ubuntu Virtual Machine (VM) in Azure, configured as a workstation for development and testing purposes. The VM is set up with essential software tools that facilitate cloud-native AI development workflows, including Azure CLI, Terraform, Docker, kubectl, KitOps CLI, and Cog CLI. The VM is provisioned using cloud-init to automate the installation of these tools at startup.
 
